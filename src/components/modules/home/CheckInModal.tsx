@@ -68,7 +68,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-            className="modal-backdrop"
+            style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(45,26,14,0.4)', backdropFilter: 'blur(4px)' }}
           />
           
           {/* Modal Container */}
@@ -78,10 +78,17 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
             exit={{ y: 40, opacity: 0, scale: 0.98 }}
             transition={{ type: 'spring', damping: 26, stiffness: 230 }}
             className="modal-sheet"
+            onClick={(e) => e.stopPropagation()}
             style={{ maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', minHeight: '500px' }}
           >
             {/* Drag Handle (Mobile) */}
             <div className="modal-handle" />
+            <button
+              onClick={handleClose}
+              style={{ position: 'absolute', top: '16px', right: '16px', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(193,96,58,0.1)', border: '1px solid rgba(193,96,58,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#c1603a' }}
+            >
+              <X size={16} />
+            </button>
 
             {/* Header */}
             <header style={{ padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.06)', position: 'relative' }}>
@@ -95,9 +102,6 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                   />
                 ))}
               </div>
-              <button onClick={handleClose} style={{ padding: '8px', color: '#b08878', transition: 'color 0.2s ease' }}>
-                <X size={20} />
-              </button>
             </header>
 
             {/* Content Area */}

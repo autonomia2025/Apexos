@@ -34,8 +34,7 @@ export const AgentMessage: React.FC<AgentMessageProps> = ({ agentType, userName,
   }, [agentType, userName]);
 
   return (
-    <GlassCard className="agent-card" style={{ marginBottom: '24px', position: 'relative', overflow: 'hidden', borderColor: 'rgba(193,96,58,0.3)' }}>
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(193,96,58,0.08), transparent, transparent)', pointerEvents: 'none' }} />
+    <GlassCard className="agent-card" style={{ marginBottom: '24px', position: 'relative', overflow: 'hidden', background: '#fff8f5', border: '1.5px solid rgba(193,96,58,0.25)' }}>
       {/* Dynamic glow behind the icon */}
       <div style={{ position: 'relative' }}>
         <div 
@@ -51,7 +50,7 @@ export const AgentMessage: React.FC<AgentMessageProps> = ({ agentType, userName,
 
       <div className="agent-text" style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '40px' }}>
          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', marginBottom: '4px' }}>
-           <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(247,217,122,0.9)' }}>Insight IA</span>
+           <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#c1603a' }}>Insight IA</span>
            <button
               onClick={(e) => { e.stopPropagation(); fetchInsight(); }}
               style={{ padding: '6px', display: 'flex', alignItems: 'center', gap: '4px', color: '#c1603a', textTransform: 'uppercase', fontSize: '10px', letterSpacing: '0.1em', fontWeight: 700, background: 'transparent', border: 'none', cursor: 'pointer' }}
@@ -62,13 +61,24 @@ export const AgentMessage: React.FC<AgentMessageProps> = ({ agentType, userName,
          </div>
 
         {isLoading ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '8px' }}>
-            <span style={{ width: '6px', height: '6px', background: '#c1603a', borderRadius: '999px' }} />
-            <span style={{ width: '6px', height: '6px', background: '#c1603a', borderRadius: '999px', opacity: 0.7 }} />
-            <span style={{ width: '6px', height: '6px', background: '#c1603a', borderRadius: '999px', opacity: 0.4 }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '8px' }}>
+            {[0, 1, 2].map((i) => (
+              <span
+                key={i}
+                style={{
+                  width: '7px',
+                  height: '7px',
+                  background: '#c1603a',
+                  borderRadius: '50%',
+                  display: 'inline-block',
+                  animation: 'pulse-dot 1.2s ease-in-out infinite',
+                  animationDelay: `${i * 0.2}s`,
+                }}
+              />
+            ))}
           </div>
         ) : (
-          <p style={{ color: 'rgba(229,231,235,1)', fontSize: '14px', fontStyle: 'italic', lineHeight: 1.6, marginTop: '4px' }}>
+          <p style={{ color: '#2d1a0e', fontSize: '14px', fontStyle: 'normal', lineHeight: 1.6, marginTop: '4px' }}>
             "{message}"
           </p>
         )}

@@ -1,26 +1,29 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { Home, Utensils, Dumbbell, Wallet, MoreHorizontal, BookOpen, Target, X, Briefcase } from 'lucide-react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { Home, Utensils, Dumbbell, Wallet, Briefcase, 
+         BookOpen, Target, X, MoreHorizontal } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const TERRA = '#c1603a';
+const MUTED = '#b08878';
+const BG = '#fdf6f0';
+
+const mainItems = [
+  { to: '/', icon: Home, label: 'Home' },
+  { to: '/nutrition', icon: Utensils, label: 'Nutrición' },
+  { to: '/fitness', icon: Dumbbell, label: 'Fitness' },
+  { to: '/finance', icon: Wallet, label: 'Finanzas' },
+  { to: '/tablio', icon: Briefcase, label: 'Tablio' },
+];
+
+const moreItems = [
+  { to: '/learn', icon: BookOpen, label: 'Aprender' },
+  { to: '/goals', icon: Target, label: 'Metas' },
+];
 
 export const MobileNav = () => {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
-
-  // Tablio is placed at the end of the main nav items as requested
-  const mainNavItems = [
-    { to: '/', icon: Home, label: 'Home' },
-    { to: '/nutrition', icon: Utensils, label: 'Nutrition' },
-    { to: '/fitness', icon: Dumbbell, label: 'Fitness' },
-    { to: '/finance', icon: Wallet, label: 'Finance' },
-    { to: '/tablio', icon: Briefcase, label: 'Tablio' },
-  ];
-
-  const moreItems = [
-    { to: '/learn', icon: BookOpen, label: 'Learn', color: 'text-purple-400' },
-    { to: '/goals', icon: Target, label: 'Metas', color: 'text-gold-400' },
-  ];
-
-  const closeMore = () => setIsMoreOpen(false);
+  const location = useLocation();
 
   return (
     <>
@@ -30,92 +33,118 @@ export const MobileNav = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={closeMore}
-            className="fixed inset-0 bg-navy-900/60 backdrop-blur-sm z-40"
+            onClick={() => setIsMoreOpen(false)}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 40,
+              background: 'rgba(45,26,14,0.3)',
+              backdropFilter: 'blur(4px)',
+            }}
           />
         )}
       </AnimatePresence>
 
-      <nav className="mobile-nav">
-        
-        <AnimatePresence>
-          {isMoreOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.95 }}
-              className="absolute bottom-full right-4 mb-2 bg-navy-800 border border-white/10 rounded-2xl shadow-2xl overflow-hidden glass-panel z-50 min-w-[160px]"
-            >
-              {moreItems.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  onClick={closeMore}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 px-5 py-4 transition-colors active:bg-white/10 ${
-                      isActive ? 'bg-white/5' : 'hover:bg-white/5'
-                    }`
-                  }
-                >
-                  <item.icon className={`w-5 h-5 ${item.color}`} />
-                  <span className="font-bold text-sm tracking-wide text-white">{item.label}</span>
-                </NavLink>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
+      <AnimatePresence>
+        {isMoreOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 12, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.96 }}
+            style={{
+              position: 'fixed', bottom: '80px', right: '16px',
+              zIndex: 50, background: '#ffffff',
+              border: '1px solid #e8d5c8',
+              borderRadius: '16px',
+              boxShadow: '0 8px 32px rgba(45,26,14,0.12)',
+              overflow: 'hidden', minWidth: '160px',
+            }}
+          >
+            {moreItems.map(item => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                onClick={() => setIsMoreOpen(false)}
+                style={({ isActive }) => ({
+                  display: 'flex', alignItems: 'center', gap: '12px',
+                  padding: '14px 20px', textDecoration: 'none',
+                  background: isActive ? 'rgba(193,96,58,0.06)' : 'transparent',
+                  color: isActive ? TERRA : '#2d1a0e',
+                  fontFamily: '"Outfit", sans-serif',
+                  fontSize: '14px', fontWeight: 600,
+                  borderBottom: '1px solid #f0e4da',
+                })}
+              >
+                {({ isActive }) => (
+                  <>
+                    <item.icon 
+                      size={18} 
+                      color={isActive ? TERRA : MUTED}
+                      strokeWidth={isActive ? 2.5 : 1.8}
+                    />
+                    {item.label}
+                  </>
+                )}
+              </NavLink>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-        <div className="flex justify-around items-center h-16 px-1">
-          {mainNavItems.map((item) => (
+      <nav style={{
+        display: 'flex', position: 'fixed',
+        bottom: 0, left: 0, right: 0,
+        background: BG,
+        borderTop: '1px solid #e8d5c8',
+        backdropFilter: 'blur(16px)',
+        zIndex: 40, paddingBottom: 'env(safe-area-inset-bottom)',
+        justifyContent: 'space-around', alignItems: 'center',
+        height: '64px',
+      }}>
+        {mainItems.map(item => {
+          const isActive = location.pathname === item.to;
+          return (
             <NavLink
               key={item.to}
               to={item.to}
-              className={({ isActive }) =>
-                `flex flex-col items-center justify-center flex-1 h-full space-y-1 transition-colors duration-200 active:scale-95 ${
-                  isActive ? 'text-gold-400' : 'text-gray-500 hover:text-gray-400'
-                }`
-              }
+              style={{
+                display: 'flex', flexDirection: 'column',
+                alignItems: 'center', justifyContent: 'center',
+                gap: '4px', flex: 1, height: '100%',
+                textDecoration: 'none', cursor: 'pointer',
+                color: isActive ? TERRA : MUTED,
+                fontFamily: '"Outfit", sans-serif',
+                fontSize: '10px', fontWeight: isActive ? 700 : 500,
+                transition: 'all 0.2s',
+              }}
             >
-              {({ isActive }) => (
-                <>
-                  <div className="relative">
-                    <item.icon
-                      className={`w-5 h-5 sm:w-6 sm:h-6 ${isActive ? 'fill-gold-400/20' : ''}`}
-                      stroke={isActive ? 'var(--color-gold-400)' : 'currentColor'}
-                      strokeWidth={isActive ? 2.5 : 2}
-                    />
-                    {isActive && (
-                      <div
-                        className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-gold-400 shadow-[0_0_8px_rgba(193,96,58,0.8)]"
-                      />
-                    )}
-                  </div>
-                  <span className="text-[9px] sm:text-[10px] font-medium font-body mt-1">
-                    {item.label}
-                  </span>
-                </>
-              )}
+              <item.icon
+                size={22}
+                color={isActive ? TERRA : MUTED}
+                strokeWidth={isActive ? 2.5 : 1.8}
+              />
+              {item.label}
             </NavLink>
-          ))}
+          );
+        })}
 
-          <button
-             onClick={() => setIsMoreOpen(!isMoreOpen)}
-             className={`flex flex-col items-center justify-center flex-1 h-full space-y-1 transition-colors duration-200 active:scale-95 ${
-               isMoreOpen ? 'text-white' : 'text-gray-500 hover:text-gray-400'
-             }`}
-          >
-            <div className="relative">
-              {isMoreOpen ? (
-                <X className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} />
-              ) : (
-                <MoreHorizontal className="w-5 h-5 sm:w-6 sm:h-6" />
-              )}
-            </div>
-            <span className="text-[9px] sm:text-[10px] font-medium font-body mt-1">
-              Más
-            </span>
-          </button>
-        </div>
+        <button
+          onClick={() => setIsMoreOpen(v => !v)}
+          style={{
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+            gap: '4px', flex: 1, height: '100%',
+            background: 'transparent', border: 'none',
+            cursor: 'pointer',
+            color: isMoreOpen ? TERRA : MUTED,
+            fontFamily: '"Outfit", sans-serif',
+            fontSize: '10px', fontWeight: 500,
+          }}
+        >
+          {isMoreOpen 
+            ? <X size={22} color={TERRA} strokeWidth={2.5} />
+            : <MoreHorizontal size={22} color={MUTED} strokeWidth={1.8} />
+          }
+          Más
+        </button>
       </nav>
     </>
   );

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { Sparkles, ChevronRight } from 'lucide-react';
 import { useCouple } from '../hooks/useCouple';
 
 /**
@@ -11,6 +10,7 @@ export const Onboarding: React.FC = () => {
   const { setActiveUserId } = useCouple();
   const [step, setStep] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [hoveredCard, setHoveredCard] = useState<'jose' | 'anto' | null>(null);
 
   const startApp = (userId: 'jose' | 'anto') => {
     setActiveUserId(userId);
@@ -23,48 +23,90 @@ export const Onboarding: React.FC = () => {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', background: '#fdf6f0' }}>
       {step === 0 ? (
-        <div className="glass-gold" style={{ textAlign: 'center', maxWidth: '448px', width: '100%', padding: '32px' }}>
-          <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: 'rgba(193,96,58,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 32px', border: '1px solid rgba(193,96,58,0.3)', boxShadow: '0 0 28px rgba(193,96,58,0.16)' }}>
-            <Sparkles size={32} color="#c1603a" />
+        <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#c1603a', color: '#ffffff', fontSize: '24px', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              J
+            </div>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#d4849e', color: '#ffffff', fontSize: '24px', fontWeight: 800, marginLeft: '-16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              A
+            </div>
           </div>
-          <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.2em', color: '#d4724a', fontWeight: 600 }}>Bienvenido</span>
-          <h1 style={{ marginTop: '8px', marginBottom: '16px', fontSize: '42px', lineHeight: 1 }}>Apex Operating System</h1>
-          <p style={{ color: 'rgba(209,213,219,0.8)', marginBottom: '32px', fontSize: '15px', lineHeight: 1.6 }}>
-            Tu plataforma personal de alto rendimiento para gestionar nutrición, finanzas y metas.
+          <h1 style={{ marginTop: '24px', marginBottom: 0, textAlign: 'center', fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '48px', color: '#2d1a0e', lineHeight: 1.05, textTransform: 'lowercase' }}>
+            nuestro OS
+          </h1>
+          <p style={{ marginTop: '8px', marginBottom: 0, textAlign: 'center', fontSize: '16px', color: '#b08878', fontWeight: 300 }}>
+            tu sistema de vida, juntos.
           </p>
-          <button className="btn-gold" onClick={() => setStep(1)}>
-            INICIAR SISTEMA <ChevronRight size={18} style={{ marginLeft: '8px', verticalAlign: 'middle' }} />
+          <button className="btn-gold" onClick={() => setStep(1)} style={{ marginTop: '48px', width: '100%', maxWidth: '320px' }}>
+            Comenzar →
           </button>
         </div>
       ) : (
-        <div style={{ width: '100%', maxWidth: '512px' }}>
+        <div style={{ width: '100%', maxWidth: '420px' }}>
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-             <span style={{ fontSize: '10px', fontWeight: 600, color: '#c1603a', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Configuracion</span>
-             <h2 style={{ marginTop: '8px', fontSize: '38px', lineHeight: 1 }}>¿Quién está operando?</h2>
+            <h2 style={{ margin: 0, fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '36px', color: '#2d1a0e', textAlign: 'center', lineHeight: 1.1 }}>
+              ¿quién sos hoy?
+            </h2>
+            <p style={{ marginTop: '8px', marginBottom: 0, fontSize: '13px', color: '#b08878', textAlign: 'center' }}>
+              podés cambiar en cualquier momento
+            </p>
           </div>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
+
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             <button
-              className="glass" 
               onClick={() => startApp('jose')}
-              style={{ cursor: 'pointer', textAlign: 'center', display: 'flex', alignItems: 'center', gap: '20px' }}
+              onMouseEnter={() => setHoveredCard('jose')}
+              onMouseLeave={() => setHoveredCard(null)}
+              style={{
+                background: '#ffffff',
+                border: `1.5px solid ${hoveredCard === 'jose' ? '#c1603a' : '#e8d5c8'}`,
+                borderRadius: '20px',
+                padding: '24px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '20px',
+                cursor: 'pointer',
+                width: '100%',
+                maxWidth: '360px',
+                margin: '0 auto',
+                transition: 'all 0.2s',
+                marginBottom: '12px',
+                boxShadow: hoveredCard === 'jose' ? '0 8px 24px rgba(193,96,58,0.12)' : 'none',
+              }}
             >
-              <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'rgba(193,96,58,0.2)', color: '#c1603a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, border: '1px solid rgba(193,96,58,0.35)' }}>J</div>
+              <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: '#c1603a', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '24px' }}>J</div>
               <div style={{ textAlign: 'left' }}>
-                <h3 style={{ margin: 0, fontSize: '28px', lineHeight: 1 }}>Jose</h3>
-                <p style={{ margin: 0, fontSize: '12px', color: '#b08878', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Socio Fundador</p>
+                <h3 style={{ margin: 0, fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '28px', lineHeight: 1, color: '#2d1a0e' }}>Jose</h3>
+                <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Usuario principal</p>
               </div>
             </button>
 
             <button
-              className="glass" 
               onClick={() => startApp('anto')}
-              style={{ cursor: 'pointer', textAlign: 'center', display: 'flex', alignItems: 'center', gap: '20px' }}
+              onMouseEnter={() => setHoveredCard('anto')}
+              onMouseLeave={() => setHoveredCard(null)}
+              style={{
+                background: '#ffffff',
+                border: `1.5px solid ${hoveredCard === 'anto' ? '#d4849e' : '#e8d5c8'}`,
+                borderRadius: '20px',
+                padding: '24px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '20px',
+                cursor: 'pointer',
+                width: '100%',
+                maxWidth: '360px',
+                margin: '0 auto',
+                transition: 'all 0.2s',
+                marginBottom: '12px',
+                boxShadow: hoveredCard === 'anto' ? '0 8px 24px rgba(193,96,58,0.12)' : 'none',
+              }}
             >
-              <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'rgba(212,132,158,0.2)', color: '#d4849e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, border: '1px solid rgba(212,132,158,0.35)' }}>A</div>
+              <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: '#d4849e', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '24px' }}>A</div>
               <div style={{ textAlign: 'left' }}>
-                <h3 style={{ margin: 0, fontSize: '28px', lineHeight: 1 }}>Anto</h3>
-                <p style={{ margin: 0, fontSize: '12px', color: '#b08878', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Socia Fundadora</p>
+                <h3 style={{ margin: 0, fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '28px', lineHeight: 1, color: '#2d1a0e' }}>Anto</h3>
+                <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Usuaria principal</p>
               </div>
             </button>
           </div>

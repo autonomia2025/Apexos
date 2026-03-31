@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GoalType, GoalModule } from '../../../types/goals';
-import { Target, Users, User } from 'lucide-react';
+import { Target, Users, User, X } from 'lucide-react';
 
 interface GoalModalProps {
   isOpen: boolean;
@@ -44,7 +44,7 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color }) 
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-            className="modal-backdrop"
+            style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(45,26,14,0.4)', backdropFilter: 'blur(4px)' }}
           />
            
           <motion.div
@@ -53,9 +53,16 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color }) 
             exit={{ y: 40, opacity: 0, scale: 0.98 }}
             transition={{ type: 'spring', damping: 26, stiffness: 230 }}
             className="modal-sheet"
+            onClick={(e) => e.stopPropagation()}
             style={{ maxHeight: '85vh' }}
           >
             <div className="modal-handle" />
+            <button
+              onClick={handleClose}
+              style={{ position: 'absolute', top: '16px', right: '16px', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(193,96,58,0.1)', border: '1px solid rgba(193,96,58,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#c1603a' }}
+            >
+              <X size={16} />
+            </button>
             
             <header style={{ marginBottom: '20px', textAlign: 'center' }}>
               <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: '"Outfit", sans-serif', fontSize: '30px', color: '#c1603a', fontWeight: 700 }}>
