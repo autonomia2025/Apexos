@@ -7,33 +7,33 @@ interface SkeletonProps {
 
 export const SkeletonCard: React.FC<SkeletonProps> = ({ lines = 3, className = '' }) => {
   return (
-    <div className={`p-5 rounded-2xl bg-navy-800/50 border border-white/5 relative overflow-hidden ${className}`}>
+    <div className={className} style={{ padding: '20px', borderRadius: '16px', background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' }}>
       {/* Background container for shimmer */}
-      <div className="absolute inset-x-0 top-0 h-full w-full pointer-events-none">
+      <div style={{ position: 'absolute', insetInline: 0, top: 0, height: '100%', width: '100%', pointerEvents: 'none' }}>
         <div 
-           className="h-full w-full animate-shimmer"
            style={{
+             height: '100%',
+             width: '100%',
              background: 'linear-gradient(90deg, rgba(240,192,64,0) 0%, rgba(240,192,64,0.05) 50%, rgba(240,192,64,0) 100%)',
              backgroundSize: '200% 100%',
            }}
         />
       </div>
       
-      <div className="flex items-center gap-4 mb-4 relative z-10 w-full mb-6">
-        <div className="w-10 h-10 rounded-full bg-white/5 flex-shrink-0" />
-        <div className="space-y-2 w-full max-w-[200px]">
-          <div className="h-3 bg-white/5 rounded-full w-full" />
-          <div className="h-2 bg-white/5 rounded-full w-2/3" />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px', position: 'relative', zIndex: 10, width: '100%' }}>
+        <div style={{ width: '40px', height: '40px', borderRadius: '999px', background: 'rgba(255,255,255,0.05)', flexShrink: 0 }} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', maxWidth: '200px' }}>
+          <div style={{ height: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '999px', width: '100%' }} />
+          <div style={{ height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '999px', width: '66%' }} />
         </div>
       </div>
       
-      <div className="space-y-3 relative z-10">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', position: 'relative', zIndex: 10 }}>
         {Array.from({ length: lines }).map((_, i) => (
           <div 
              key={i} 
-             className="h-2 bg-white/5 rounded-full w-full" 
-             style={{ width: `${100 - (i * 15)}%`, opacity: 1 - (i * 0.2) }}
-          />
+             style={{ height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '999px', width: `${100 - (i * 15)}%`, opacity: 1 - (i * 0.2) }}
+           />
         ))}
       </div>
     </div>

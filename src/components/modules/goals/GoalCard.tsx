@@ -47,43 +47,38 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, activeUserId }) => {
 
   return (
     <motion.div whileHover={{ y: -3 }} transition={{ duration: 0.2 }}>
-      <GlassCard className="p-5 flex flex-col gap-4 relative overflow-hidden group border-white/12">
+      <GlassCard style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', overflow: 'hidden', borderColor: 'rgba(255,255,255,0.12)' }}>
       {/* Background glow if completed */}
       {isCompleted && (
-        <div className="absolute inset-0 bg-gold-400/5 z-0 pointer-events-none" />
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(240,192,64,0.05)', zIndex: 0, pointerEvents: 'none' }} />
       )}
 
       {/* Header */}
-      <div className="flex justify-between items-start z-10 w-full">
-        <div className="flex flex-col gap-1.5 min-w-0 pr-4" style={{ maxWidth: 'calc(100% - 112px)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', zIndex: 10, width: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: 0, paddingRight: '16px', maxWidth: 'calc(100% - 112px)' }}>
            {/* Module Chip */}
            <div 
-             className="w-fit px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-widest border border-white/12"
-             style={{ color: moduleColor, backgroundColor: `${moduleColor}15` }}
-           >
+             style={{ width: 'fit-content', padding: '2px 10px', borderRadius: '6px', fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', border: '1px solid rgba(255,255,255,0.12)', color: moduleColor, backgroundColor: `${moduleColor}15` }}
+            >
              {MODULE_LABELS[goal.module]}
            </div>
-           <h3 className="font-display font-bold text-white break-words leading-[0.95]" style={{ fontSize: 'clamp(28px, 7vw, 38px)' }}>
+           <h3 style={{ margin: 0, fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', wordBreak: 'break-word', lineHeight: 0.95, fontSize: 'clamp(28px, 7vw, 38px)' }}>
              {goal.title}
            </h3>
-           <span className="text-gray-400 font-mono text-xs flex items-center gap-1 uppercase tracking-[0.08em]">
+           <span style={{ color: 'rgba(255,255,255,0.55)', fontFamily: '"JetBrains Mono", monospace', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
              <Flag size={10} /> {goal.deadline}
            </span>
-        </div>
+         </div>
         
         {/* Status Badge / % complete */}
-        <div className="flex flex-col items-end gap-2 flex-shrink-0">
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px', flexShrink: 0 }}>
           <div 
-             className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-               isCompleted ? 'bg-gold-400/20 text-gold-300 border-gold-400/50' :
-               goal.status === 'active' ? 'bg-white/5 text-gray-300 border-white/10' :
-               'bg-red-400/10 text-red-300 border-red-400/30'
-             }`}
+             style={{ padding: '4px 10px', borderRadius: '999px', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', border: `1px solid ${isCompleted ? 'rgba(240,192,64,0.5)' : goal.status === 'active' ? 'rgba(255,255,255,0.1)' : 'rgba(248,113,113,0.3)'}`, background: isCompleted ? 'rgba(240,192,64,0.2)' : goal.status === 'active' ? 'rgba(255,255,255,0.05)' : 'rgba(248,113,113,0.1)', color: isCompleted ? '#f7d97a' : goal.status === 'active' ? 'rgba(255,255,255,0.75)' : '#fca5a5' }}
           >
             {isCompleted ? 'Logrado' : goal.status === 'active' ? 'En Curso' : 'En Pausa'}
           </div>
           {!isCompleted && (
-             <span className="text-3xl font-display font-bold text-white leading-none">
+             <span style={{ fontSize: '30px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', lineHeight: 1 }}>
                {isShared ? Math.round(totalSharedProgress) : Math.round(personalProgress)}%
              </span>
           )}
@@ -91,68 +86,67 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, activeUserId }) => {
       </div>
 
       {/* Progress Bars */}
-      <div className="z-10 w-full mt-2">
+      <div style={{ zIndex: 10, width: '100%', marginTop: '8px' }}>
         {isShared ? (
-          <div className="space-y-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
              {/* Jose's Bar */}
-             <div className="space-y-1">
-                <div className="flex justify-between items-end text-xs">
-                  <span className="font-medium text-gray-300 flex items-center gap-1">
-                    Jose {joseProgress > antoProgress && <Trophy size={12} className="text-gold-400" />}
+             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', fontSize: '12px' }}>
+                  <span style={{ fontWeight: 500, color: 'rgba(255,255,255,0.75)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    Jose {joseProgress > antoProgress && <Trophy size={12} color="#f0c040" />}
                   </span>
-                  <span className="text-gray-400 font-mono text-[10px]">
+                  <span style={{ color: 'rgba(255,255,255,0.55)', fontFamily: '"JetBrains Mono", monospace', fontSize: '10px' }}>
                     {goal.currentValueJose} / {goal.targetValue} {goal.unit}
                   </span>
                 </div>
-                <div className="w-full h-1.5 bg-navy-800 rounded-full overflow-hidden border border-white/5">
+                <div style={{ width: '100%', height: '6px', background: 'rgba(8,15,35,0.9)', borderRadius: '999px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${joseProgress}%` }}
                     transition={{ duration: 1, ease: 'easeOut' }}
-                    className="h-full rounded-full"
-                    style={{ backgroundColor: users.jose.user.color }}
+                    style={{ height: '100%', borderRadius: '999px', backgroundColor: users.jose.user.color }}
                   />
                 </div>
              </div>
              {/* Anto's Bar */}
-             <div className="space-y-1">
-                <div className="flex justify-between items-end text-xs">
-                  <span className="font-medium text-gray-300 flex items-center gap-1">
-                    Anto {antoProgress > joseProgress && <Trophy size={12} className="text-gold-400" />}
+             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', fontSize: '12px' }}>
+                  <span style={{ fontWeight: 500, color: 'rgba(255,255,255,0.75)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    Anto {antoProgress > joseProgress && <Trophy size={12} color="#f0c040" />}
                   </span>
-                  <span className="text-gray-400 font-mono text-[10px]">
+                  <span style={{ color: 'rgba(255,255,255,0.55)', fontFamily: '"JetBrains Mono", monospace', fontSize: '10px' }}>
                     {goal.currentValueAnto} / {goal.targetValue} {goal.unit}
                   </span>
                 </div>
-                <div className="w-full h-1.5 bg-navy-800 rounded-full overflow-hidden border border-white/5">
+                <div style={{ width: '100%', height: '6px', background: 'rgba(8,15,35,0.9)', borderRadius: '999px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${antoProgress}%` }}
                     transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
-                    className="h-full rounded-full"
-                    style={{ backgroundColor: users.anto.user.color }}
+                    style={{ height: '100%', borderRadius: '999px', backgroundColor: users.anto.user.color }}
                   />
                 </div>
              </div>
           </div>
         ) : (
-          <div className="space-y-1">
-             <div className="flex justify-between items-end mb-1.5">
-               <span className="text-gray-300 text-xs">{goal.description}</span>
-               <span className="text-gray-400 font-mono text-[10px] whitespace-nowrap ml-2">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '6px' }}>
+               <span style={{ color: 'rgba(255,255,255,0.75)', fontSize: '12px' }}>{goal.description}</span>
+               <span style={{ color: 'rgba(255,255,255,0.55)', fontFamily: '"JetBrains Mono", monospace', fontSize: '10px', whiteSpace: 'nowrap', marginLeft: '8px' }}>
                  {activeUserId === 'jose' ? goal.currentValueJose : goal.currentValueAnto} / {goal.targetValue} {goal.unit}
                </span>
              </div>
-             <div className="w-full h-2 bg-navy-800 rounded-full overflow-hidden border border-white/5">
+             <div style={{ width: '100%', height: '8px', background: 'rgba(8,15,35,0.9)', borderRadius: '999px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
                 <motion.div 
                   initial={{ width: 0 }}
                   animate={{ width: `${personalProgress}%` }}
                   transition={{ duration: 1, ease: 'easeOut' }}
-                  className="h-full rounded-full bg-gradient-to-r"
                   style={{ 
+                     height: '100%',
+                     borderRadius: '999px',
                      backgroundImage: `linear-gradient(90deg, ${users[activeUserId].user.color}88, ${users[activeUserId].user.color})`
-                  }}
-                />
+                   }}
+                 />
              </div>
           </div>
         )}

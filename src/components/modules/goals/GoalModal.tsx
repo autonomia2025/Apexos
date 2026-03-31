@@ -57,51 +57,46 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color }) 
           >
             <div className="modal-handle" />
             
-            <header className="modal-header">
-              <h2 className="modal-title flex items-center justify-center gap-2">
-                 <Target size={20} className="text-gold-400" /> Nueva Meta
+            <header style={{ marginBottom: '20px', textAlign: 'center' }}>
+              <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: '"Playfair Display", serif', fontSize: '30px', color: '#f0c040', fontWeight: 700 }}>
+                 <Target size={20} color="#f0c040" /> Nueva Meta
               </h2>
             </header>
             
-            <div className="flex flex-col gap-6">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               
               {/* Type Toggle */}
-               <div className="bg-white/5 p-1 flex rounded-xl border border-white/10">
+               <div style={{ background: 'rgba(255,255,255,0.05)', padding: '4px', display: 'flex', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
                  <button
                    onClick={() => setType('personal')}
-                   className={`flex-1 flex justify-center items-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                     type === 'personal' ? 'bg-gold-400/20 text-gold-300 shadow-md' : 'text-gray-400 hover:text-white'
-                   }`}
+                   style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', padding: '10px 0', borderRadius: '10px', fontSize: '14px', fontWeight: 700, transition: 'all 0.25s ease', color: type === 'personal' ? '#f7d97a' : 'rgba(255,255,255,0.5)', background: type === 'personal' ? 'rgba(240,192,64,0.2)' : 'transparent', boxShadow: type === 'personal' ? '0 6px 18px rgba(0,0,0,0.2)' : 'none' }}
                  >
                    <User size={16} /> Personal
                  </button>
                  <button
                    onClick={() => setType('shared')}
-                   className={`flex-1 flex justify-center items-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                     type === 'shared' ? 'bg-white/10 text-white shadow-md' : 'text-gray-400 hover:text-white'
-                   }`}
+                   style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', padding: '10px 0', borderRadius: '10px', fontSize: '14px', fontWeight: 700, transition: 'all 0.25s ease', color: type === 'shared' ? '#ffffff' : 'rgba(255,255,255,0.5)', background: type === 'shared' ? 'rgba(255,255,255,0.1)' : 'transparent', boxShadow: type === 'shared' ? '0 6px 18px rgba(0,0,0,0.2)' : 'none' }}
                  >
                    <Users size={16} /> De pareja
                  </button>
               </div>
 
               {/* Module */}
-              <div className="space-y-3">
-                 <label className="modal-field-label">Categoria</label>
-                <div className="flex flex-wrap gap-2">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                 <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Categoria</label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {modules.map((m) => (
                     <motion.button
                       key={m.id}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setModule(m.id)}
-                      className={`modal-chip transition-colors ${
-                        module === m.id 
-                          ? `bg-white/10 text-white shadow-[0_0_10px_var(--color-gold-400)_inset]`
-                          : 'hover:border-white/20'
-                      }`}
+                      className="modal-chip"
                       style={{ 
-                         borderColor: module === m.id ? color : undefined,
-                         color: module === m.id ? color : undefined
+                         transition: 'all 0.25s ease',
+                         borderColor: module === m.id ? color : 'rgba(255,255,255,0.14)',
+                         color: module === m.id ? color : 'rgba(255,255,255,0.7)',
+                         background: module === m.id ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)',
+                         boxShadow: module === m.id ? 'inset 0 0 10px rgba(240,192,64,0.45)' : 'none'
                       }}
                     >
                       {m.label}
@@ -111,8 +106,8 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color }) 
               </div>
 
               {/* Title Input */}
-              <div className="space-y-3">
-                <label className="modal-field-label">Titulo</label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Titulo</label>
                 <input
                   type="text"
                   value={title}
@@ -123,9 +118,9 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color }) 
               </div>
 
               {/* Targets */}
-              <div className="flex gap-4">
-                 <div className="space-y-3 flex-1">
-                   <label className="modal-field-label">Meta</label>
+              <div style={{ display: 'flex', gap: '16px' }}>
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
+                   <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Meta</label>
                    <input
                      type="number"
                      value={value}
@@ -134,8 +129,8 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color }) 
                       className="modal-input"
                     />
                   </div>
-                  <div className="space-y-3 flex-1">
-                    <label className="modal-field-label">Unidad</label>
+                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
+                     <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Unidad</label>
                     <input
                      type="text"
                      value={unit}
@@ -146,8 +141,8 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color }) 
                   </div>
                </div>
                
-               <div className="space-y-3">
-                 <label className="modal-field-label">Fecha limite</label>
+               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                 <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Fecha limite</label>
                  <input
                   type="date"
                   value={deadline}
@@ -160,7 +155,7 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color }) 
               <button
                 onClick={handleClose}
                 disabled={!title || !value || !deadline || !module}
-                className="modal-primary-btn active:scale-95 mt-2"
+                style={{ marginTop: '8px', border: '1px solid rgba(240,192,64,0.5)', borderRadius: '14px', padding: '14px 16px', background: 'linear-gradient(135deg, #f0c040, #f7d97a)', color: '#0b1328', fontWeight: 800, letterSpacing: '0.03em', cursor: 'pointer', opacity: !title || !value || !deadline || !module ? 0.45 : 1 }}
               >
                 Crear Meta
               </button>

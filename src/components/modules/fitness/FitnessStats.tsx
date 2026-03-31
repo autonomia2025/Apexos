@@ -13,23 +13,22 @@ export const FitnessStats: React.FC<FitnessStatsProps> = ({ user }) => {
   const lastWorkout = recentWorkouts.length > 0 ? recentWorkouts[0] : null;
 
   return (
-    <GlassCard className="p-6 md:p-7">
-      <div className="flex items-center gap-3 w-full mb-6 pb-6 border-b border-white/10">
+    <GlassCard style={{ padding: '24px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', marginBottom: '24px', paddingBottom: '24px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
          <div 
-          className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border border-white/10"
-          style={{ backgroundColor: `${profile.color}22`, color: profile.color }}
+          style={{ width: '40px', height: '40px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '14px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: `${profile.color}22`, color: profile.color }}
         >
           {profile.initials}
         </div>
         <div>
-          <h2 className="text-[34px] leading-none font-display font-semibold text-white">
+          <h2 style={{ fontSize: '34px', lineHeight: 1, fontFamily: '"Playfair Display", serif', fontWeight: 600, color: '#fff' }}>
             Actividad
           </h2>
-          <p className="text-[11px] text-gray-500 font-mono mt-1 tracking-[0.14em] uppercase">Estadisticas semanales</p>
+          <p style={{ fontSize: '11px', color: '#6b7280', fontFamily: 'monospace', marginTop: '4px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Estadisticas semanales</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
         <MetricPill
           icon={<Trophy size={16} />}
           label="Sesiones"

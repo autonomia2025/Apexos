@@ -6,22 +6,21 @@ export const WeekNumbers: React.FC = () => {
   const { users } = useCouple();
 
   return (
-    <GlassCard className="p-4 md:p-6 mb-6">
-      <h3 className="text-sm font-display font-semibold text-gold-300 mb-4 uppercase tracking-widest">
+    <GlassCard style={{ padding: '24px', marginBottom: '24px' }}>
+      <h3 style={{ fontSize: '14px', fontFamily: '"Playfair Display", serif', fontWeight: 600, color: '#f7d97a', marginBottom: '16px', marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
         Semana en números
       </h3>
       
-      <div className="flex gap-4 divide-x divide-white/10">
+      <div style={{ display: 'flex', gap: '16px' }}>
         {(['jose', 'anto'] as const).map((userId) => {
           const user = users[userId];
           const profile = user.user;
           const m = user.metrics;
           
           return (
-            <div key={userId} className={`flex-1 flex flex-col items-center gap-3 ${userId === 'anto' ? 'pl-4' : ''}`}>
+            <div key={userId} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', paddingLeft: userId === 'anto' ? '16px' : 0, borderLeft: userId === 'anto' ? '1px solid rgba(255,255,255,0.1)' : 'none' }}>
               <div 
-                 className="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase border"
-                 style={{ 
+                 style={{ padding: '4px 12px', borderRadius: '999px', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(255,255,255,0.1)',
                    color: profile.color, 
                    backgroundColor: `${profile.color}11`,
                    borderColor: `${profile.color}33`
@@ -30,28 +29,28 @@ export const WeekNumbers: React.FC = () => {
                  {profile.name}
               </div>
 
-              <div className="w-full space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-400 font-medium">Total Calorías</span>
-                  <span className="font-mono font-bold" style={{ color: profile.color }}>
+              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.55)', fontWeight: 500 }}>Total Calorías</span>
+                  <span style={{ color: profile.color, fontFamily: '"JetBrains Mono", monospace', fontWeight: 700 }}>
                     {(m.calories.consumed * 7).toLocaleString('es-ES')}
                   </span>
                 </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-400 font-medium">Total Entrenos</span>
-                  <span className="font-mono font-bold" style={{ color: profile.color }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.55)', fontWeight: 500 }}>Total Entrenos</span>
+                  <span style={{ color: profile.color, fontFamily: '"JetBrains Mono", monospace', fontWeight: 700 }}>
                     {m.trainingDays}
                   </span>
                 </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-400 font-medium">Hrs Estudio</span>
-                  <span className="font-mono font-bold" style={{ color: profile.color }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.55)', fontWeight: 500 }}>Hrs Estudio</span>
+                  <span style={{ color: profile.color, fontFamily: '"JetBrains Mono", monospace', fontWeight: 700 }}>
                     {m.studyHours}h
                   </span>
                 </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-400 font-medium">Ahorro Semana</span>
-                  <span className="font-mono font-bold" style={{ color: profile.color }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.55)', fontWeight: 500 }}>Ahorro Semana</span>
+                  <span style={{ color: profile.color, fontFamily: '"JetBrains Mono", monospace', fontWeight: 700 }}>
                     {m.finance.savingsRate}%
                   </span>
                 </div>

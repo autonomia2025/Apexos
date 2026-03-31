@@ -12,18 +12,17 @@ export const NutritionStats: React.FC<NutritionStatsProps> = ({ user }) => {
   const { metrics, user: profile } = user;
 
   return (
-    <GlassCard className="p-6 md:p-7">
-      <div className="flex flex-col items-center mb-8">
-        <div className="flex items-center gap-3 w-full mb-4 pb-4 border-b border-white/10">
+    <GlassCard style={{ padding: '24px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '32px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           <div 
-            className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border border-white/10"
-            style={{ backgroundColor: `${profile.color}22`, color: profile.color }}
+            style={{ width: '40px', height: '40px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '14px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: `${profile.color}22`, color: profile.color }}
           >
             {profile.initials}
           </div>
           <div>
-            <h2 className="text-[34px] leading-none font-display font-semibold text-white">Resumen de Hoy</h2>
-            <p className="text-[11px] uppercase tracking-[0.14em] text-gray-500 mt-1">Nutricion diaria</p>
+            <h2 style={{ fontSize: '34px', lineHeight: 1, fontFamily: '"Playfair Display", serif', fontWeight: 600, color: '#fff' }}>Resumen de Hoy</h2>
+            <p style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.14em', color: '#6b7280', marginTop: '4px' }}>Nutricion diaria</p>
           </div>
         </div>
         
@@ -35,8 +34,8 @@ export const NutritionStats: React.FC<NutritionStatsProps> = ({ user }) => {
         />
       </div>
 
-      <div className="space-y-4 w-full">
-        <h3 className="text-[34px] leading-none font-display font-semibold text-white">Desglose Macros</h3>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
+        <h3 style={{ fontSize: '34px', lineHeight: 1, fontFamily: '"Playfair Display", serif', fontWeight: 600, color: '#fff' }}>Desglose Macros</h3>
         <ProgressBar 
           label="Proteína" 
           current={metrics.macros.protein} 
@@ -57,11 +56,11 @@ export const NutritionStats: React.FC<NutritionStatsProps> = ({ user }) => {
         />
       </div>
       
-      <div className="mt-8 pt-6 border-t border-white/5 flex justify-between items-center w-full">
-          <span className="text-sm font-semibold text-gray-300">Cumplimiento Semanal</span>
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold font-display text-gold-400">{metrics.compliance}%</span>
-            <span className="text-lg">🔥</span>
+      <div style={{ marginTop: '32px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <span style={{ fontSize: '14px', fontWeight: 600, color: '#d1d5db' }}>Cumplimiento Semanal</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '20px', fontWeight: 700, fontFamily: '"Playfair Display", serif', color: '#f0c040' }}>{metrics.compliance}%</span>
+            <span style={{ fontSize: '18px' }}>🔥</span>
           </div>
       </div>
     </GlassCard>

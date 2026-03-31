@@ -33,13 +33,12 @@ export const CoupleOverview: React.FC<CoupleOverviewProps> = ({ user }) => {
     return emojis.map((emoji, index) => (
       <span
         key={index}
-        className={`text-lg transition-transform ${
-          index + 1 === mood
-            ? 'scale-125 opacity-100 filter drop-shadow-md'
-            : 'scale-90 opacity-40 grayscale'
-        }`}
         style={{
-          filter: index + 1 === mood ? `drop-shadow(0 0 8px ${profile.color}66)` : undefined
+          fontSize: '18px',
+          transition: 'transform 0.2s ease, opacity 0.2s ease',
+          transform: index + 1 === mood ? 'scale(1.25)' : 'scale(0.9)',
+          opacity: index + 1 === mood ? 1 : 0.4,
+          filter: index + 1 === mood ? `drop-shadow(0 0 8px ${profile.color}66)` : 'grayscale(1)'
         }}
       >
         {emoji}
@@ -52,13 +51,17 @@ export const CoupleOverview: React.FC<CoupleOverviewProps> = ({ user }) => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="w-full relative h-full flex"
+      style={{ width: '100%', position: 'relative', height: '100%', display: 'flex' }}
     >
-      <GlassCard className="p-6 md:p-8 flex flex-col xl:flex-row gap-8 items-center xl:items-start overflow-hidden relative w-full flex-1">
+      <GlassCard style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '32px', alignItems: 'center', overflow: 'hidden', position: 'relative', width: '100%', flex: 1 }}>
         {/* Subtle Animated Background Pattern */}
         <div 
-          className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none"
           style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 0,
+            opacity: 0.05,
+            pointerEvents: 'none',
             backgroundImage: `radial-gradient(${profile.color} 1px, transparent 1px)`,
             backgroundSize: '20px 20px',
             animation: 'pan-background 60s linear infinite',
@@ -67,37 +70,36 @@ export const CoupleOverview: React.FC<CoupleOverviewProps> = ({ user }) => {
 
         {/* Subtle Background glow */}
         <div 
-          className="absolute -top-24 -right-24 w-64 h-64 rounded-full mix-blend-screen filter blur-[80px] opacity-20 pointer-events-none z-0"
-          style={{ backgroundColor: profile.color }}
+          style={{ position: 'absolute', top: '-96px', right: '-96px', width: '256px', height: '256px', borderRadius: '999px', mixBlendMode: 'screen', filter: 'blur(80px)', opacity: 0.2, pointerEvents: 'none', zIndex: 0, backgroundColor: profile.color }}
         />
         
         {/* Profile Section */}
-        <motion.div variants={itemVariants} className="flex flex-col items-center gap-4 z-10">
+        <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', zIndex: 10 }}>
           <AvatarRing 
             initials={profile.initials} 
             color={profile.color} 
             progress={metrics.compliance} 
             size={100}
           />
-          <div className="text-center">
-            <h2 className="text-2xl font-display font-bold text-white tracking-wide">
+          <div style={{ textAlign: 'center' }}>
+            <h2 style={{ fontSize: '30px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', letterSpacing: '0.02em', margin: 0 }}>
               {profile.name}
             </h2>
-            <div className="flex items-center justify-center gap-1.5 mt-1 bg-white/5 px-3 py-1 rounded-full border border-white/10">
-              <Flame size={14} className="text-orange-500 animate-pulse" />
-              <span className="text-xs font-medium text-gray-300">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '4px', background: 'rgba(255,255,255,0.05)', padding: '4px 12px', borderRadius: '999px', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <Flame size={14} color="#f97316" />
+              <span style={{ fontSize: '12px', fontWeight: 500, color: 'rgba(255,255,255,0.75)' }}>
                 Día {metrics.streak} de racha
               </span>
             </div>
           </div>
 
-          <div className="flex gap-2 mt-2 bg-navy-800/80 px-4 py-2 rounded-2xl border border-white/5 shadow-inner">
+          <div style={{ display: 'flex', gap: '8px', marginTop: '8px', background: 'rgba(8,15,35,0.8)', padding: '8px 16px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.28)' }}>
             {getMoodEmojis(metrics.mood)}
           </div>
         </motion.div>
 
         {/* Metrics Grid */}
-        <div className="flex-1 grid grid-cols-2 gap-3 w-full z-10 content-start">
+        <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '12px', width: '100%', zIndex: 10, alignContent: 'start' }}>
           <motion.div variants={itemVariants}>
             <MetricPill
               icon={<FlameKindling size={16} />}

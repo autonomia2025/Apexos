@@ -46,41 +46,40 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
             {/* Drag Handle */}
             <div className="modal-handle" />
             
-            <header className="modal-header">
-              <h2 className="modal-title">Registrar Gasto</h2>
-              <p className="modal-subtitle">Ingresa el monto</p>
+            <header style={{ marginBottom: '20px', textAlign: 'center' }}>
+              <h2 style={{ margin: 0, fontFamily: '"Playfair Display", serif', fontSize: '30px', color: '#f0c040', fontWeight: 700 }}>Registrar Gasto</h2>
+              <p style={{ marginTop: '6px', color: 'rgba(255,255,255,0.5)', fontSize: '13px' }}>Ingresa el monto</p>
             </header>
             
-            <div className="flex flex-col gap-6">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               {/* Amount */}
-              <div className="flex justify-center items-center pb-4 border-b border-white/10">
-                <span className="text-3xl text-gray-500 mr-2">$</span>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                <span style={{ fontSize: '30px', color: 'rgba(255,255,255,0.38)', marginRight: '8px' }}>$</span>
                 <input
                   type="number"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="0.00"
-                  className="bg-transparent text-5xl font-mono text-center text-white focus:outline-none w-full font-bold placeholder-white/20"
+                  style={{ background: 'transparent', fontSize: '48px', fontFamily: '"JetBrains Mono", monospace', textAlign: 'center', color: '#fff', outline: 'none', width: '100%', fontWeight: 700 }}
                 />
               </div>
 
               {/* Category */}
-              <div className="space-y-3">
-                <label className="modal-field-label">Categoria</label>
-                <div className="flex flex-wrap gap-2">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Categoria</label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {categories.map((c) => (
                     <motion.button
                       key={c}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setCategory(c)}
-                      className={`modal-chip transition-colors ${
-                        category === c 
-                          ? `bg-white/10 text-white shadow-[0_0_10px_var(--color-gold-400)_inset]`
-                          : 'hover:border-white/20'
-                      }`}
+                      className="modal-chip"
                       style={{ 
-                         borderColor: category === c ? color : undefined,
-                         color: category === c ? color : undefined
+                         transition: 'all 0.25s ease',
+                         borderColor: category === c ? color : 'rgba(255,255,255,0.14)',
+                         color: category === c ? color : 'rgba(255,255,255,0.7)',
+                         background: category === c ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)',
+                         boxShadow: category === c ? 'inset 0 0 10px rgba(240,192,64,0.45)' : 'none'
                       }}
                     >
                       {c}
@@ -90,13 +89,14 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
               </div>
 
               {/* Note */}
-              <div className="space-y-3">
-                <label className="modal-field-label">Nota (Opcional)</label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Nota (Opcional)</label>
                 <textarea
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   placeholder="Ej. Almuerzo de negocios"
-                  className="modal-input resize-none h-20"
+                  className="modal-input"
+                  style={{ resize: 'none', minHeight: '80px' }}
                 />
               </div>
 
@@ -104,7 +104,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
               <button
                 onClick={handleClose}
                 disabled={!amount || !category}
-                className="modal-primary-btn active:scale-95"
+                style={{ marginTop: '4px', border: '1px solid rgba(240,192,64,0.5)', borderRadius: '14px', padding: '14px 16px', background: 'linear-gradient(135deg, #f0c040, #f7d97a)', color: '#0b1328', fontWeight: 800, letterSpacing: '0.03em', cursor: 'pointer', opacity: !amount || !category ? 0.45 : 1 }}
               >
                 Guardar Gasto
               </button>

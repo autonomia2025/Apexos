@@ -32,9 +32,9 @@ export const WeeklyReview: React.FC = () => {
   const scoresAnto = computeScores(users.anto);
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-gold-400 bg-gold-400/10 border-gold-400/30';
-    if (score >= 60) return 'text-yellow-400 bg-yellow-400/10 border-yellow-400/30';
-    return 'text-red-400 bg-red-400/10 border-red-400/30';
+    if (score >= 80) return { color: '#f0c040', background: 'rgba(240,192,64,0.1)', borderColor: 'rgba(240,192,64,0.3)' };
+    if (score >= 60) return { color: '#facc15', background: 'rgba(250,204,21,0.1)', borderColor: 'rgba(250,204,21,0.3)' };
+    return { color: '#f87171', background: 'rgba(248,113,113,0.1)', borderColor: 'rgba(248,113,113,0.3)' };
   };
 
   const getCombinedContext = (userData: UserData): AgentContext => ({
@@ -101,10 +101,10 @@ export const WeeklyReview: React.FC = () => {
 
   const getLowestModule = (scores: ReturnType<typeof computeScores>) => {
     const entries = [
-      { name: 'Nutrición', value: scores.nut, color: 'text-green-400' },
-      { name: 'Fitness', value: scores.fit, color: 'text-blue-400' },
-      { name: 'Finanzas', value: scores.fin, color: 'text-gold-400' },
-      { name: 'Aprendizaje', value: scores.learn, color: 'text-purple-400' },
+      { name: 'Nutrición', value: scores.nut },
+      { name: 'Fitness', value: scores.fit },
+      { name: 'Finanzas', value: scores.fin },
+      { name: 'Aprendizaje', value: scores.learn },
     ];
     return entries.sort((a, b) => a.value - b.value)[0];
   };
@@ -115,66 +115,65 @@ export const WeeklyReview: React.FC = () => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 50 }}
       transition={{ type: 'spring', damping: 20 }}
-      className="fixed inset-0 z-50 bg-navy-900 overflow-y-auto"
+      style={{ position: 'fixed', inset: 0, zIndex: 50, background: '#0f172a', overflowY: 'auto' }}
     >
-      <div className="max-w-4xl mx-auto p-4 md:p-8 pb-24">
+      <div style={{ maxWidth: '896px', margin: '0 auto', padding: '16px', paddingBottom: '96px' }}>
         {/* Header */}
-        <div className="flex justify-between items-center mb-10 mt-safe">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', marginTop: '8px' }}>
           <div>
-            <h1 className="text-2xl md:text-3xl font-display font-bold text-white tracking-tight">
+            <h1 style={{ fontSize: '30px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', letterSpacing: '-0.01em' }}>
               Semana del 18 al 24 May
             </h1>
-            <p className="text-sm font-body text-gray-400 mt-1 uppercase tracking-widest font-bold">
+            <p style={{ fontSize: '14px', color: '#9ca3af', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>
               Tu resumen de la semana
             </p>
           </div>
           <button 
             onClick={() => navigate('/')}
-            className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+            style={{ width: '40px', height: '40px', borderRadius: '999px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af', border: 'none', cursor: 'pointer' }}
           >
             <X size={20} />
           </button>
         </div>
 
-        <div className="space-y-12">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
           
           {/* Section 1: Resumen de pareja */}
           <section>
-            <h2 className="text-lg font-display font-bold text-gold-300 mb-6 flex items-center gap-2">
+            <h2 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#f7d97a', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Star size={18} /> Score Semanal
             </h2>
-            <div className="grid grid-cols-2 gap-4 md:gap-8">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               {([
                 { u: users.jose, s: scoresJose }, 
                 { u: users.anto, s: scoresAnto }
               ] as const).map(({ u, s }) => (
-                <GlassCard key={u.user.id} className="p-5 flex flex-col items-center">
+                <GlassCard key={u.user.id} style={{ padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                    <div 
-                     className="w-12 h-12 rounded-full mb-3 flex items-center justify-center font-bold font-display shadow-lg border border-white/10"
-                     style={{ backgroundColor: `${u.user.color}15`, color: u.user.color }}
-                   >
+                     style={{ width: '48px', height: '48px', borderRadius: '999px', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontFamily: '"Playfair Display", serif', boxShadow: '0 8px 16px rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: `${u.user.color}15`, color: u.user.color }}
+                    >
                      {u.user.initials}
                    </div>
-                   <div className={`text-4xl md:text-5xl font-display font-bold mb-2 border px-4 py-1 rounded-2xl ${getScoreColor(s.total)}`}>
+                   <div style={{ fontSize: '40px', fontFamily: '"Playfair Display", serif', fontWeight: 700, marginBottom: '8px', border: '1px solid', padding: '4px 16px', borderRadius: '16px', ...getScoreColor(s.total) }}>
                      {s.total}
                    </div>
-                   
-                   <div className="w-full mt-4 space-y-2 border-t border-white/5 pt-4">
-                      <div className="flex justify-between text-xs font-mono">
-                        <span className="text-gray-400">NUT</span>
-                        <span className="text-gray-200">{s.nut}%</span>
+                    
+                   <div style={{ width: '100%', marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '16px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: 'monospace' }}>
+                        <span style={{ color: '#9ca3af' }}>NUT</span>
+                        <span style={{ color: '#e5e7eb' }}>{s.nut}%</span>
                       </div>
-                      <div className="flex justify-between text-xs font-mono">
-                        <span className="text-gray-400">FIT</span>
-                        <span className="text-gray-200">{s.fit.toFixed(0)}%</span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: 'monospace' }}>
+                        <span style={{ color: '#9ca3af' }}>FIT</span>
+                        <span style={{ color: '#e5e7eb' }}>{s.fit.toFixed(0)}%</span>
                       </div>
-                      <div className="flex justify-between text-xs font-mono">
-                        <span className="text-gray-400">LRN</span>
-                        <span className="text-gray-200">{s.learn.toFixed(0)}%</span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: 'monospace' }}>
+                        <span style={{ color: '#9ca3af' }}>LRN</span>
+                        <span style={{ color: '#e5e7eb' }}>{s.learn.toFixed(0)}%</span>
                       </div>
-                      <div className="flex justify-between text-xs font-mono">
-                        <span className="text-gray-400">FIN</span>
-                        <span className="text-gray-200">{s.fin}%</span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: 'monospace' }}>
+                        <span style={{ color: '#9ca3af' }}>FIN</span>
+                        <span style={{ color: '#e5e7eb' }}>{s.fin}%</span>
                       </div>
                    </div>
                 </GlassCard>
@@ -184,24 +183,20 @@ export const WeeklyReview: React.FC = () => {
 
           {/* Section 2: Highlights */}
           <section>
-            <h2 className="text-lg font-display font-bold text-gold-300 mb-6 flex items-center gap-2">
+            <h2 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#f7d97a', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Target size={18} /> Highlights
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
               {([
                 { u: users.jose, s: scoresJose }, 
                 { u: users.anto, s: scoresAnto }
               ] as const).map(({ u, s }) => (
-                <div key={u.user.id} className="space-y-3">
-                  <h3 className="text-sm font-bold text-gray-500 uppercase tracking-widest pl-1">{u.user.name}</h3>
+                <div key={u.user.id} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.1em', paddingLeft: '4px' }}>{u.user.name}</h3>
                   {getHighlights(u, s).map((h, i) => (
                     <div 
                       key={i} 
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium ${
-                        h.type === 'good' 
-                          ? 'bg-green-400/5 border-green-400/20 text-green-300' 
-                          : 'bg-yellow-400/5 border-yellow-400/20 text-yellow-300'
-                      }`}
+                      style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '12px', border: `1px solid ${h.type === 'good' ? 'rgba(74,222,128,0.2)' : 'rgba(250,204,21,0.2)'}`, fontSize: '14px', fontWeight: 500, color: h.type === 'good' ? '#86efac' : '#fde68a', background: h.type === 'good' ? 'rgba(74,222,128,0.05)' : 'rgba(250,204,21,0.05)' }}
                     >
                       {h.type === 'good' ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
                       {h.text}
@@ -214,35 +209,33 @@ export const WeeklyReview: React.FC = () => {
 
           {/* Section 3: AI Weekly Coach */}
           <section>
-             <h2 className="text-lg font-display font-bold text-gold-300 mb-6 font-mono tracking-widest uppercase text-center bg-gold-400/5 py-4 border-y border-gold-400/20">
-              Coaching Inteligente
+             <h2 style={{ fontSize: '18px', fontFamily: 'monospace', fontWeight: 700, color: '#f7d97a', marginBottom: '24px', letterSpacing: '0.1em', textTransform: 'uppercase', textAlign: 'center', background: 'rgba(240,192,64,0.05)', padding: '16px 0', borderTop: '1px solid rgba(240,192,64,0.2)', borderBottom: '1px solid rgba(240,192,64,0.2)' }}>
+               Coaching Inteligente
              </h2>
-             <div className="space-y-6">
+             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 {[
                   { u: users.jose, msg: aiMessageJose }, 
                   { u: users.anto, msg: aiMessageAnto }
                 ].map(({ u, msg }) => (
-                  <GlassCard key={u.user.id} className="p-6 relative overflow-hidden group">
+                  <GlassCard key={u.user.id} style={{ padding: '24px', position: 'relative', overflow: 'hidden' }}>
                      <div 
-                        className="absolute inset-0 opacity-10 blur-2xl z-0 transition-opacity group-hover:opacity-20"
-                        style={{ backgroundColor: u.user.color }}
+                        style={{ position: 'absolute', inset: 0, opacity: 0.1, filter: 'blur(24px)', zIndex: 0, backgroundColor: u.user.color }}
                      />
-                     <div className="relative z-10">
-                        <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: u.user.color }}>
+                     <div style={{ position: 'relative', zIndex: 10 }}>
+                        <h3 style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px', color: u.user.color }}>
                           Para {u.user.name}
                         </h3>
                         {isLoadingAi ? (
-                          <div className="flex gap-2 py-4">
+                          <div style={{ display: 'flex', gap: '8px', padding: '16px 0' }}>
                             {[1, 2, 3].map((i) => (
                               <div 
                                 key={i} 
-                                className="w-2 h-2 rounded-full animate-bounce" 
-                                style={{ backgroundColor: u.user.color, animationDelay: `${i * 150}ms` }} 
+                                style={{ width: '8px', height: '8px', borderRadius: '999px', backgroundColor: u.user.color, transform: `translateY(${i % 2 === 0 ? 0 : -2}px)` }} 
                               />
                             ))}
                           </div>
                         ) : (
-                          <p className="text-gray-200 text-sm md:text-base leading-relaxed italic pr-4">
+                          <p style={{ color: '#e5e7eb', fontSize: '14px', lineHeight: 1.6, fontStyle: 'italic', paddingRight: '16px' }}>
                             "{msg}"
                           </p>
                         )}
@@ -254,20 +247,20 @@ export const WeeklyReview: React.FC = () => {
 
           {/* Section 4: Próxima semana */}
           <section>
-            <h2 className="text-lg font-display font-bold text-white mb-6">Próxima Semana</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+            <h2 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', marginBottom: '24px' }}>Próxima Semana</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
                {([
                 { u: users.jose, s: scoresJose }, 
                 { u: users.anto, s: scoresAnto }
               ] as const).map(({ u, s }) => {
                  const focus = getLowestModule(s);
                  return (
-                   <GlassCard key={u.user.id} className="p-5 border-gold-400/30">
-                     <p className="text-sm text-gray-400 mb-1">El enfoque principal de {u.user.name} debe ser:</p>
-                     <p className={`text-xl font-display font-bold ${focus.color}`}>
-                       {focus.name}
-                     </p>
-                   </GlassCard>
+                    <GlassCard key={u.user.id} style={{ padding: '20px', borderColor: 'rgba(240,192,64,0.3)' }}>
+                      <p style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '4px' }}>El enfoque principal de {u.user.name} debe ser:</p>
+                      <p style={{ fontSize: '20px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: focus.name === 'Nutrición' ? '#4ade80' : focus.name === 'Fitness' ? '#60a5fa' : focus.name === 'Finanzas' ? '#f0c040' : '#c084fc' }}>
+                        {focus.name}
+                      </p>
+                    </GlassCard>
                  );
                })}
             </div>

@@ -24,16 +24,16 @@ export const Tablio = () => {
   if (activeUserId === 'anto') {
     return (
       <PageWrapper>
-        <div className="min-h-[70vh] flex items-center justify-center">
-          <GlassCard className="p-10 flex flex-col items-center justify-center text-center max-w-sm w-full relative overflow-hidden group border-gold-400/20">
-            <div className="absolute inset-0 bg-gold-400/5 blur-xl group-hover:bg-gold-400/10 transition-colors" />
-            <div className="w-16 h-16 rounded-full flex items-center justify-center bg-gold-400/10 border border-gold-400/30 text-gold-400 mb-6 relative z-10 shadow-[0_0_20px_rgba(240,192,64,0.2)]">
+        <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <GlassCard style={{ padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', maxWidth: '384px', width: '100%', position: 'relative', overflow: 'hidden', borderColor: 'rgba(240,192,64,0.2)' }}>
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(240,192,64,0.05)', filter: 'blur(24px)' }} />
+            <div style={{ width: '64px', height: '64px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(240,192,64,0.1)', border: '1px solid rgba(240,192,64,0.3)', color: '#f0c040', marginBottom: '24px', position: 'relative', zIndex: 10, boxShadow: '0 0 20px rgba(240,192,64,0.2)' }}>
               <Lock size={32} />
             </div>
-            <h2 className="text-xl font-display font-bold text-white relative z-10">
-              Este espacio es de Jose <span className="text-gold-400">🔒</span>
+            <h2 style={{ fontSize: '20px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', position: 'relative', zIndex: 10 }}>
+              Este espacio es de Jose <span style={{ color: '#f0c040' }}>🔒</span>
             </h2>
-            <p className="text-sm font-body text-gray-400 mt-2 relative z-10">
+            <p style={{ fontSize: '14px', color: '#9ca3af', marginTop: '8px', position: 'relative', zIndex: 10 }}>
               Módulo de negocio exclusivo.
             </p>
           </GlassCard>
@@ -70,32 +70,32 @@ export const Tablio = () => {
   return (
     <PageWrapper>
       {/* Header */}
-      <header className="flex justify-between items-center mb-8 bg-gradient-to-b from-navy-900 to-transparent sticky top-0 z-20 py-2">
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', background: 'linear-gradient(to bottom, rgba(15,23,42,1), transparent)', position: 'sticky', top: 0, zIndex: 20, padding: '8px 0' }}>
         <div>
-           <h1 className="text-3xl font-display font-bold text-gold-400 tracking-wider">
+           <h1 style={{ fontSize: '30px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#f0c040', letterSpacing: '0.04em' }}>
              TABLIO
            </h1>
-           <p className="text-sm font-body text-gray-400 mt-0.5 tracking-wide">
+           <p style={{ fontSize: '14px', color: '#9ca3af', marginTop: '2px', letterSpacing: '0.02em' }}>
              Tu empresa. Tu visión.
            </p>
         </div>
-        <div className="flex items-center gap-3">
-           <span className="text-sm text-gray-400 font-mono hidden sm:inline-block">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+           <span style={{ fontSize: '14px', color: '#9ca3af', fontFamily: 'monospace' }}>
              {todayStr}
            </span>
-           <div className="px-3 py-1 bg-gold-400/10 border border-gold-400/30 text-gold-400 rounded-lg text-sm font-bold tracking-widest uppercase">
+           <div style={{ padding: '4px 12px', background: 'rgba(240,192,64,0.1)', border: '1px solid rgba(240,192,64,0.3)', color: '#f0c040', borderRadius: '8px', fontSize: '14px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
              {getQuarter()}
            </div>
         </div>
       </header>
 
       {/* Main Content Area */}
-      <div className="space-y-6 md:space-y-8 pb-10">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '40px' }}>
         
         {/* Agent Insight */}
-        <section className="relative">
-          <div className="absolute -top-3 left-4 bg-navy-900 px-2 z-10">
-            <span className="text-[10px] font-bold text-gold-300 uppercase tracking-widest">
+        <section style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', top: '-12px', left: '16px', background: '#0f172a', padding: '0 8px', zIndex: 10 }}>
+            <span style={{ fontSize: '10px', fontWeight: 700, color: '#f7d97a', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
               Advisor IA →
             </span>
           </div>

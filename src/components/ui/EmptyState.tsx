@@ -12,29 +12,29 @@ interface EmptyStateProps {
 }
 
 export const EmptyState: React.FC<EmptyStateProps> = ({ 
-  icon = <HelpCircle size={40} className="text-gold-400/50" />, 
+  icon = <HelpCircle size={40} style={{ color: 'rgba(240,192,64,0.5)' }} />, 
   title = "Nada por acá todavía", 
   subtitle = "Empezá a registrar hoy →",
   onAction,
   className = ""
 }) => {
   return (
-    <GlassCard className={`p-8 flex flex-col items-center justify-center text-center border-dashed border-white/20 bg-white/[0.02] group ${className}`}>
-       <div className="mb-4 w-14 h-14 rounded-2xl border border-gold-400/20 bg-gold-400/10 text-gold-400/70 group-hover:text-gold-300 transition-colors duration-300 flex items-center justify-center">
+    <GlassCard className={className} style={{ padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', borderStyle: 'dashed', borderColor: 'rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.02)' }}>
+       <div style={{ marginBottom: '16px', width: '56px', height: '56px', borderRadius: '16px', border: '1px solid rgba(240,192,64,0.2)', background: 'rgba(240,192,64,0.1)', color: 'rgba(240,192,64,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
          {icon}
        </div>
-       <h3 className="text-xl font-display font-semibold text-gray-200 mb-1">{title}</h3>
-       <p className="text-xs uppercase tracking-[0.12em] text-gray-500 mb-3">Sin registros por ahora</p>
+       <h3 style={{ fontSize: '20px', fontFamily: '"Playfair Display", serif', fontWeight: 600, color: '#e5e7eb', marginBottom: '4px' }}>{title}</h3>
+       <p style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.12em', color: '#6b7280', marginBottom: '12px' }}>Sin registros por ahora</p>
         
        {onAction && (
           <motion.button 
            whileHover={{ scale: 1.05 }}
            whileTap={{ scale: 0.95 }}
            onClick={onAction}
-            className="text-xs font-bold text-gold-300 hover:text-gold-200 tracking-[0.12em] uppercase transition-colors"
-          >
-            {subtitle}
-          </motion.button>
+             style={{ fontSize: '12px', fontWeight: 700, color: '#f0c040', letterSpacing: '0.12em', textTransform: 'uppercase', background: 'transparent', border: 'none', cursor: 'pointer' }}
+           >
+             {subtitle}
+           </motion.button>
         )}
     </GlassCard>
   );

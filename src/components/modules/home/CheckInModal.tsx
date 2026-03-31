@@ -77,32 +77,31 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 40, opacity: 0, scale: 0.98 }}
             transition={{ type: 'spring', damping: 26, stiffness: 230 }}
-            className="modal-sheet flex flex-col overflow-hidden sm:min-h-[500px]"
-            style={{ maxHeight: '85vh' }}
+            className="modal-sheet"
+            style={{ maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', minHeight: '500px' }}
           >
             {/* Drag Handle (Mobile) */}
             <div className="modal-handle" />
 
             {/* Header */}
-            <header className="px-6 py-4 flex items-center justify-between border-b border-white/5 relative">
-              <div className="flex gap-2">
+            <header style={{ padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.06)', position: 'relative' }}>
+              <div style={{ display: 'flex', gap: '8px' }}>
                 {[1, 2, 3].map((i) => (
                   <div 
                     key={i}
-                    className="w-2 h-2 rounded-full transition-colors duration-300"
-                    style={{ 
+                    style={{ width: '8px', height: '8px', borderRadius: '999px', transition: 'background-color 0.3s ease',
                       backgroundColor: i === step ? profile.color : i < step ? 'var(--gold-400)' : 'rgba(255,255,255,0.2)' 
                     }}
                   />
                 ))}
               </div>
-              <button onClick={handleClose} className="p-2 text-gray-400 hover:text-white transition-colors">
+              <button onClick={handleClose} style={{ padding: '8px', color: 'rgba(255,255,255,0.5)', transition: 'color 0.2s ease' }}>
                 <X size={20} />
               </button>
             </header>
 
             {/* Content Area */}
-            <div className="flex-1 overflow-y-auto px-6 py-8 relative">
+            <div style={{ flex: 1, overflowY: 'auto', padding: '32px 24px', position: 'relative' }}>
               
               {/* --- STEP 1: MOOD --- */}
               <AnimatePresence mode="wait">
@@ -112,26 +111,25 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                      initial={{ opacity: 0, x: 20 }}
                      animate={{ opacity: 1, x: 0 }}
                      exit={{ opacity: 0, x: -20 }}
-                     className="h-full flex flex-col justify-center"
-                  >
-                    <h2 className="text-2xl font-display font-bold text-center mb-10 text-white">
+                     style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+                   >
+                    <h2 style={{ fontSize: '30px', fontFamily: '"Playfair Display", serif', fontWeight: 700, textAlign: 'center', marginBottom: '40px', color: '#fff' }}>
                       ¿Cómo te sentís hoy, {profile.name}?
                     </h2>
                     
-                    <div className="flex justify-between px-2">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 8px' }}>
                       {moods.map((m) => (
                         <motion.button
                           key={m.value}
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                           onClick={() => { setMood(m.value); setTimeout(handleNext, 300); }}
-                          className={`text-4xl sm:text-5xl transition-all duration-300 filter ${
-                            mood === m.value 
-                              ? 'scale-125 saturate-150 drop-shadow-md' 
-                              : mood ? 'grayscale opacity-30 scale-90' : 'hover:saturate-150'
-                          }`}
                           style={{
-                            filter: mood === m.value ? `drop-shadow(0 0 15px ${profile.color}66)` : undefined
+                            fontSize: '44px',
+                            transition: 'all 0.3s ease',
+                            transform: mood === m.value ? 'scale(1.25)' : mood ? 'scale(0.9)' : 'scale(1)',
+                            opacity: mood && mood !== m.value ? 0.3 : 1,
+                            filter: mood === m.value ? `saturate(1.5) drop-shadow(0 0 15px ${profile.color}66)` : mood ? 'grayscale(1)' : 'none'
                           }}
                         >
                           {m.emoji}
@@ -148,58 +146,50 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                      initial={{ opacity: 0, x: 20 }}
                      animate={{ opacity: 1, x: 0 }}
                      exit={{ opacity: 0, x: -20 }}
-                     className="flex flex-col gap-8"
-                  >
-                    <div className="space-y-3">
-                      <label className="text-sm font-medium text-gold-300">Peso de hoy (kg)</label>
+                     style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}
+                   >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      <label style={{ fontSize: '14px', fontWeight: 600, color: '#f7d97a' }}>Peso de hoy (kg)</label>
                       <input 
                         type="number"
                         value={weight}
                         onChange={(e) => setWeight(e.target.value)}
                         placeholder="Ej. 75.4"
-                        className="w-full bg-navy-800 border border-white/10 rounded-xl px-4 py-3 text-white font-mono text-lg focus:outline-none focus:border-gold-400/50 transition-colors"
+                        style={{ width: '100%', background: 'rgba(8,15,35,0.85)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '12px 16px', color: '#fff', fontFamily: '"JetBrains Mono", monospace', fontSize: '18px', outline: 'none' }}
                       />
                     </div>
 
-                    <div className="space-y-3">
-                      <label className="text-sm font-medium text-gold-300 flex items-center gap-2">
-                        <Droplets size={16} className="text-blue-400" /> Agua (vasos)
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      <label style={{ fontSize: '14px', fontWeight: 600, color: '#f7d97a', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Droplets size={16} color="#60a5fa" /> Agua (vasos)
                       </label>
-                      <div className="flex items-center justify-between bg-navy-800 rounded-xl border border-white/10 overflow-hidden">
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(8,15,35,0.85)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', overflow: 'hidden' }}>
                          <button 
                            onClick={() => setWater(Math.max(0, water - 1))}
-                           className="px-6 py-4 bg-white/5 hover:bg-white/10 text-white text-xl active:scale-95 transition-transform"
+                           style={{ padding: '16px 24px', background: 'rgba(255,255,255,0.05)', color: '#fff', fontSize: '22px' }}
                          >-</button>
-                         <span className="font-mono text-2xl font-bold">{water}</span>
+                         <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: '28px', fontWeight: 700 }}>{water}</span>
                          <button 
                            onClick={() => setWater(water + 1)}
-                           className="px-6 py-4 bg-white/5 hover:bg-white/10 text-white text-xl active:scale-95 transition-transform"
+                           style={{ padding: '16px 24px', background: 'rgba(255,255,255,0.05)', color: '#fff', fontSize: '22px' }}
                          >+</button>
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <label className="text-sm font-medium text-gold-300 flex items-center gap-2">
-                        <Target size={16} className="text-red-400" /> ¿Cumpliste tu objetivo principal hoy?
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                      <label style={{ fontSize: '14px', fontWeight: 600, color: '#f7d97a', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Target size={16} color="#f87171" /> ¿Cumpliste tu objetivo principal hoy?
                       </label>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                          <button
                            onClick={() => setGoalMet(true)}
-                           className={`py-3 rounded-xl border font-bold transition-colors ${
-                              goalMet === true 
-                                ? 'bg-gold-400/20 border-gold-400 text-gold-300' 
-                                : 'bg-navy-800 border-white/10 text-gray-400 hover:border-white/30'
-                           }`}
+                           style={{ padding: '12px 0', borderRadius: '12px', border: `1px solid ${goalMet === true ? '#f0c040' : 'rgba(255,255,255,0.1)'}`, fontWeight: 700, transition: 'all 0.2s ease', background: goalMet === true ? 'rgba(240,192,64,0.2)' : 'rgba(8,15,35,0.85)', color: goalMet === true ? '#f7d97a' : 'rgba(255,255,255,0.6)' }}
                          >
                            Sí
                          </button>
                          <button
                            onClick={() => setGoalMet(false)}
-                           className={`py-3 rounded-xl border font-bold transition-colors ${
-                              goalMet === false 
-                                ? 'bg-red-400/20 border-red-400 text-red-300' 
-                                : 'bg-navy-800 border-white/10 text-gray-400 hover:border-white/30'
-                           }`}
+                           style={{ padding: '12px 0', borderRadius: '12px', border: `1px solid ${goalMet === false ? '#f87171' : 'rgba(255,255,255,0.1)'}`, fontWeight: 700, transition: 'all 0.2s ease', background: goalMet === false ? 'rgba(248,113,113,0.2)' : 'rgba(8,15,35,0.85)', color: goalMet === false ? '#fca5a5' : 'rgba(255,255,255,0.6)' }}
                          >
                            No
                          </button>
@@ -214,21 +204,21 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                      key="step3"
                      initial={{ opacity: 0, scale: 0.95 }}
                      animate={{ opacity: 1, scale: 1 }}
-                     className="h-full flex flex-col items-center justify-center text-center space-y-8"
-                  >
+                     style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', gap: '32px' }}
+                   >
                      <motion.div 
                         initial={{ scale: 0, rotate: -45 }}
                         animate={{ scale: 1, rotate: 0 }}
                         transition={{ type: 'spring', damping: 15 }}
-                        className="w-20 h-20 rounded-full bg-gold-400/20 flex items-center justify-center border-2 border-gold-400 shadow-[0_0_30px_rgba(240,192,64,0.3)]"
+                        style={{ width: '80px', height: '80px', borderRadius: '999px', background: 'rgba(240,192,64,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #f0c040', boxShadow: '0 0 30px rgba(240,192,64,0.3)' }}
                      >
-                       <CheckCircle size={40} className="text-gold-400" />
+                       <CheckCircle size={40} color="#f0c040" />
                      </motion.div>
                      
-                     <div className="space-y-4">
-                       <h3 className="text-2xl font-display font-bold text-white">¡Check-in Completo!</h3>
-                       <GlassCard className="p-4 bg-navy-800/50 border-gold-400/30">
-                         <p className="text-gray-300 text-sm italic leading-relaxed">
+                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                       <h3 style={{ fontSize: '30px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', margin: 0 }}>¡Check-in Completo!</h3>
+                       <GlassCard style={{ padding: '16px', background: 'rgba(8,15,35,0.5)', borderColor: 'rgba(240,192,64,0.3)' }}>
+                         <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '14px', fontStyle: 'italic', lineHeight: 1.6, margin: 0 }}>
                            "{getAiMessage()}"
                          </p>
                        </GlassCard>
@@ -240,22 +230,22 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
             </div>
 
              {/* Footer Actions */}
-             <div className="p-6 border-t border-white/5 flex justify-between gap-4">
+             <div style={{ padding: '24px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', gap: '16px' }}>
               {step > 1 && step < 3 && (
                  <button 
                   onClick={handleBack}
-                  className="px-4 py-3 rounded-xl font-bold flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+                  style={{ padding: '12px 16px', borderRadius: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.55)', background: 'transparent' }}
                  >
                    <ArrowLeft size={18} /> Atrás
                  </button>
               )}
               
-              <div className="flex-1" />
+              <div style={{ flex: 1 }} />
 
               {step === 2 && (
                 <button 
                   onClick={handleNext}
-                  className="px-6 py-3 rounded-xl font-bold flex items-center gap-2 bg-gold-400 text-navy-900 hover:bg-gold-300 transition-colors shadow-lg active:scale-95"
+                  style={{ padding: '12px 24px', borderRadius: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', background: '#f0c040', color: '#060d1f', boxShadow: '0 10px 24px rgba(0,0,0,0.28)' }}
                 >
                   Siguiente <ArrowRight size={18} />
                 </button>
@@ -264,7 +254,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
               {step === 3 && (
                 <button 
                   onClick={handleClose}
-                  className="w-full px-6 py-4 rounded-xl font-bold text-center bg-gold-400 text-navy-900 hover:bg-gold-300 transition-colors shadow-lg shadow-gold-400/20 active:scale-95"
+                  style={{ width: '100%', padding: '16px 24px', borderRadius: '12px', fontWeight: 700, textAlign: 'center', background: '#f0c040', color: '#060d1f', boxShadow: '0 10px 24px rgba(240,192,64,0.2)' }}
                 >
                   Cerrar
                 </button>

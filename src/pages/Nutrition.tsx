@@ -41,7 +41,7 @@ export const Nutrition: React.FC = () => {
       />
 
       <motion.div
-        className="space-y-8"
+        style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.05 }}
@@ -67,8 +67,8 @@ export const Nutrition: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
-                className="space-y-8"
-             >
+                style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}
+              >
                 <NutritionStats user={activeUserData} />
                 <MealLogList 
                   logs={activeUserData.recentMeals} 
@@ -78,8 +78,8 @@ export const Nutrition: React.FC = () => {
              </motion.div>
           </AnimatePresence>
         ) : (
-          <div className="grid grid-cols-2 gap-8 items-start">
-            <div className="space-y-8">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', alignItems: 'start' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
               <NutritionStats user={users.jose} />
               <MealLogList 
                 logs={users.jose.recentMeals} 
@@ -87,7 +87,7 @@ export const Nutrition: React.FC = () => {
                 onOpenAdd={handleOpenMealModal}
               />
             </div>
-            <div className="space-y-8">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
               <NutritionStats user={users.anto} />
               <MealLogList 
                 logs={users.anto.recentMeals} 

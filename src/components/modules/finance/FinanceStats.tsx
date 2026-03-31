@@ -14,26 +14,25 @@ export const FinanceStats: React.FC<FinanceStatsProps> = ({ user }) => {
 
   // Compliance badge calculation
   const budgetCompliance = (spent / budget) * 100;
-  let complianceColor = 'text-green-400 bg-green-400/10 border-green-400/30';
-  if (budgetCompliance > 80) complianceColor = 'text-red-400 bg-red-400/10 border-red-400/30';
-  else if (budgetCompliance > 50) complianceColor = 'text-yellow-400 bg-yellow-400/10 border-yellow-400/30';
+  let complianceStyle = { color: '#34d399', background: 'rgba(52,211,153,0.1)', borderColor: 'rgba(52,211,153,0.3)' };
+  if (budgetCompliance > 80) complianceStyle = { color: '#f87171', background: 'rgba(248,113,113,0.1)', borderColor: 'rgba(248,113,113,0.3)' };
+  else if (budgetCompliance > 50) complianceStyle = { color: '#facc15', background: 'rgba(250,204,21,0.1)', borderColor: 'rgba(250,204,21,0.3)' };
 
   return (
-    <GlassCard className="p-6 md:p-7">
-      <div className="flex flex-col items-center mb-6">
-        <div className="flex items-center justify-between w-full mb-4 pb-4 border-b border-white/10">
-          <div className="flex items-center gap-3">
+    <GlassCard style={{ padding: '24px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
              <div 
-              className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border border-white/10"
-              style={{ backgroundColor: `${profile.color}22`, color: profile.color }}
+              style={{ width: '40px', height: '40px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '14px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: `${profile.color}22`, color: profile.color }}
             >
               {profile.initials}
             </div>
-            <h2 className="text-[34px] leading-none font-display font-semibold text-white">
+            <h2 style={{ fontSize: '34px', lineHeight: 1, fontFamily: '"Playfair Display", serif', fontWeight: 600, color: '#fff' }}>
               Presupuesto
             </h2>
           </div>
-          <div className={`px-3 py-1 rounded-full text-xs font-bold border ${complianceColor}`}>
+          <div style={{ padding: '4px 12px', borderRadius: '999px', fontSize: '12px', fontWeight: 700, border: '1px solid', ...complianceStyle }}>
             {budgetCompliance.toFixed(0)}% Utilizado
           </div>
         </div>
@@ -46,26 +45,26 @@ export const FinanceStats: React.FC<FinanceStatsProps> = ({ user }) => {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-white/5">
-         <div className="bg-navy-800/80 rounded-xl p-4 border border-white/5 flex flex-col justify-center items-center">
-            <span className="text-xs text-gray-400 font-medium tracking-wide uppercase mb-1">Tasa Ahorro</span>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-white font-display">{savingsRate}%</span>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '24px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+         <div style={{ background: 'rgba(15,23,42,0.8)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+            <span style={{ fontSize: '12px', color: '#9ca3af', fontWeight: 500, letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: '4px' }}>Tasa Ahorro</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '24px', fontWeight: 700, color: '#fff', fontFamily: '"Playfair Display", serif' }}>{savingsRate}%</span>
               {savingsRate > 20 ? (
-                <TrendingUp size={18} className="text-green-400" />
+                <TrendingUp size={18} color="#34d399" />
               ) : (
-                <TrendingDown size={18} className="text-red-400" />
+                <TrendingDown size={18} color="#f87171" />
               )}
             </div>
          </div>
          
-         <div className="bg-navy-800/80 rounded-xl p-4 border border-white/5 flex flex-col justify-center items-center">
-            <span className="text-xs text-gray-400 font-medium tracking-wide uppercase mb-1">Top Gasto</span>
-             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 mt-1">
-               <Tag size={12} className="text-gold-300" />
-               <span className="text-[10px] font-bold text-gray-300 uppercase tracking-wider">{topCategory.name} {topCategory.percentage}%</span>
-             </div>
-         </div>
+         <div style={{ background: 'rgba(15,23,42,0.8)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+            <span style={{ fontSize: '12px', color: '#9ca3af', fontWeight: 500, letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: '4px' }}>Top Gasto</span>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '999px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', marginTop: '4px' }}>
+               <Tag size={12} color="#f7d97a" />
+               <span style={{ fontSize: '10px', fontWeight: 700, color: '#d1d5db', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{topCategory.name} {topCategory.percentage}%</span>
+              </div>
+          </div>
       </div>
     </GlassCard>
   );

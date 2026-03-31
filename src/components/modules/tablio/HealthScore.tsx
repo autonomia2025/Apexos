@@ -10,19 +10,19 @@ interface HealthScoreProps {
 
 export const HealthScore: React.FC<HealthScoreProps> = ({ data }) => {
   const getDotColor = (score: number) => {
-    if (score >= 80) return 'bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]';
-    if (score >= 60) return 'bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.5)]';
-    return 'bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.5)]';
+    if (score >= 80) return { background: '#4ade80', boxShadow: '0 0 8px rgba(74,222,128,0.5)' };
+    if (score >= 60) return { background: '#facc15', boxShadow: '0 0 8px rgba(250,204,21,0.5)' };
+    return { background: '#f87171', boxShadow: '0 0 8px rgba(248,113,113,0.5)' };
   };
 
   return (
     <motion.div whileTap={{ scale: 0.98 }}>
-      <GlassCard className="p-6 md:p-8 flex flex-col items-center justify-center text-center relative overflow-hidden group">
-        <div className="absolute inset-x-0 -top-24 h-48 bg-gold-400/5 blur-3xl opacity-50 group-hover:opacity-100 transition-opacity pointer-events-none" />
+      <GlassCard style={{ padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', left: 0, right: 0, top: '-96px', height: '192px', background: 'rgba(240,192,64,0.05)', filter: 'blur(48px)', opacity: 0.5, pointerEvents: 'none' }} />
         
-        <div className="relative z-10 w-40 h-40 md:w-48 md:h-48 mb-6 mt-2">
+        <div style={{ position: 'relative', zIndex: 10, width: '192px', height: '192px', marginBottom: '24px', marginTop: '8px' }}>
            {/* SVG Circle Ring */}
-           <svg className="w-full h-full transform -rotate-90">
+           <svg style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
              <circle
                cx="50%"
                cy="50%"
@@ -45,32 +45,32 @@ export const HealthScore: React.FC<HealthScoreProps> = ({ data }) => {
              />
            </svg>
            
-           <div className="absolute inset-0 flex flex-col items-center justify-center">
-             <div className="flex items-start gap-1">
-               <span className="text-5xl md:text-7xl font-display font-bold text-gold-400 tracking-tighter" style={{ fontSize: '72px' }}>
-                  {data.healthScore}
-               </span>
-               <div className="mt-2 text-green-400 flex flex-col items-center bg-green-400/10 px-1 py-0.5 rounded-md border border-green-400/20">
-                  <ArrowUpRight size={16} strokeWidth={3} />
-               </div>
-             </div>
-           </div>
-        </div>
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '4px' }}>
+                <span style={{ fontSize: '72px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#f0c040', letterSpacing: '-0.03em' }}>
+                   {data.healthScore}
+                </span>
+                <div style={{ marginTop: '8px', color: '#4ade80', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'rgba(74,222,128,0.1)', padding: '2px 4px', borderRadius: '6px', border: '1px solid rgba(74,222,128,0.2)' }}>
+                   <ArrowUpRight size={16} strokeWidth={3} />
+                </div>
+              </div>
+            </div>
+         </div>
 
-        <h3 className="text-sm font-body text-gray-400 font-medium tracking-wide relative z-10 mb-8 uppercase">
+        <h3 style={{ fontSize: '14px', color: 'rgba(255,255,255,0.55)', fontWeight: 500, letterSpacing: '0.03em', position: 'relative', zIndex: 10, marginBottom: '32px', textTransform: 'uppercase', marginTop: 0 }}>
            Salud empresarial
         </h3>
 
         {/* Department Mini Scores */}
-        <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-4 relative z-10">
+        <div style={{ width: '100%', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '16px', position: 'relative', zIndex: 10 }}>
            {(Object.entries(data.departmentScores) as [Department, number][]).map(([dept, score]) => (
-             <div key={dept} className="bg-navy-800/50 rounded-xl px-3 py-3 border border-white/5 flex flex-col items-center gap-2 relative">
-                <div className="text-[10px] md:text-xs text-gray-400 font-bold uppercase tracking-widest text-center truncate w-full">
+             <div key={dept} style={{ background: 'rgba(8,15,35,0.5)', borderRadius: '12px', padding: '12px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', position: 'relative' }}>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.55)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
                   {dept}
                 </div>
-                <div className="flex items-center gap-2">
-                   <div className={`w-2 h-2 rounded-full ${getDotColor(score)}`} />
-                   <span className="font-display text-white text-lg font-bold">{score}%</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                   <div style={{ width: '8px', height: '8px', borderRadius: '999px', ...getDotColor(score) }} />
+                   <span style={{ fontFamily: '"Playfair Display", serif', color: '#fff', fontSize: '18px', fontWeight: 700 }}>{score}%</span>
                 </div>
              </div>
            ))}

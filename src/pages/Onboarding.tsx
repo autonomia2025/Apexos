@@ -21,15 +21,15 @@ export const Onboarding: React.FC = () => {
   if (finished) return <Navigate to="/" replace />;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[radial-gradient(620px_320px_at_20%_12%,rgba(74,144,217,0.2),transparent_70%),radial-gradient(560px_300px_at_92%_8%,rgba(240,192,64,0.16),transparent_72%),linear-gradient(180deg,#08142b_0%,#030918_60%,#01040e_100%)]">
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', background: 'radial-gradient(620px 320px at 20% 12%,rgba(74,144,217,0.2),transparent 70%),radial-gradient(560px 300px at 92% 8%,rgba(240,192,64,0.16),transparent 72%),linear-gradient(180deg,#08142b 0%,#030918 60%,#01040e 100%)' }}>
       {step === 0 ? (
-        <div className="text-center max-w-md w-full glass-gold p-8">
-          <div className="w-16 h-16 rounded-2xl bg-gold-400/10 flex items-center justify-center mx-auto mb-8 border border-gold-400/30 shadow-[0_0_28px_rgba(240,192,64,0.16)]">
+        <div className="glass-gold" style={{ textAlign: 'center', maxWidth: '448px', width: '100%', padding: '32px' }}>
+          <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: 'rgba(240,192,64,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 32px', border: '1px solid rgba(240,192,64,0.3)', boxShadow: '0 0 28px rgba(240,192,64,0.16)' }}>
             <Sparkles size={32} color="#f0c040" />
           </div>
-          <span className="text-[10px] uppercase tracking-[0.2em] text-gold-300 font-semibold">Bienvenido</span>
-          <h1 className="mt-2 mb-4 text-[42px] leading-none">Apex Operating System</h1>
-          <p className="text-gray-300/80 mb-8 text-[15px] leading-relaxed">
+          <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.2em', color: '#f7d97a', fontWeight: 600 }}>Bienvenido</span>
+          <h1 style={{ marginTop: '8px', marginBottom: '16px', fontSize: '42px', lineHeight: 1 }}>Apex Operating System</h1>
+          <p style={{ color: 'rgba(209,213,219,0.8)', marginBottom: '32px', fontSize: '15px', lineHeight: 1.6 }}>
             Tu plataforma personal de alto rendimiento para gestionar nutrición, finanzas y metas.
           </p>
           <button className="btn-gold" onClick={() => setStep(1)}>
@@ -37,13 +37,13 @@ export const Onboarding: React.FC = () => {
           </button>
         </div>
       ) : (
-        <div className="w-full max-w-lg">
-          <div className="text-center mb-10">
-             <span className="text-[10px] font-semibold text-gold-400 tracking-[0.2em] uppercase">Configuracion</span>
-             <h2 className="mt-2 text-[38px] leading-none">¿Quién está operando?</h2>
+        <div style={{ width: '100%', maxWidth: '512px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+             <span style={{ fontSize: '10px', fontWeight: 600, color: '#f0c040', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Configuracion</span>
+             <h2 style={{ marginTop: '8px', fontSize: '38px', lineHeight: 1 }}>¿Quién está operando?</h2>
           </div>
           
-          <div className="grid grid-cols-1 gap-4">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
             <button
               className="glass" 
               onClick={() => startApp('jose')}

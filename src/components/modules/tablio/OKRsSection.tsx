@@ -13,40 +13,38 @@ export const OKRsSection: React.FC<OKRsSectionProps> = ({ okrs }) => {
 
   const getStatusColor = (status: KeyResult['status']) => {
     switch (status) {
-      case 'Completado': return 'bg-green-400/20 text-green-300 border-green-400/30';
-      case 'En riesgo': return 'bg-red-400/20 text-red-300 border-red-400/30';
-      case 'En curso': return 'bg-yellow-400/20 text-yellow-300 border-yellow-400/30';
+      case 'Completado': return { background: 'rgba(74,222,128,0.2)', color: '#86efac', borderColor: 'rgba(74,222,128,0.3)' };
+      case 'En riesgo': return { background: 'rgba(248,113,113,0.2)', color: '#fca5a5', borderColor: 'rgba(248,113,113,0.3)' };
+      case 'En curso': return { background: 'rgba(250,204,21,0.2)', color: '#fde047', borderColor: 'rgba(250,204,21,0.3)' };
     }
   };
 
   return (
-    <section className="space-y-6">
-      <h2 className="text-xl font-display font-bold text-white mb-2">OKRs Trimestrales</h2>
+    <section style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <h2 style={{ fontSize: '24px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', margin: '0 0 8px 0' }}>OKRs Trimestrales</h2>
       
       {/* Department Tabs */}
-      <GlassCard className="p-1.5 flex overflow-x-auto no-scrollbar border-gold-400/10">
+      <GlassCard className="no-scrollbar" style={{ padding: '6px', display: 'flex', overflowX: 'auto', borderColor: 'rgba(240,192,64,0.1)' }}>
         {departments.map((dept) => (
           <button
             key={dept}
             onClick={() => setActiveTab(dept)}
-            className={`px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-colors relative flex-1 ${
-              activeTab === dept ? 'text-white' : 'text-gray-500 hover:text-gray-300'
-            }`}
+            style={{ padding: '10px 16px', borderRadius: '10px', fontSize: '14px', fontWeight: 700, whiteSpace: 'nowrap', transition: 'color 0.2s ease', position: 'relative', flex: 1, color: activeTab === dept ? '#fff' : 'rgba(255,255,255,0.45)' }}
           >
             {activeTab === dept && (
               <motion.div
                 layoutId="okrTabIndicator"
-                className="absolute inset-x-0 bottom-0 h-0.5 bg-gold-400 shadow-[0_0_8px_var(--color-gold-400)]"
+                style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: '2px', background: '#f0c040', boxShadow: '0 0 8px #f0c040' }}
                 transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
               />
             )}
-            <span className="relative z-10">{dept}</span>
+            <span style={{ position: 'relative', zIndex: 10 }}>{dept}</span>
           </button>
         ))}
       </GlassCard>
 
       {/* OKR Cards */}
-      <div className="space-y-4">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <AnimatePresence mode="wait">
           <motion.div
              key={activeTab}
@@ -54,53 +52,53 @@ export const OKRsSection: React.FC<OKRsSectionProps> = ({ okrs }) => {
              animate={{ opacity: 1, y: 0 }}
              exit={{ opacity: 0, y: -10 }}
              transition={{ duration: 0.2 }}
-             className="space-y-4"
+             style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
           >
              {okrs[activeTab].map((objective) => (
                <motion.div key={objective.id} whileTap={{ scale: 0.98 }}>
-                 <GlassCard className="p-5 border-white/5 relative overflow-hidden group">
-                   <div className="absolute top-0 right-0 w-32 h-32 bg-gold-400/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                   
-                   {/* Header OKR */}
-                   <div className="flex justify-between items-start mb-6">
-                     <h3 className="font-display font-bold text-white text-lg w-3/4 leading-tight">
-                       {objective.title}
-                     </h3>
-                     <div className="bg-gold-400/10 border border-gold-400/30 px-3 py-1 rounded-full text-gold-400 font-bold font-mono text-sm">
-                       {objective.completion}%
-                     </div>
-                   </div>
+                 <GlassCard style={{ padding: '20px', borderColor: 'rgba(255,255,255,0.08)', position: 'relative', overflow: 'hidden' }}>
+                   <div style={{ position: 'absolute', top: 0, right: 0, width: '128px', height: '128px', background: 'rgba(240,192,64,0.05)', filter: 'blur(48px)', opacity: 0.6 }} />
+                    
+                    {/* Header OKR */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+                      <h3 style={{ fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', fontSize: '20px', width: '75%', lineHeight: 1.25, margin: 0 }}>
+                        {objective.title}
+                      </h3>
+                      <div style={{ background: 'rgba(240,192,64,0.1)', border: '1px solid rgba(240,192,64,0.3)', padding: '4px 12px', borderRadius: '999px', color: '#f0c040', fontWeight: 700, fontFamily: '"JetBrains Mono", monospace', fontSize: '14px' }}>
+                        {objective.completion}%
+                      </div>
+                    </div>
 
-                   {/* Key Results */}
-                   <div className="space-y-4">
-                     {objective.keyResults.map((kr) => {
-                       const progress = Math.min((kr.currentValue / kr.targetValue) * 100, 100);
-                       
-                       return (
-                         <div key={kr.id} className="space-y-2">
-                           <div className="flex justify-between items-start text-sm">
-                             <div className="flex-1 pr-4">
-                               <p className="text-gray-400 font-medium">{kr.description}</p>
-                             </div>
-                             <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-                               <span className={`text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded border ${getStatusColor(kr.status)}`}>
-                                 {kr.status}
-                               </span>
-                               <span className="text-gray-400 font-mono text-xs">
-                                 {kr.currentValue} / {kr.targetValue} {kr.unit}
-                               </span>
-                             </div>
-                           </div>
-                           
-                           <div className="w-full h-1.5 bg-navy-800 rounded-full overflow-hidden border border-white/5">
-                             <motion.div 
-                               initial={{ width: 0 }}
-                               animate={{ width: `${progress}%` }}
-                               transition={{ duration: 1, ease: 'easeOut' }}
-                               className="h-full rounded-full bg-gold-400 shadow-[0_0_10px_rgba(240,192,64,0.5)]"
-                             />
-                           </div>
-                         </div>
+                    {/* Key Results */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                      {objective.keyResults.map((kr) => {
+                        const progress = Math.min((kr.currentValue / kr.targetValue) * 100, 100);
+                        
+                        return (
+                          <div key={kr.id} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', fontSize: '14px' }}>
+                              <div style={{ flex: 1, paddingRight: '16px' }}>
+                                <p style={{ color: 'rgba(255,255,255,0.55)', fontWeight: 500, margin: 0 }}>{kr.description}</p>
+                              </div>
+                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px', flexShrink: 0 }}>
+                                <span style={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 700, padding: '2px 8px', borderRadius: '4px', border: '1px solid', ...getStatusColor(kr.status) }}>
+                                  {kr.status}
+                                </span>
+                                <span style={{ color: 'rgba(255,255,255,0.55)', fontFamily: '"JetBrains Mono", monospace', fontSize: '12px' }}>
+                                  {kr.currentValue} / {kr.targetValue} {kr.unit}
+                                </span>
+                              </div>
+                            </div>
+                            
+                            <div style={{ width: '100%', height: '6px', background: 'rgba(8,15,35,0.9)', borderRadius: '999px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+                              <motion.div 
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progress}%` }}
+                                transition={{ duration: 1, ease: 'easeOut' }}
+                                style={{ height: '100%', borderRadius: '999px', background: '#f0c040', boxShadow: '0 0 10px rgba(240,192,64,0.5)' }}
+                              />
+                            </div>
+                          </div>
                        );
                      })}
                    </div>

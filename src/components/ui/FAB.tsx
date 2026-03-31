@@ -14,17 +14,17 @@ export const FAB: React.FC<FABProps> = ({ onClick, pulse = false, isOpen = false
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={onClick}
-      className="fixed right-6 w-14 h-14 bg-gold-400 text-navy-900 rounded-full flex items-center justify-center shadow-[0_10px_24px_rgba(240,192,64,0.38)] hover:bg-gold-300 transition-colors z-40 md:hidden"
-      style={{ bottom: 'calc(88px + env(safe-area-inset-bottom))' }}
+      className="fab"
+      style={{ bottom: 'calc(88px + env(safe-area-inset-bottom))', right: '24px', display: isOpen ? 'flex' : 'flex' }}
     >
       {pulse && !isOpen && (
-        <span className="absolute inset-0 w-full h-full rounded-full bg-gold-400 opacity-50 animate-ping"></span>
+        <motion.span animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.2, 0.5] }} transition={{ duration: 1.2, repeat: Infinity }} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', borderRadius: '999px', background: '#f0c040' }}></motion.span>
       )}
       <motion.div
         animate={{ rotate: isOpen ? 45 : 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
-        <Plus size={24} className="relative z-10" />
+        <Plus size={24} style={{ position: 'relative', zIndex: 10 }} />
       </motion.div>
     </motion.button>
   );

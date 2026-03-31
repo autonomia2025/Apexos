@@ -38,7 +38,7 @@ export const Learn: React.FC = () => {
       />
 
       <motion.div
-        className="space-y-8"
+        style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.05 }}
@@ -64,8 +64,8 @@ export const Learn: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
-                className="space-y-8"
-             >
+                style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}
+              >
                 <LearnStats user={activeUserData} />
                 <LearningLogList 
                   logs={activeUserData.recentLearning} 
@@ -75,8 +75,8 @@ export const Learn: React.FC = () => {
              </motion.div>
           </AnimatePresence>
         ) : (
-          <div className="grid grid-cols-2 gap-8 items-start">
-            <div className="space-y-8">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', alignItems: 'start' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
               <LearnStats user={users.jose} />
               <LearningLogList 
                 logs={users.jose.recentLearning} 
@@ -84,7 +84,7 @@ export const Learn: React.FC = () => {
                 onOpenAdd={handleOpenLearnModal} 
               />
             </div>
-            <div className="space-y-8">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
               <LearnStats user={users.anto} />
               <LearningLogList 
                 logs={users.anto.recentLearning} 

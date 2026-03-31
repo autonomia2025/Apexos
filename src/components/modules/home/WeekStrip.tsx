@@ -24,26 +24,25 @@ export const WeekStrip: React.FC = () => {
   };
 
   return (
-    <GlassCard className="p-4 md:p-6 mb-6">
-      <h3 className="text-sm font-display font-semibold text-gold-300 mb-4 uppercase tracking-widest">
+    <GlassCard style={{ padding: '24px', marginBottom: '24px' }}>
+      <h3 style={{ fontSize: '14px', fontFamily: '"Playfair Display", serif', fontWeight: 600, color: '#f7d97a', marginBottom: '16px', marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
         Resumen Semanal
       </h3>
       
-      <div className="flex flex-col gap-4">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {(['jose', 'anto'] as const).map((userId) => {
           const profile = users[userId].user;
           const statusArray = completionData[userId];
           
           return (
-            <div key={userId} className="flex items-center gap-3">
+            <div key={userId} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div 
-                className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-[10px] border border-white/10"
-                style={{ backgroundColor: `${profile.color}22`, color: profile.color }}
+                style={{ width: '32px', height: '32px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '10px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: `${profile.color}22`, color: profile.color }}
               >
                 {profile.initials}
               </div>
               
-              <div className="flex-1 flex justify-between">
+              <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between' }}>
                 {days.map((day, index) => {
                   const status = statusArray[index];
                   const bgColor = getPillColor(status, profile.color);
@@ -52,12 +51,15 @@ export const WeekStrip: React.FC = () => {
                   return (
                     <div 
                       key={index} 
-                      className={`flex flex-col items-center gap-1 w-8 ${isNone ? 'opacity-50' : ''}`}
+                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', width: '32px', opacity: isNone ? 0.5 : 1 }}
                     >
-                      <span className="text-[10px] font-mono text-gray-400">{day}</span>
+                      <span style={{ fontSize: '10px', fontFamily: '"JetBrains Mono", monospace', color: 'rgba(255,255,255,0.55)' }}>{day}</span>
                       <div 
-                        className="w-full h-2 rounded-full border border-white/10"
                         style={{ 
+                          width: '100%',
+                          height: '8px',
+                          borderRadius: '999px',
+                          border: '1px solid rgba(255,255,255,0.1)',
                           backgroundColor: bgColor,
                           boxShadow: !isNone ? `0 0 8px ${bgColor}66` : 'none'
                         }}

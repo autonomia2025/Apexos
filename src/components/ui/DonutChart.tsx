@@ -18,10 +18,10 @@ export const DonutChart: React.FC<DonutChartProps> = ({ current, max, color, lab
   const safeMax = Math.max(max, 1);
 
   return (
-    <div className="relative flex flex-col items-center justify-center p-4">
-      <div className="relative" style={{ width: size, height: size }}>
+    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+      <div style={{ position: 'relative', width: size, height: size }}>
         {/* Track */}
-        <svg className="absolute inset-0 transform -rotate-90" width={size} height={size}>
+        <svg style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }} width={size} height={size}>
           <circle
             cx={size / 2}
             cy={size / 2}
@@ -47,17 +47,17 @@ export const DonutChart: React.FC<DonutChartProps> = ({ current, max, color, lab
         </svg>
 
         {/* Center Content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-          <span className="text-4xl font-display font-bold text-white tracking-tight leading-none">
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+          <span style={{ fontSize: '36px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', letterSpacing: '-0.01em', lineHeight: 1 }}>
             {current}
           </span>
-          <span className="text-xs font-semibold text-gray-400 mt-1 uppercase tracking-[0.14em]">
+          <span style={{ fontSize: '12px', fontWeight: 600, color: '#9ca3af', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.14em' }}>
             / {max}
           </span>
-          <span className="text-[10px] text-gray-500 mt-2 font-mono uppercase tracking-[0.12em]">
+          <span style={{ fontSize: '10px', color: '#6b7280', marginTop: '8px', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
             {label}
           </span>
-          <span className="mt-2 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-semibold text-gold-300">
+          <span style={{ marginTop: '8px', display: 'inline-flex', alignItems: 'center', borderRadius: '999px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', fontSize: '10px', fontWeight: 600, color: '#f0c040' }}>
             {Math.round((current / safeMax) * 100)}%
           </span>
         </div>

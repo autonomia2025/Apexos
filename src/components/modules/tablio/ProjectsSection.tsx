@@ -15,86 +15,81 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
 
   const getPriorityColor = (p: Project['priority']) => {
     switch (p) {
-      case 'Alta': return 'text-red-400 bg-red-400/10 border-red-400/30';
-      case 'Media': return 'text-yellow-400 bg-yellow-400/10 border-yellow-400/30';
-      case 'Baja': return 'text-green-400 bg-green-400/10 border-green-400/30';
+      case 'Alta': return { color: '#f87171', background: 'rgba(248,113,113,0.1)', borderColor: 'rgba(248,113,113,0.3)' };
+      case 'Media': return { color: '#facc15', background: 'rgba(250,204,21,0.1)', borderColor: 'rgba(250,204,21,0.3)' };
+      case 'Baja': return { color: '#4ade80', background: 'rgba(74,222,128,0.1)', borderColor: 'rgba(74,222,128,0.3)' };
     }
   };
 
   const getDeptColor = (dept: Department) => {
     switch (dept) {
-      case 'Informática': return 'bg-blue-400';
-      case 'Desarrollo IA': return 'bg-purple-400';
-      case 'Ventas': return 'bg-green-400';
-      case 'Marketing': return 'bg-yellow-400';
+      case 'Informática': return '#60a5fa';
+      case 'Desarrollo IA': return '#a78bfa';
+      case 'Ventas': return '#4ade80';
+      case 'Marketing': return '#facc15';
     }
   };
 
   return (
-    <section className="space-y-6">
-      <div className="flex justify-between items-end mb-2">
-        <h2 className="text-xl font-display font-bold text-white">Proyectos Activos</h2>
+    <section style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '8px' }}>
+        <h2 style={{ fontSize: '24px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', margin: 0 }}>Proyectos Activos</h2>
       </div>
 
-      <div className="space-y-4">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {projects.map((project) => (
           <motion.div key={project.id} whileTap={{ scale: 0.98 }}>
-            <GlassCard className="p-5 border-white/5 group hover:border-gold-400/20 transition-colors">
-              <div className="flex justify-between items-start mb-4 gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className="px-2 py-0.5 rounded text-[9px] uppercase tracking-widest font-bold border border-gold-400/30 text-gold-400 bg-gold-400/5 whitespace-nowrap">
+            <GlassCard style={{ padding: '20px', borderColor: 'rgba(255,255,255,0.08)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px', gap: '16px' }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                    <span style={{ padding: '2px 8px', borderRadius: '4px', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, border: '1px solid rgba(240,192,64,0.3)', color: '#f0c040', background: 'rgba(240,192,64,0.05)', whiteSpace: 'nowrap' }}>
                       {project.venture}
                     </span>
-                    <span className={`px-2 py-0.5 rounded text-[9px] uppercase tracking-widest font-bold border ${getPriorityColor(project.priority)}`}>
+                    <span style={{ padding: '2px 8px', borderRadius: '4px', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, border: '1px solid', ...getPriorityColor(project.priority) }}>
                       {project.priority} Prioridad
                     </span>
                      {project.status !== 'Activo' && (
-                       <span className={`px-2 py-0.5 rounded text-[9px] uppercase tracking-widest font-bold border ${
-                         project.status === 'En pausa' ? 'border-gray-500/50 text-gray-400 bg-gray-500/10' : 'border-green-400/30 text-green-400 bg-green-400/10'
-                       }`}>
+                       <span style={{ padding: '2px 8px', borderRadius: '4px', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, border: `1px solid ${project.status === 'En pausa' ? 'rgba(107,114,128,0.5)' : 'rgba(74,222,128,0.3)'}`, color: project.status === 'En pausa' ? 'rgba(255,255,255,0.55)' : '#4ade80', background: project.status === 'En pausa' ? 'rgba(107,114,128,0.1)' : 'rgba(74,222,128,0.1)' }}>
                          {project.status}
                        </span>
                      )}
                   </div>
-                  <h3 className="font-display font-bold text-white text-[15px] leading-snug w-full pr-4 truncate">
+                  <h3 style={{ fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', fontSize: '15px', lineHeight: 1.35, width: '100%', paddingRight: '16px', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {project.name}
                   </h3>
                 </div>
               </div>
 
               {/* Progress Bar */}
-              <div className="space-y-2 mb-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-500 font-mono text-[10px] uppercase tracking-widest flex items-center gap-1">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.4)', fontFamily: '"JetBrains Mono", monospace', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.12em', display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <Clock size={10} /> {project.lastUpdated}
                   </span>
-                  <span className="text-gray-300 font-mono text-xs font-bold">{project.progress}%</span>
+                  <span style={{ color: 'rgba(255,255,255,0.75)', fontFamily: '"JetBrains Mono", monospace', fontSize: '12px', fontWeight: 700 }}>{project.progress}%</span>
                 </div>
-                <div className="w-full h-1.5 bg-navy-800 rounded-full overflow-hidden border border-white/5">
+                <div style={{ width: '100%', height: '6px', background: 'rgba(8,15,35,0.9)', borderRadius: '999px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${project.progress}%` }}
                     transition={{ duration: 1, ease: 'easeOut' }}
-                    className={`h-full rounded-full ${project.status === 'Activo' ? 'bg-gold-400 shadow-[0_0_10px_rgba(240,192,64,0.5)]' : 'bg-gray-500'}`}
+                    style={{ height: '100%', borderRadius: '999px', background: project.status === 'Activo' ? '#f0c040' : 'rgba(156,163,175,0.8)', boxShadow: project.status === 'Activo' ? '0 0 10px rgba(240,192,64,0.5)' : 'none' }}
                   />
                 </div>
               </div>
 
               {/* Owners (Departments) */}
-              <div className="flex items-center gap-2 pt-3 border-t border-white/5">
-                <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Owner:</span>
-                <div className="flex -space-x-1">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.4)', fontWeight: 700 }}>Owner:</span>
+                <div style={{ display: 'flex', marginLeft: '-4px' }}>
                   {project.departments.map(dept => (
                     <div 
                       key={dept} 
-                      className={`w-5 h-5 rounded-full border border-navy-900 ${getDeptColor(dept)} flex items-center justify-center text-[8px] font-bold text-navy-900 shadow-sm relative group/tooltip`}
+                      title={dept}
+                      style={{ width: '20px', height: '20px', borderRadius: '999px', border: '1px solid #060d1f', background: getDeptColor(dept), display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', fontWeight: 700, color: '#060d1f', boxShadow: '0 2px 6px rgba(0,0,0,0.2)', position: 'relative', marginLeft: '4px' }}
                     >
                       {dept.charAt(0)}
-                      {/* Tooltip */}
-                      <span className="absolute bottom-full mb-1 opacity-0 group-hover/tooltip:opacity-100 bg-navy-800 text-white px-2 py-1 text-[10px] rounded transition-opacity whitespace-nowrap pointer-events-none z-10 border border-white/10">
-                        {dept}
-                      </span>
                     </div>
                   ))}
                 </div>

@@ -24,21 +24,21 @@ export const LearningLogList: React.FC<LearningLogListProps> = ({ logs, color, o
   };
 
   return (
-    <div className="w-full">
-      <div className="lux-list-header">
-        <h3 className="lux-list-title">
+    <div style={{ width: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+        <h3 style={{ fontSize: '28px', lineHeight: 1, color: '#fff', letterSpacing: '0.01em', fontFamily: '"Playfair Display", serif' }}>
           Historial de Estudio
         </h3>
         
         <button 
           onClick={onOpenAdd}
-          className="lux-add-btn active:scale-95"
+          className="lux-add-btn"
         >
           <Plus size={14} /> Registrar
         </button>
       </div>
 
-      <div className="space-y-4">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {logs.length > 0 ? (
           <AnimatePresence>
             {logs.map((log, index) => (
@@ -47,34 +47,32 @@ export const LearningLogList: React.FC<LearningLogListProps> = ({ logs, color, o
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="w-full"
+                style={{ width: '100%' }}
               >
-                <GlassCard className="lux-item p-4 flex items-center gap-4 transition-colors relative overflow-hidden group border-white/12">
+                <GlassCard className="lux-item" style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', overflow: 'hidden', borderColor: 'rgba(255,255,255,0.12)' }}>
                   <div 
-                    className="absolute left-0 top-0 w-1 h-full opacity-60 transition-opacity group-hover:opacity-100" 
-                    style={{ backgroundColor: color }}
+                    style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', opacity: 0.6, backgroundColor: color }}
                   />
                   
                   <div 
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-navy-800 border"
-                    style={{ borderColor: `${color}40`, color: color }}
+                    style={{ width: '40px', height: '40px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0f172a', border: `1px solid ${color}40`, color }}
                   >
                     {getIcon(log.resource)}
                   </div>
                   
-                   <div className="flex-1 flex flex-col justify-center">
-                     <h4 className="text-white font-semibold text-lg sm:text-xl font-display leading-snug">{log.topic}</h4>
-                     <span className="text-gray-400 font-mono text-[10px] mt-0.5 uppercase tracking-[0.1em]">{log.date} · {log.resource}</span>
+                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                     <h4 style={{ color: '#fff', fontWeight: 600, fontSize: '20px', fontFamily: '"Playfair Display", serif', lineHeight: 1.2 }}>{log.topic}</h4>
+                     <span style={{ color: '#9ca3af', fontFamily: 'monospace', fontSize: '10px', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{log.date} · {log.resource}</span>
                      {log.notes && (
-                        <div className="flex items-start gap-1.5 text-gray-500 text-xs italic mt-1.5">
-                         <FileText size={12} className="mt-[3px] opacity-60" />
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', color: '#6b7280', fontSize: '12px', fontStyle: 'italic', marginTop: '6px' }}>
+                         <FileText size={12} style={{ marginTop: '3px', opacity: 0.6 }} />
                          {log.notes}
                        </div>
-                    )}
-                  </div>
-                  
-                  <div className="text-right flex items-center">
-                    <span className="font-mono font-bold text-sm text-gold-300 bg-gold-400/10 px-2 py-1 rounded-md border border-gold-400/20">
+                     )}
+                   </div>
+                   
+                  <div style={{ textAlign: 'right', display: 'flex', alignItems: 'center' }}>
+                    <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: '14px', color: '#f0c040', background: 'rgba(240,192,64,0.1)', padding: '4px 8px', borderRadius: '6px', border: '1px solid rgba(240,192,64,0.2)' }}>
                       {log.duration}m
                     </span>
                   </div>

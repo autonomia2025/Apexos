@@ -19,8 +19,8 @@ import { UserData } from '../types';
 const UserSummaryCard: React.FC<{ user: UserData }> = ({ user }) => {
   const isJose = user.user.id === 'jose';
   return (
-    <GlassCard variant={isJose ? 'jose' : 'anto'} className="p-5 md:p-6">
-      <div className="flex gap-4 items-center mb-5">
+    <GlassCard variant={isJose ? 'jose' : 'anto'} style={{ padding: '20px' }}>
+      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '20px' }}>
         <AvatarRing 
           initials={user.user.initials} 
           color={user.user.color} 
@@ -28,14 +28,14 @@ const UserSummaryCard: React.FC<{ user: UserData }> = ({ user }) => {
           progress={user.metrics.compliance}
         />
         <div>
-          <h3 className="text-[38px] leading-none font-display font-semibold text-white">{user.user.name}</h3>
-          <p className="text-[11px] text-gray-400 uppercase tracking-[0.12em] mt-1 font-semibold">
+          <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '28px', lineHeight: 1, fontWeight: 600, color: '#fff', margin: 0 }}>{user.user.name}</h3>
+          <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', letterSpacing: '0.12em', marginTop: '4px', fontWeight: 600 }}>
             {user.metrics.streak} días de racha 🔥
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
         <div className="metric-pill">
            <span className="label">Calorías</span>
            <span className="value">{user.metrics.calories.consumed}</span>
@@ -60,25 +60,27 @@ export const Home: React.FC = () => {
   return (
     <PageWrapper>
       <motion.div
-        className="flex justify-between items-center mb-7 pt-1 gap-3 hero-panel"
+        className="hero-panel"
+        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px', gap: '12px' }}
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: 'easeOut' }}
       >
-        <div className="min-w-0">
-          <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.15em] text-gold-300/90 mb-2 font-semibold">
+        <div style={{ minWidth: 0 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'rgba(247,217,122,0.9)', marginBottom: '8px', fontWeight: 600 }}>
             <Sparkles size={12} /> Panel Diario
           </span>
-          <h1 className="text-[44px] leading-none font-display font-bold text-gold-400 tracking-[0.01em]">APEX OS</h1>
-          <p className="text-sm text-gray-300 mt-2">
-            Buenos días, {activeUser.user.name} <span className="opacity-40 mx-1">|</span> {today}
+          <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '42px', lineHeight: 1, fontWeight: 700, color: '#f0c040', letterSpacing: '0.01em', margin: 0 }}>APEX OS</h1>
+          <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginTop: '8px' }}>
+            Buenos días, {activeUser.user.name} · {today}
           </p>
         </div>
         <UserToggle />
       </motion.div>
 
       <motion.div
-        className="couple-grid mb-6"
+        className="couple-grid"
+        style={{ marginBottom: '24px' }}
         initial="hidden"
         animate="show"
         variants={{
@@ -95,7 +97,7 @@ export const Home: React.FC = () => {
       </motion.div>
 
       <motion.div
-        className="mb-7"
+        style={{ marginBottom: '28px' }}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.12 }}
@@ -133,31 +135,34 @@ export const Home: React.FC = () => {
       </motion.div>
 
       <motion.div
-        className="mb-6"
+        style={{ marginBottom: '24px' }}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.16 }}
       >
         <Link to="/goals" style={{ textDecoration: 'none' }}>
-          <GlassCard variant="gold" className="flex justify-between items-center px-5 py-4">
-            <div className="flex items-center gap-3.5">
-               <div className="w-10 h-10 rounded-xl bg-gold-400/15 flex items-center justify-center border border-gold-400/25">
+          <GlassCard
+            variant="gold"
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+               <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'rgba(240,192,64,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(240,192,64,0.25)', flexShrink: 0 }}>
                   <Target size={22} color="#f0c040" />
                 </div>
                 <div>
-                   <h3 className="text-[28px] leading-none font-display font-semibold text-white">Metas Compartidas 🎯</h3>
-                   <p className="text-[12px] text-gray-400 mt-1">
-                     Visión conjunta del trimestre Q2 2024
+                   <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '20px', fontWeight: 600, color: '#fff', margin: 0 }}>Metas compartidas</h3>
+                   <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)', marginTop: '3px' }}>
+                     Visión conjunta · Q2 2025
                    </p>
                 </div>
             </div>
-            <ArrowRight size={20} color="#f0c040" opacity={0.6} />
+            <ArrowRight size={18} color="#f0c040" opacity={0.6} />
           </GlassCard>
         </Link>
       </motion.div>
 
-      <div className="text-center mb-20">
-        <Link to="/review" className="inline-flex items-center gap-1 text-[12px] font-semibold text-gold-400 uppercase tracking-[0.12em] no-underline">
+      <div style={{ textAlign: 'center', marginBottom: '80px' }}>
+        <Link to="/review" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 600, color: '#f0c040', textTransform: 'uppercase', letterSpacing: '0.12em', textDecoration: 'none' }}>
           Revisión Semanal Completa <ArrowRight size={12} />
         </Link>
       </div>

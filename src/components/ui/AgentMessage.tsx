@@ -34,42 +34,41 @@ export const AgentMessage: React.FC<AgentMessageProps> = ({ agentType, userName,
   }, [agentType, userName]);
 
   return (
-    <GlassCard className="p-4 md:p-6 mb-6 flex items-start gap-4 border-gold-400/25 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-gold-400/8 via-transparent to-transparent pointer-events-none" />
+    <GlassCard className="agent-card" style={{ marginBottom: '24px', position: 'relative', overflow: 'hidden', borderColor: 'rgba(240,192,64,0.3)' }}>
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(240,192,64,0.08), transparent, transparent)', pointerEvents: 'none' }} />
       {/* Dynamic glow behind the icon */}
-      <div className="relative">
+      <div style={{ position: 'relative' }}>
         <div 
-          className="absolute inset-0 blur-xl opacity-30 rounded-full"
-          style={{ backgroundColor: color }}
+          style={{ position: 'absolute', inset: 0, filter: 'blur(20px)', opacity: 0.3, borderRadius: '999px', backgroundColor: color }}
         />
         <div 
-          className="w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border border-white/10 relative z-10"
-          style={{ backgroundColor: `${color}15`, color: color }}
+          className="agent-icon"
+          style={{ backgroundColor: `${color}15`, color: color, border: '1px solid rgba(255,255,255,0.1)' }}
         >
-          <Bot size={20} className="md:w-6 md:h-6" />
+          <Bot size={20} />
         </div>
       </div>
 
-      <div className="flex-1 min-w-0 flex flex-col justify-center min-h-[40px] md:min-h-[48px]">
-         <div className="flex items-center justify-between gap-3 mb-1">
-           <span className="text-[10px] font-bold tracking-[0.16em] uppercase text-gold-300/90">Insight IA</span>
+      <div className="agent-text" style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '40px' }}>
+         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', marginBottom: '4px' }}>
+           <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(247,217,122,0.9)' }}>Insight IA</span>
            <button
-             onClick={(e) => { e.stopPropagation(); fetchInsight(); }}
-             className="p-1.5 flex items-center gap-1 text-gold-400 hover:text-gold-300 transition-colors uppercase text-[10px] tracking-widest font-bold"
-           >
-             <RefreshCw size={12} className={isLoading ? "animate-spin" : ""} />
-             <span className="hidden sm:inline">Actualizar</span>
+              onClick={(e) => { e.stopPropagation(); fetchInsight(); }}
+              style={{ padding: '6px', display: 'flex', alignItems: 'center', gap: '4px', color: '#f0c040', textTransform: 'uppercase', fontSize: '10px', letterSpacing: '0.1em', fontWeight: 700, background: 'transparent', border: 'none', cursor: 'pointer' }}
+            >
+             <RefreshCw size={12} style={isLoading ? { transform: 'rotate(180deg)' } : undefined} />
+             <span>Actualizar</span>
            </button>
          </div>
 
         {isLoading ? (
-          <div className="flex items-center gap-1 mt-2">
-            <span className="w-1.5 h-1.5 bg-gold-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-            <span className="w-1.5 h-1.5 bg-gold-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-            <span className="w-1.5 h-1.5 bg-gold-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '8px' }}>
+            <span style={{ width: '6px', height: '6px', background: '#f0c040', borderRadius: '999px' }} />
+            <span style={{ width: '6px', height: '6px', background: '#f0c040', borderRadius: '999px', opacity: 0.7 }} />
+            <span style={{ width: '6px', height: '6px', background: '#f0c040', borderRadius: '999px', opacity: 0.4 }} />
           </div>
         ) : (
-          <p className="text-gray-200 text-sm md:text-base italic leading-relaxed mt-1">
+          <p style={{ color: 'rgba(229,231,235,1)', fontSize: '14px', fontStyle: 'italic', lineHeight: 1.6, marginTop: '4px' }}>
             "{message}"
           </p>
         )}

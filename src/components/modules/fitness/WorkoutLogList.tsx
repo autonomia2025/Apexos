@@ -13,21 +13,21 @@ interface WorkoutLogListProps {
 
 export const WorkoutLogList: React.FC<WorkoutLogListProps> = ({ logs, color, onOpenAdd }) => {
   return (
-    <div className="w-full">
-      <div className="lux-list-header">
-        <h3 className="lux-list-title">
+    <div style={{ width: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+        <h3 style={{ fontSize: '28px', lineHeight: 1, color: '#fff', letterSpacing: '0.01em', fontFamily: '"Playfair Display", serif' }}>
           Historial de Entrenos
         </h3>
         
         <button 
           onClick={onOpenAdd}
-          className="lux-add-btn active:scale-95"
+          className="lux-add-btn"
         >
           <Plus size={14} /> Registrar
         </button>
       </div>
 
-      <div className="space-y-4">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {logs.length > 0 ? (
           <AnimatePresence>
             {logs.map((log, index) => (
@@ -36,27 +36,26 @@ export const WorkoutLogList: React.FC<WorkoutLogListProps> = ({ logs, color, onO
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="w-full"
+                style={{ width: '100%' }}
               >
-                <GlassCard className="lux-item p-4 flex flex-col transition-colors relative overflow-hidden group border-white/12">
+                <GlassCard className="lux-item" style={{ padding: '16px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', borderColor: 'rgba(255,255,255,0.12)' }}>
                    <div 
-                    className="absolute left-0 top-0 w-1 h-full opacity-60 transition-opacity group-hover:opacity-100" 
-                    style={{ backgroundColor: color }}
+                    style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', opacity: 0.6, backgroundColor: color }}
                   />
-                  <div className="flex justify-between items-center w-full mb-3 ml-2">
-                    <h4 className="text-white font-semibold text-xl font-display">{log.type}</h4>
-                    <span className="text-gray-400 font-mono text-xs bg-white/5 border border-white/10 px-2 py-0.5 rounded-md">{log.date}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: '12px', marginLeft: '8px' }}>
+                    <h4 style={{ color: '#fff', fontWeight: 600, fontSize: '20px', fontFamily: '"Playfair Display", serif' }}>{log.type}</h4>
+                    <span style={{ color: '#9ca3af', fontFamily: 'monospace', fontSize: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '6px' }}>{log.date}</span>
                   </div>
                   
-                  <div className="flex flex-col gap-2 ml-2">
-                     <div className="flex items-center gap-2 text-gray-300 text-xs font-semibold uppercase tracking-[0.1em]">
-                        <Timer size={14} className="text-gold-300" />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginLeft: '8px' }}>
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#d1d5db', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                        <Timer size={14} color="#f0c040" />
                         {log.duration} minutos
                       </div>
                      {log.notes && (
-                       <div className="text-gray-500 text-xs italic">
-                         {log.notes}
-                       </div>
+                       <div style={{ color: '#6b7280', fontSize: '12px', fontStyle: 'italic' }}>
+                          {log.notes}
+                        </div>
                      )}
                   </div>
                 </GlassCard>

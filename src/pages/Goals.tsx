@@ -28,46 +28,42 @@ export const Goals: React.FC = () => {
 
       {/* Tabs */}
       <motion.div
-        className="flex rounded-2xl p-1.5 border border-white/10 mb-8 relative z-10 bg-[linear-gradient(140deg,rgba(14,30,58,0.7),rgba(8,18,35,0.5))]"
+        style={{ display: 'flex', borderRadius: '16px', padding: '6px', border: '1px solid rgba(255,255,255,0.1)', marginBottom: '32px', position: 'relative', zIndex: 10, background: 'linear-gradient(140deg,rgba(14,30,58,0.7),rgba(8,18,35,0.5))' }}
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.08 }}
       >
          <button
            onClick={() => setActiveTab('personal')}
-           className={`flex-1 py-3 text-sm font-bold rounded-xl transition-colors relative ${
-              activeTab === 'personal' ? 'text-white' : 'text-gray-500 hover:text-gray-300'
-            }`}
+           style={{ flex: 1, padding: '12px 0', fontSize: '14px', fontWeight: 700, borderRadius: '12px', transition: 'color 0.2s', position: 'relative', color: activeTab === 'personal' ? '#ffffff' : 'rgba(156,163,175,1)', background: 'transparent', border: 'none' }}
           >
             {activeTab === 'personal' && (
               <motion.div
                 layoutId="activeTabIndicator"
-                className="absolute inset-0 rounded-xl border border-gold-400/30 bg-[linear-gradient(180deg,rgba(240,192,64,0.18),rgba(240,192,64,0.05))] shadow-[0_8px_16px_rgba(0,0,0,0.22)]"
+                style={{ position: 'absolute', inset: 0, borderRadius: '12px', border: '1px solid rgba(240,192,64,0.3)', background: 'linear-gradient(180deg,rgba(240,192,64,0.18),rgba(240,192,64,0.05))', boxShadow: '0 8px 16px rgba(0,0,0,0.22)' }}
                 transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
               />
             )}
-           <span className="relative z-10 tracking-wide uppercase text-xs">Mis Metas</span>
+           <span style={{ position: 'relative', zIndex: 10, letterSpacing: '0.08em', textTransform: 'uppercase', fontSize: '12px' }}>Mis Metas</span>
          </button>
          <button
            onClick={() => setActiveTab('shared')}
-           className={`flex-1 py-3 text-sm font-bold rounded-xl transition-colors relative ${
-              activeTab === 'shared' ? 'text-white' : 'text-gray-500 hover:text-gray-300'
-            }`}
+           style={{ flex: 1, padding: '12px 0', fontSize: '14px', fontWeight: 700, borderRadius: '12px', transition: 'color 0.2s', position: 'relative', color: activeTab === 'shared' ? '#ffffff' : 'rgba(156,163,175,1)', background: 'transparent', border: 'none' }}
           >
             {activeTab === 'shared' && (
               <motion.div
                 layoutId="activeTabIndicator"
-                className="absolute inset-0 rounded-xl border border-gold-400/30 bg-[linear-gradient(180deg,rgba(240,192,64,0.18),rgba(240,192,64,0.05))] shadow-[0_8px_16px_rgba(0,0,0,0.22)]"
+                style={{ position: 'absolute', inset: 0, borderRadius: '12px', border: '1px solid rgba(240,192,64,0.3)', background: 'linear-gradient(180deg,rgba(240,192,64,0.18),rgba(240,192,64,0.05))', boxShadow: '0 8px 16px rgba(0,0,0,0.22)' }}
                 transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
               />
             )}
-           <span className="relative z-10 tracking-wide uppercase text-xs">De Pareja</span>
+           <span style={{ position: 'relative', zIndex: 10, letterSpacing: '0.08em', textTransform: 'uppercase', fontSize: '12px' }}>De Pareja</span>
          </button>
        </motion.div>
 
       {/* Content */}
       <motion.div
-        className="space-y-4 pb-24"
+        style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingBottom: '96px' }}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.12 }}
@@ -80,16 +76,16 @@ export const Goals: React.FC = () => {
                animate={{ opacity: 1, x: 0 }}
                exit={{ opacity: 0, x: 20 }}
                transition={{ duration: 0.3 }}
-               className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6"
-             >
+                style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}
+              >
                {personalGoals.map((goal) => (
                  <GoalCard key={goal.id} goal={goal} activeUserId={activeUserId} />
                ))}
                {personalGoals.length === 0 && (
-                 <div className="col-span-full py-12 text-center text-gray-500">
-                   Aún no tienes metas personales activas.
-                 </div>
-               )}
+                  <div style={{ gridColumn: '1 / -1', padding: '48px 0', textAlign: 'center', color: '#6b7280' }}>
+                    Aún no tienes metas personales activas.
+                  </div>
+                )}
              </motion.div>
           ) : (
              <motion.div
@@ -98,16 +94,16 @@ export const Goals: React.FC = () => {
                animate={{ opacity: 1, x: 0 }}
                exit={{ opacity: 0, x: -20 }}
                transition={{ duration: 0.3 }}
-               className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6"
-             >
+                style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}
+              >
                {sharedGoals.map((goal) => (
                  <GoalCard key={goal.id} goal={goal} activeUserId={activeUserId} />
                ))}
                {sharedGoals.length === 0 && (
-                 <div className="col-span-full py-12 text-center text-gray-500">
-                   No hay metas de pareja activas aún.
-                 </div>
-               )}
+                  <div style={{ gridColumn: '1 / -1', padding: '48px 0', textAlign: 'center', color: '#6b7280' }}>
+                    No hay metas de pareja activas aún.
+                  </div>
+                )}
              </motion.div>
           )}
         </AnimatePresence>

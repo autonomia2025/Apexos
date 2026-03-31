@@ -48,15 +48,15 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
             {/* Drag Handle */}
             <div className="modal-handle" />
             
-            <header className="modal-header">
-              <h2 className="modal-title">Registrar Estudio</h2>
-              <p className="modal-subtitle">Nueva sesion</p>
+            <header style={{ marginBottom: '20px', textAlign: 'center' }}>
+              <h2 style={{ margin: 0, fontFamily: '"Playfair Display", serif', fontSize: '30px', color: '#f0c040', fontWeight: 700 }}>Registrar Estudio</h2>
+              <p style={{ marginTop: '6px', color: 'rgba(255,255,255,0.5)', fontSize: '13px' }}>Nueva sesion</p>
             </header>
             
-            <div className="flex flex-col gap-6">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               {/* Topic */}
-              <div className="space-y-3">
-                <label className="modal-field-label">Tema</label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Tema</label>
                 <input
                   type="text"
                   value={topic}
@@ -67,10 +67,10 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
               </div>
 
               {/* Duration Slider */}
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                   <label className="modal-field-label">Duracion</label>
-                   <span className="text-lg font-bold font-mono text-gold-400">{duration} min</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                   <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Duracion</label>
+                   <span style={{ fontSize: '18px', fontWeight: 700, fontFamily: '"JetBrains Mono", monospace', color: '#f0c040' }}>{duration} min</span>
                  </div>
                 <input
                   type="range"
@@ -79,31 +79,30 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
                   step="15"
                   value={duration}
                   onChange={(e) => setDuration(Number(e.target.value))}
-                  className="w-full h-2 bg-navy-800 rounded-lg appearance-none cursor-pointer accent-gold-400"
+                  style={{ width: '100%', height: '8px', borderRadius: '999px', appearance: 'none', cursor: 'pointer', background: 'rgba(8,15,35,0.9)', accentColor: '#f0c040' }}
                 />
-                <div className="flex justify-between text-xs font-mono text-gray-500">
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: '"JetBrains Mono", monospace', color: 'rgba(255,255,255,0.4)' }}>
                   <span>15m</span>
                   <span>180m</span>
                 </div>
               </div>
 
               {/* Resource Type */}
-              <div className="space-y-3">
-                <label className="modal-field-label">Recurso</label>
-                <div className="flex flex-wrap gap-2">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Recurso</label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {resources.map((r) => (
                     <motion.button
                       key={r}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setResource(r)}
-                      className={`modal-chip transition-colors ${
-                        resource === r 
-                          ? `bg-white/10 text-white shadow-[0_0_10px_var(--color-gold-400)_inset]`
-                          : 'hover:border-white/20'
-                      }`}
+                      className="modal-chip"
                       style={{ 
-                         borderColor: resource === r ? color : undefined,
-                         color: resource === r ? color : undefined
+                         transition: 'all 0.25s ease',
+                         borderColor: resource === r ? color : 'rgba(255,255,255,0.14)',
+                         color: resource === r ? color : 'rgba(255,255,255,0.7)',
+                         background: resource === r ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)',
+                         boxShadow: resource === r ? 'inset 0 0 10px rgba(240,192,64,0.45)' : 'none'
                       }}
                     >
                       {r}
@@ -113,13 +112,14 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
               </div>
 
               {/* Note */}
-              <div className="space-y-3">
-                <label className="modal-field-label">Nota (Opcional)</label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Nota (Opcional)</label>
                 <textarea
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   placeholder="Resumen o puntos clave..."
-                  className="modal-input resize-none h-20"
+                  className="modal-input"
+                  style={{ resize: 'none', minHeight: '80px' }}
                 />
               </div>
 
@@ -127,7 +127,7 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
               <button
                 onClick={handleClose}
                 disabled={!topic || !resource}
-                className="modal-primary-btn active:scale-95"
+                style={{ marginTop: '4px', border: '1px solid rgba(240,192,64,0.5)', borderRadius: '14px', padding: '14px 16px', background: 'linear-gradient(135deg, #f0c040, #f7d97a)', color: '#0b1328', fontWeight: 800, letterSpacing: '0.03em', transition: 'transform 0.2s ease, opacity 0.2s ease', cursor: 'pointer', opacity: !topic || !resource ? 0.45 : 1 }}
               >
                 Guardar Sesión
               </button>

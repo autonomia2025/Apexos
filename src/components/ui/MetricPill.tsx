@@ -9,18 +9,17 @@ interface MetricPillProps {
 
 export const MetricPill: React.FC<MetricPillProps> = ({ label, value, highlightColor, icon }) => {
   return (
-    <div className="bg-navy-800/80 rounded-2xl p-3.5 border border-white/10 flex flex-col justify-center relative overflow-hidden group shadow-[0_8px_18px_rgba(0,0,0,0.18)]">
+    <div className="metric-pill" style={{ position: 'relative', overflow: 'hidden', boxShadow: '0 8px 18px rgba(0,0,0,0.18)' }}>
       {highlightColor && (
         <div 
-          className="absolute top-0 left-0 w-1 h-full opacity-60 transition-opacity group-hover:opacity-100"
-          style={{ backgroundColor: highlightColor }}
+          style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', opacity: 0.6, backgroundColor: highlightColor }}
         />
       )}
-      <div className="flex items-center gap-2 mb-1.5">
-        {icon && <span className="opacity-80 text-gold-300">{icon}</span>}
-        <span className="text-[11px] text-gray-400 font-semibold tracking-[0.08em] uppercase">{label}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+        {icon && <span style={{ opacity: 0.8, color: '#f0c040' }}>{icon}</span>}
+        <span className="label">{label}</span>
       </div>
-      <span className="text-xl font-bold text-white font-display ml-1 leading-none">{value}</span>
+      <span className="value" style={{ marginLeft: '4px' }}>{value}</span>
     </div>
   );
 };

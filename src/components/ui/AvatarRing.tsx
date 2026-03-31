@@ -15,9 +15,9 @@ export const AvatarRing: React.FC<AvatarRingProps> = ({ initials, color, progres
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   return (
-    <div className="relative flex items-center justify-center filter drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]" style={{ width: size, height: size }}>
+    <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.1))', width: size, height: size }}>
       {/* Background Circle */}
-      <svg className="absolute inset-0 transform -rotate-90" width={size} height={size}>
+      <svg style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }} width={size} height={size}>
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -44,8 +44,14 @@ export const AvatarRing: React.FC<AvatarRingProps> = ({ initials, color, progres
       
       {/* Avatar Content */}
       <div 
-        className="rounded-full flex items-center justify-center font-display font-bold text-white shadow-inner"
         style={{ 
+          borderRadius: '999px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontFamily: '"Playfair Display", serif',
+          fontWeight: 700,
+          color: '#fff',
           width: size - strokeWidth * 3, 
           height: size - strokeWidth * 3,
           backgroundColor: 'var(--navy-800)',

@@ -16,7 +16,7 @@ export const UserToggle = () => {
         return (
           <button
             key={id}
-            className={`user-toggle-btn ${isActive ? 'active' : ''}`}
+            className="user-toggle-btn"
             onClick={() => setActiveUserId(id)}
             aria-pressed={isActive}
             style={{

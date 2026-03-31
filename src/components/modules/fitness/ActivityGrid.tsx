@@ -23,31 +23,37 @@ export const ActivityGrid: React.FC<ActivityGridProps> = ({ user }) => {
       case 'Movilidad':
         return <PersonStanding {...props} />;
       case 'Descanso':
-        return <div className="w-4 h-4 rounded-full bg-navy-800 border border-white/20"></div>; // Empty circle for rest
+        return <div style={{ width: '16px', height: '16px', borderRadius: '999px', background: 'rgba(8,15,35,0.9)', border: '1px solid rgba(255,255,255,0.2)' }}></div>; // Empty circle for rest
       default:
         return <HelpCircle {...props} />;
     }
   };
 
   return (
-    <GlassCard className="p-6">
-      <h3 className="text-sm font-display font-semibold text-gold-300 uppercase tracking-widest mb-6">
+    <GlassCard style={{ padding: '24px' }}>
+      <h3 style={{ fontSize: '14px', fontFamily: '"Playfair Display", serif', fontWeight: 600, color: '#f7d97a', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '24px', marginTop: 0 }}>
         Matriz Semanal
       </h3>
       
-      <div className="flex justify-between items-center w-full">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
         {days.map((day, index) => {
           const type = weeklyActivity[index];
           const isRest = type === 'Descanso';
           
           return (
-            <div key={index} className="flex flex-col items-center gap-3">
-              <span className="text-[10px] font-mono text-gray-500">{day}</span>
+            <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+              <span style={{ fontSize: '10px', fontFamily: '"JetBrains Mono", monospace', color: 'rgba(255,255,255,0.4)' }}>{day}</span>
               <div 
-                className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                  isRest ? 'bg-transparent' : 'bg-white/5 border border-white/10'
-                }`}
                 style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.25s ease',
+                  background: isRest ? 'transparent' : 'rgba(255,255,255,0.05)',
+                  border: isRest ? 'none' : '1px solid rgba(255,255,255,0.1)',
                   boxShadow: !isRest ? `0 0 10px ${profile.color}22` : 'none',
                   borderColor: !isRest ? `${profile.color}40` : undefined
                 }}
@@ -60,10 +66,10 @@ export const ActivityGrid: React.FC<ActivityGridProps> = ({ user }) => {
       </div>
       
       {/* Legend */}
-      <div className="mt-8 flex flex-wrap justify-center gap-4 text-[10px] font-mono text-gray-500 uppercase">
-        <div className="flex items-center gap-1"><Dumbbell size={12}/> Fuerza</div>
-        <div className="flex items-center gap-1"><Flame size={12}/> Cardio</div>
-        <div className="flex items-center gap-1"><PersonStanding size={12}/> Movilidad</div>
+      <div style={{ marginTop: '32px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px', fontSize: '10px', fontFamily: '"JetBrains Mono", monospace', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Dumbbell size={12}/> Fuerza</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Flame size={12}/> Cardio</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><PersonStanding size={12}/> Movilidad</div>
       </div>
     </GlassCard>
   );

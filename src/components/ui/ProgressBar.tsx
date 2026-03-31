@@ -19,28 +19,27 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   const percentage = Math.min(100, Math.max(0, (current / max) * 100));
 
   return (
-    <div className="flex flex-col gap-2 w-full">
-      <div className="flex justify-between items-end">
-        <span className="text-[11px] font-semibold text-gray-300 uppercase tracking-[0.08em]">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <span style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(209,213,219,1)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
           {label}
         </span>
         {showValue && (
-          <span className="text-xs font-bold font-mono text-white">
-            {current} <span className="text-gray-500 font-normal">/ {max}g</span>
+          <span style={{ fontSize: '12px', fontWeight: 700, fontFamily: 'monospace', color: '#fff' }}>
+            {current} <span style={{ color: '#6b7280', fontWeight: 400 }}>/ {max}g</span>
           </span>
         )}
       </div>
       
-      <div className="h-2.5 w-full bg-navy-800/90 rounded-full overflow-hidden border border-white/10 shadow-inner">
+      <div style={{ height: '10px', width: '100%', background: 'rgba(15,23,42,0.9)', borderRadius: '999px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.25)' }}>
         <motion.div
-          className="h-full rounded-full relative"
-          style={{ backgroundColor: color }}
+          style={{ height: '100%', borderRadius: '999px', backgroundColor: color }}
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
         />
       </div>
-      <span className="text-[10px] font-medium text-gray-500 text-right">{Math.round(percentage)}% completado</span>
+      <span style={{ fontSize: '10px', fontWeight: 500, color: '#6b7280', textAlign: 'right' }}>{Math.round(percentage)}% completado</span>
     </div>
   );
 };
