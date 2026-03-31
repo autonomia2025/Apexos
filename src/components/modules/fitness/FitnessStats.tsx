@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { GlassCard } from '../../ui/GlassCard';
 import { MetricPill } from '../../ui/MetricPill';
 import { UserData } from '../../../types';
@@ -8,15 +8,31 @@ interface FitnessStatsProps {
   user: UserData;
 }
 
-export const FitnessStats: React.FC<FitnessStatsProps> = ({ user }) => {
+export const FitnessStats: React.FC<FitnessStatsProps> = React.memo(({ user }) => {
   const { metrics, user: profile, recentWorkouts } = user;
-  const lastWorkout = recentWorkouts.length > 0 ? recentWorkouts[0] : null;
+
+  const lastWorkout = useMemo(
+    () => recentWorkouts.length > 0 ? recentWorkouts[0] : null,
+    [recentWorkouts]
+  );
+
+  const stepsFormatted = useMemo(
+    () => metrics.steps.toLocaleString('es-ES'),
+    [metrics.steps]
+  );
 
   return (
     <GlassCard style={{ padding: '24px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', marginBottom: '24px', paddingBottom: '24px', borderBottom: '1px solid rgba(193,96,58,0.15)' }}>
-         <div 
-          style={{ width: '40px', height: '40px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '14px', border: '1px solid rgba(193,96,58,0.15)', backgroundColor: `${profile.color}22`, color: profile.color }}
+        <div
+          style={{
+            width: '40px', height: '40px', borderRadius: '999px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontWeight: 700, fontSize: '14px',
+            border: '1px solid rgba(193,96,58,0.15)',
+            backgroundColor: `${profile.color}22`,
+            color: profile.color
+          }}
         >
           {profile.initials}
         </div>
@@ -24,7 +40,9 @@ export const FitnessStats: React.FC<FitnessStatsProps> = ({ user }) => {
           <h2 style={{ fontSize: '34px', lineHeight: 1, fontFamily: '"Outfit", sans-serif', fontWeight: 600, color: '#2d1a0e' }}>
             Actividad
           </h2>
-          <p style={{ fontSize: '11px', color: '#b08878', fontFamily: '"Outfit", sans-serif', marginTop: '4px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Estadisticas semanales</p>
+          <p style={{ fontSize: '11px', color: '#b08878', fontFamily: '"Outfit", sans-serif', marginTop: '4px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+            Estadisticas semanales
+          </p>
         </div>
       </div>
 
@@ -38,7 +56,7 @@ export const FitnessStats: React.FC<FitnessStatsProps> = ({ user }) => {
         <MetricPill
           icon={<Footprints size={16} />}
           label="Pasos Hoy"
-          value={metrics.steps.toLocaleString('es-ES')}
+          value={stepsFormatted}
           highlightColor={profile.color}
         />
         <MetricPill
@@ -56,4 +74,4 @@ export const FitnessStats: React.FC<FitnessStatsProps> = ({ user }) => {
       </div>
     </GlassCard>
   );
-};
+});

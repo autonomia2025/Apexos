@@ -1,67 +1,79 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 
 interface AvatarRingProps {
   initials: string;
   color: string;
-  progress: number; // 0 to 100
+  progress: number;
   size?: number;
 }
 
-export const AvatarRing: React.FC<AvatarRingProps> = ({ initials, color, progress, size = 64 }) => {
+export const AvatarRing = React.memo(({
+  initials,
+  color,
+  progress,
+  size = 64
+}: AvatarRingProps) => {
   const strokeWidth = 4;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = radius * 2 * Math.PI;
-  const strokeDashoffset = circumference - (progress / 100) * circumference;
+  const r = (size - strokeWidth) / 2;
+  const circ = 2 * Math.PI * r;
+  const offset = circ - (Math.min(progress, 100) / 100) * circ;
 
   return (
-    <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', filter: 'drop-shadow(0 0 10px rgba(193,96,58,0.15))', width: size, height: size }}>
-      {/* Background Circle */}
-      <svg style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }} width={size} height={size}>
+    <div style={{
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: size,
+      height: size,
+    }}>
+      <svg
+        width={size}
+        height={size}
+        style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}
+        viewBox={`0 0 ${size} ${size}`}
+      >
         <circle
           cx={size / 2}
           cy={size / 2}
-          r={radius}
-          stroke="rgba(193,96,58,0.15)"
+          r={r}
+          stroke="rgba(193,96,58,0.12)"
           strokeWidth={strokeWidth}
-          fill="transparent"
+          fill="none"
         />
-        {/* Progress Circle animated with framer-motion */}
-        <motion.circle
+        <circle
           cx={size / 2}
           cy={size / 2}
-          r={radius}
+          r={r}
           stroke={color}
           strokeWidth={strokeWidth}
-          fill="transparent"
+          fill="none"
           strokeLinecap="round"
-          initial={{ strokeDashoffset: circumference }}
-          animate={{ strokeDashoffset }}
-          transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
-          style={{ strokeDasharray: circumference }}
+          strokeDasharray={circ}
+          strokeDashoffset={offset}
+          style={{ transition: 'stroke-dashoffset 0.8s ease-out' }}
         />
       </svg>
-      
-      {/* Avatar Content */}
-      <div 
-        style={{ 
+
+      <div
+        style={{
           borderRadius: '999px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           fontFamily: '"Outfit", sans-serif',
           fontWeight: 700,
-          color: '#2d1a0e',
-          width: size - strokeWidth * 3, 
+          color: color,
+          width: size - strokeWidth * 3,
           height: size - strokeWidth * 3,
-          backgroundColor: 'var(--navy-800)',
-          fontSize: size * 0.35,
+          backgroundColor: '#ffffff',
           border: `1px solid ${color}33`,
-          boxShadow: `inset 0 0 10px ${color}22`
+          boxShadow: `inset 0 0 10px ${color}22`,
+          fontSize: size * 0.35,
         }}
       >
         {initials}
       </div>
     </div>
   );
-};
+});

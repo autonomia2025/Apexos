@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { LearningResource } from '../../../types';
@@ -9,19 +9,35 @@ interface LearningSessionModalProps {
   color: string;
 }
 
-export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOpen, onClose, color }) => {
+export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOpen, onClose, color: _color }) => {
   const [topic, setTopic] = useState('');
-  const [duration, setDuration] = useState(60); // Default 60 mins
+  const [duration, setDuration] = useState<string | null>(null);
   const [resource, setResource] = useState<LearningResource | null>(null);
-  const [note, setNote] = useState('');
 
+  const durations = ['15min', '30min', '45min', '1h', '1.5h', '2h+'];
   const resources: LearningResource[] = ['Libro', 'Curso', 'Podcast', 'Video', 'Práctica'];
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    };
+  }, [isOpen]);
 
   const handleClose = () => {
     setTopic('');
-    setDuration(60);
+    setDuration(null);
     setResource(null);
-    setNote('');
     onClose();
   };
 
@@ -29,117 +45,192 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
+            key="overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={handleClose}
-            style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(45,26,14,0.4)', backdropFilter: 'blur(4px)' }}
+            transition={{ duration: 0.2 }}
+            onClick={onClose}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 100,
+              background: 'rgba(45, 26, 14, 0.55)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+            }}
           />
-          
-          {/* Action Sheet Container */}
           <motion.div
-            initial={{ y: 40, opacity: 0, scale: 0.98 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 40, opacity: 0, scale: 0.98 }}
-            transition={{ type: 'spring', damping: 26, stiffness: 230 }}
-            className="modal-sheet"
-            onClick={(e) => e.stopPropagation()}
+            key="dialog"
+            initial={{ opacity: 0, scale: 0.94, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={{ type: 'spring', stiffness: 340, damping: 28 }}
+            onClick={e => e.stopPropagation()}
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 101,
+              width: '92%',
+              maxWidth: '440px',
+              maxHeight: '85vh',
+              overflowY: 'auto',
+              background: '#ffffff',
+              borderRadius: '24px',
+              border: '1px solid #e8d5c8',
+              boxShadow: '0 24px 60px rgba(45,26,14,0.18)',
+              padding: '28px 24px 24px',
+            }}
           >
-            {/* Drag Handle */}
-            <div className="modal-handle" />
             <button
-              onClick={handleClose}
-              style={{ position: 'absolute', top: '16px', right: '16px', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(193,96,58,0.1)', border: '1px solid rgba(193,96,58,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#c1603a' }}
+              onClick={onClose}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: 'rgba(193,96,58,0.08)',
+                border: '1px solid rgba(193,96,58,0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: '#c1603a',
+              }}
             >
-              <X size={16} />
+              <X size={15} />
             </button>
-            
-            <header style={{ marginBottom: '20px', textAlign: 'center' }}>
-              <h2 style={{ margin: 0, fontFamily: '"Outfit", sans-serif', fontSize: '30px', color: '#c1603a', fontWeight: 700 }}>Registrar Estudio</h2>
-              <p style={{ marginTop: '6px', color: '#b08878', fontSize: '13px' }}>Nueva sesion</p>
-            </header>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-              {/* Topic */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Tema</label>
-                <input
-                  type="text"
-                  value={topic}
-                  onChange={(e) => setTopic(e.target.value)}
-                  placeholder="Ej. React Componentes"
-                  className="modal-input"
-                />
-              </div>
 
-              {/* Duration Slider */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                   <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Duracion</label>
-                   <span style={{ fontSize: '18px', fontWeight: 700, fontFamily: '"Outfit", sans-serif', color: '#c1603a' }}>{duration} min</span>
-                 </div>
-                <input
-                  type="range"
-                  min="15"
-                  max="180"
-                  step="15"
-                  value={duration}
-                  onChange={(e) => setDuration(Number(e.target.value))}
-                  style={{ width: '100%', height: '8px', borderRadius: '999px', appearance: 'none', cursor: 'pointer', background: 'rgba(193,96,58,0.1)', accentColor: '#c1603a' }}
-                />
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: '"Outfit", sans-serif', color: '#b08878' }}>
-                  <span>15m</span>
-                  <span>180m</span>
-                </div>
-              </div>
+            <h2 style={{
+              fontFamily: '"Outfit", sans-serif',
+              fontWeight: 800,
+              fontSize: '26px',
+              color: '#2d1a0e',
+              marginBottom: '4px',
+              paddingRight: '40px',
+            }}>
+              Registrar sesión
+            </h2>
+            <p style={{
+              fontSize: '13px',
+              color: '#b08878',
+              marginBottom: '24px',
+              fontWeight: 400,
+            }}>
+              ¿Qué estudiaste?
+            </p>
 
-              {/* Resource Type */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Recurso</label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {resources.map((r) => (
-                    <motion.button
-                      key={r}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setResource(r)}
-                      className="modal-chip"
-                      style={{ 
-                         transition: 'all 0.25s ease',
-                         borderColor: resource === r ? color : 'rgba(255,255,255,0.14)',
-                         color: resource === r ? color : 'rgba(255,255,255,0.7)',
-                         background: resource === r ? 'rgba(193,96,58,0.15)' : 'rgba(255,255,255,0.03)',
-                         boxShadow: resource === r ? 'inset 0 0 10px rgba(193,96,58,0.45)' : 'none'
-                      }}
-                    >
-                      {r}
-                    </motion.button>
-                  ))}
-                </div>
-              </div>
+            <p style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: '#b08878',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: '8px',
+            }}>
+              Tema
+            </p>
+            <input
+              type="text"
+              value={topic}
+              onChange={e => setTopic(e.target.value)}
+              placeholder="ej. React Componentes"
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                borderRadius: '12px',
+                border: '1.5px solid #e8d5c8',
+                background: '#fdf6f0',
+                fontFamily: '"Outfit", sans-serif',
+                fontSize: '15px',
+                fontWeight: 500,
+                color: '#2d1a0e',
+                outline: 'none',
+                marginBottom: '16px',
+              }}
+              onFocus={e => e.target.style.borderColor = '#c1603a'}
+              onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+            />
 
-              {/* Note */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Nota (Opcional)</label>
-                <textarea
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                  placeholder="Resumen o puntos clave..."
-                  className="modal-input"
-                  style={{ resize: 'none', minHeight: '80px' }}
-                />
-              </div>
-
-              {/* Actions */}
-              <button
-                onClick={handleClose}
-                disabled={!topic || !resource}
-                style={{ marginTop: '4px', border: '1px solid rgba(193,96,58,0.5)', borderRadius: '14px', padding: '14px 16px', background: 'linear-gradient(135deg, #c1603a, #d4724a)', color: '#ffffff', fontWeight: 800, letterSpacing: '0.03em', transition: 'transform 0.2s ease, opacity 0.2s ease', cursor: 'pointer', opacity: !topic || !resource ? 0.45 : 1 }}
-              >
-                Guardar Sesión
-              </button>
+            <p style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: '#b08878',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: '8px',
+            }}>
+              Duración
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
+              {durations.map(opt => (
+                <button
+                  key={opt}
+                  onClick={() => setDuration(opt)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '100px',
+                    border: `1.5px solid ${duration === opt ? '#c1603a' : '#e8d5c8'}`,
+                    background: duration === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                    color: duration === opt ? '#c1603a' : '#7a4a36',
+                    fontFamily: '"Outfit", sans-serif',
+                    fontSize: '13px',
+                    fontWeight: duration === opt ? 700 : 400,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {opt}
+                </button>
+              ))}
             </div>
+
+            <p style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: '#b08878',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: '8px',
+            }}>
+              Tipo
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '24px' }}>
+              {resources.map(opt => (
+                <button
+                  key={opt}
+                  onClick={() => setResource(opt)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '100px',
+                    border: `1.5px solid ${resource === opt ? '#c1603a' : '#e8d5c8'}`,
+                    background: resource === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                    color: resource === opt ? '#c1603a' : '#7a4a36',
+                    fontFamily: '"Outfit", sans-serif',
+                    fontSize: '13px',
+                    fontWeight: resource === opt ? 700 : 400,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+
+            <button
+              className="btn-gold"
+              onClick={handleClose}
+              disabled={!topic || !duration || !resource}
+              style={{ opacity: !topic || !duration || !resource ? 0.45 : 1, cursor: !topic || !duration || !resource ? 'not-allowed' : 'pointer' }}
+            >
+              Guardar
+            </button>
           </motion.div>
         </>
       )}

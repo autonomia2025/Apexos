@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
 import { GoalType, GoalModule } from '../../../types/goals';
-import { Target, Users, User, X } from 'lucide-react';
 
 interface GoalModalProps {
   isOpen: boolean;
@@ -9,12 +9,11 @@ interface GoalModalProps {
   color: string;
 }
 
-export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color }) => {
+export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color: _color }) => {
   const [type, setType] = useState<GoalType>('personal');
   const [module, setModule] = useState<GoalModule | null>(null);
   const [title, setTitle] = useState('');
   const [value, setValue] = useState('');
-  const [unit, setUnit] = useState('');
   const [deadline, setDeadline] = useState('');
 
   const modules: { id: GoalModule; label: string }[] = [
@@ -25,12 +24,28 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color }) 
     { id: 'general', label: 'General' },
   ];
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    };
+  }, [isOpen]);
+
   const handleClose = () => {
     setType('personal');
     setModule(null);
     setTitle('');
     setValue('');
-    setUnit('');
     setDeadline('');
     onClose();
   };
@@ -40,133 +55,255 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color }) 
       {isOpen && (
         <>
           <motion.div
+            key="overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={handleClose}
-            style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(45,26,14,0.4)', backdropFilter: 'blur(4px)' }}
+            transition={{ duration: 0.2 }}
+            onClick={onClose}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 100,
+              background: 'rgba(45, 26, 14, 0.55)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+            }}
           />
-           
           <motion.div
-            initial={{ y: 40, opacity: 0, scale: 0.98 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 40, opacity: 0, scale: 0.98 }}
-            transition={{ type: 'spring', damping: 26, stiffness: 230 }}
-            className="modal-sheet"
-            onClick={(e) => e.stopPropagation()}
-            style={{ maxHeight: '85vh' }}
+            key="dialog"
+            initial={{ opacity: 0, scale: 0.94, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={{ type: 'spring', stiffness: 340, damping: 28 }}
+            onClick={e => e.stopPropagation()}
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 101,
+              width: '92%',
+              maxWidth: '440px',
+              maxHeight: '85vh',
+              overflowY: 'auto',
+              background: '#ffffff',
+              borderRadius: '24px',
+              border: '1px solid #e8d5c8',
+              boxShadow: '0 24px 60px rgba(45,26,14,0.18)',
+              padding: '28px 24px 24px',
+            }}
           >
-            <div className="modal-handle" />
             <button
-              onClick={handleClose}
-              style={{ position: 'absolute', top: '16px', right: '16px', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(193,96,58,0.1)', border: '1px solid rgba(193,96,58,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#c1603a' }}
+              onClick={onClose}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: 'rgba(193,96,58,0.08)',
+                border: '1px solid rgba(193,96,58,0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: '#c1603a',
+              }}
             >
-              <X size={16} />
+              <X size={15} />
             </button>
-            
-            <header style={{ marginBottom: '20px', textAlign: 'center' }}>
-              <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: '"Outfit", sans-serif', fontSize: '30px', color: '#c1603a', fontWeight: 700 }}>
-                 <Target size={20} color="#c1603a" /> Nueva Meta
-              </h2>
-            </header>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-              
-              {/* Type Toggle */}
-               <div style={{ background: 'rgba(193,96,58,0.08)', padding: '4px', display: 'flex', borderRadius: '12px', border: '1px solid rgba(193,96,58,0.15)' }}>
-                 <button
-                   onClick={() => setType('personal')}
-                   style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', padding: '10px 0', borderRadius: '10px', fontSize: '14px', fontWeight: 700, transition: 'all 0.25s ease', color: type === 'personal' ? '#d4724a' : '#b08878', background: type === 'personal' ? 'rgba(193,96,58,0.2)' : 'transparent', boxShadow: type === 'personal' ? '0 6px 18px rgba(180, 100, 60, 0.08)' : 'none' }}
-                 >
-                   <User size={16} /> Personal
-                 </button>
-                 <button
-                   onClick={() => setType('shared')}
-                   style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', padding: '10px 0', borderRadius: '10px', fontSize: '14px', fontWeight: 700, transition: 'all 0.25s ease', color: type === 'shared' ? '#2d1a0e' : '#b08878', background: type === 'shared' ? 'rgba(193,96,58,0.15)' : 'transparent', boxShadow: type === 'shared' ? '0 6px 18px rgba(180, 100, 60, 0.08)' : 'none' }}
-                 >
-                   <Users size={16} /> De pareja
-                 </button>
-              </div>
 
-              {/* Module */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                 <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Categoria</label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {modules.map((m) => (
-                    <motion.button
-                      key={m.id}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setModule(m.id)}
-                      className="modal-chip"
-                      style={{ 
-                         transition: 'all 0.25s ease',
-                         borderColor: module === m.id ? color : 'rgba(255,255,255,0.14)',
-                         color: module === m.id ? color : 'rgba(255,255,255,0.7)',
-                         background: module === m.id ? 'rgba(193,96,58,0.15)' : 'rgba(255,255,255,0.03)',
-                         boxShadow: module === m.id ? 'inset 0 0 10px rgba(193,96,58,0.45)' : 'none'
-                      }}
-                    >
-                      {m.label}
-                    </motion.button>
-                  ))}
-                </div>
-              </div>
+            <h2 style={{
+              fontFamily: '"Outfit", sans-serif',
+              fontWeight: 800,
+              fontSize: '26px',
+              color: '#2d1a0e',
+              marginBottom: '4px',
+              paddingRight: '40px',
+            }}>
+              Nueva meta
+            </h2>
+            <p style={{
+              fontSize: '13px',
+              color: '#b08878',
+              marginBottom: '24px',
+              fontWeight: 400,
+            }}>
+              Define tu objetivo
+            </p>
 
-              {/* Title Input */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Titulo</label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Ej. Leer 5 libros"
-                  className="modal-input"
-                />
-              </div>
-
-              {/* Targets */}
-              <div style={{ display: 'flex', gap: '16px' }}>
-                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
-                   <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Meta</label>
-                   <input
-                     type="number"
-                     value={value}
-                     onChange={(e) => setValue(e.target.value)}
-                     placeholder="Objetivo final"
-                      className="modal-input"
-                    />
-                  </div>
-                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
-                     <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Unidad</label>
-                    <input
-                     type="text"
-                     value={unit}
-                     onChange={(e) => setUnit(e.target.value)}
-                     placeholder="Ej. Kcal, $, Pag..."
-                      className="modal-input"
-                    />
-                  </div>
-               </div>
-               
-               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                 <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Fecha limite</label>
-                 <input
-                  type="date"
-                  value={deadline}
-                  onChange={(e) => setDeadline(e.target.value)}
-                   className="modal-input"
-                 />
-               </div>
-
-              {/* Actions */}
-              <button
-                onClick={handleClose}
-                disabled={!title || !value || !deadline || !module}
-                style={{ marginTop: '8px', border: '1px solid rgba(193,96,58,0.5)', borderRadius: '14px', padding: '14px 16px', background: 'linear-gradient(135deg, #c1603a, #d4724a)', color: '#ffffff', fontWeight: 800, letterSpacing: '0.03em', cursor: 'pointer', opacity: !title || !value || !deadline || !module ? 0.45 : 1 }}
-              >
-                Crear Meta
-              </button>
+            <p style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: '#b08878',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: '8px',
+            }}>
+              Tipo
+            </p>
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+              {(['personal', 'shared'] as GoalType[]).map(t => (
+                <button
+                  key={t}
+                  onClick={() => setType(t)}
+                  style={{
+                    flex: 1,
+                    padding: '10px 0',
+                    borderRadius: '12px',
+                    border: `1.5px solid ${type === t ? '#c1603a' : '#e8d5c8'}`,
+                    background: type === t ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                    color: type === t ? '#c1603a' : '#7a4a36',
+                    fontFamily: '"Outfit", sans-serif',
+                    fontSize: '14px',
+                    fontWeight: type === t ? 700 : 400,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {t === 'personal' ? 'Personal' : 'De pareja'}
+                </button>
+              ))}
             </div>
+
+            <p style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: '#b08878',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: '8px',
+            }}>
+              Módulo
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
+              {modules.map(opt => (
+                <button
+                  key={opt.id}
+                  onClick={() => setModule(opt.id)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '100px',
+                    border: `1.5px solid ${module === opt.id ? '#c1603a' : '#e8d5c8'}`,
+                    background: module === opt.id ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                    color: module === opt.id ? '#c1603a' : '#7a4a36',
+                    fontFamily: '"Outfit", sans-serif',
+                    fontSize: '13px',
+                    fontWeight: module === opt.id ? 700 : 400,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
+            <p style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: '#b08878',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: '8px',
+            }}>
+              Título
+            </p>
+            <input
+              type="text"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              placeholder="ej. Leer 5 libros"
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                borderRadius: '12px',
+                border: '1.5px solid #e8d5c8',
+                background: '#fdf6f0',
+                fontFamily: '"Outfit", sans-serif',
+                fontSize: '15px',
+                fontWeight: 500,
+                color: '#2d1a0e',
+                outline: 'none',
+                marginBottom: '16px',
+              }}
+              onFocus={e => e.target.style.borderColor = '#c1603a'}
+              onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+            />
+
+            <p style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: '#b08878',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: '8px',
+            }}>
+              Valor objetivo
+            </p>
+            <input
+              type="number"
+              value={value}
+              onChange={e => setValue(e.target.value)}
+              placeholder="ej. 5"
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                borderRadius: '12px',
+                border: '1.5px solid #e8d5c8',
+                background: '#fdf6f0',
+                fontFamily: '"Outfit", sans-serif',
+                fontSize: '15px',
+                fontWeight: 500,
+                color: '#2d1a0e',
+                outline: 'none',
+                marginBottom: '16px',
+              }}
+              onFocus={e => e.target.style.borderColor = '#c1603a'}
+              onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+            />
+
+            <p style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: '#b08878',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: '8px',
+            }}>
+              Fecha límite
+            </p>
+            <input
+              type="date"
+              value={deadline}
+              onChange={e => setDeadline(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                borderRadius: '12px',
+                border: '1.5px solid #e8d5c8',
+                background: '#fdf6f0',
+                fontFamily: '"Outfit", sans-serif',
+                fontSize: '15px',
+                fontWeight: 500,
+                color: '#2d1a0e',
+                outline: 'none',
+                marginBottom: '24px',
+              }}
+              onFocus={e => e.target.style.borderColor = '#c1603a'}
+              onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+            />
+
+            <button
+              className="btn-gold"
+              onClick={handleClose}
+              disabled={!title || !value || !deadline || !module}
+              style={{ opacity: !title || !value || !deadline || !module ? 0.45 : 1, cursor: !title || !value || !deadline || !module ? 'not-allowed' : 'pointer' }}
+            >
+              Guardar
+            </button>
           </motion.div>
         </>
       )}

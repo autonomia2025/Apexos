@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Target, X } from 'lucide-react';
+import { X } from 'lucide-react';
+import { Target } from 'lucide-react';
 
 interface ProjectModalProps {
   isOpen: boolean;
@@ -8,25 +9,39 @@ interface ProjectModalProps {
   color: string;
 }
 
-export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, color }) => {
+export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, color: _color }) => {
   const [name, setName] = useState('');
-  const [venture, setVenture] = useState('RecepcionistaAI');
-  const [priority, setPriority] = useState<'Alta' | 'Media' | 'Baja'>('Media');
-  const [departments, setDepartments] = useState<string[]>([]);
+  const [venture, setVenture] = useState<string | null>(null);
+  const [priority, setPriority] = useState<string | null>(null);
+  const [status, setStatus] = useState<string>('Activo');
   const [progress, setProgress] = useState(0);
 
   const ventures = ['RecepcionistaAI', 'AutonomIA', 'BotFactory', 'ROMO OS', 'Otro'];
-  const depts = ['Informática', 'Desarrollo IA', 'Ventas', 'Marketing'];
+  const priorities = ['Alta', 'Media', 'Baja'];
+  const statuses = ['Activo', 'En pausa'];
 
-  const toggleDept = (d: string) => {
-    setDepartments(prev => prev.includes(d) ? prev.filter(p => p !== d) : [...prev, d]);
-  };
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    };
+  }, [isOpen]);
 
   const handleClose = () => {
     setName('');
-    setVenture('RecepcionistaAI');
-    setPriority('Media');
-    setDepartments([]);
+    setVenture(null);
+    setPriority(null);
+    setStatus('Activo');
     setProgress(0);
     onClose();
   };
@@ -36,140 +51,253 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, col
       {isOpen && (
         <>
           <motion.div
+            key="overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={handleClose}
-            style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(45,26,14,0.4)', backdropFilter: 'blur(4px)' }}
+            transition={{ duration: 0.2 }}
+            onClick={onClose}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 100,
+              background: 'rgba(45, 26, 14, 0.55)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+            }}
           />
-           
           <motion.div
-            initial={{ y: 40, opacity: 0, scale: 0.98 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 40, opacity: 0, scale: 0.98 }}
-            transition={{ type: 'spring', damping: 26, stiffness: 230 }}
-            className="modal-sheet"
-            onClick={(e) => e.stopPropagation()}
-            style={{ maxHeight: '85vh' }}
+            key="dialog"
+            initial={{ opacity: 0, scale: 0.94, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={{ type: 'spring', stiffness: 340, damping: 28 }}
+            onClick={e => e.stopPropagation()}
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 101,
+              width: '92%',
+              maxWidth: '440px',
+              maxHeight: '85vh',
+              overflowY: 'auto',
+              background: '#ffffff',
+              borderRadius: '24px',
+              border: '1px solid #e8d5c8',
+              boxShadow: '0 24px 60px rgba(45,26,14,0.18)',
+              padding: '28px 24px 24px',
+            }}
           >
-            <div className="modal-handle" />
             <button
-              onClick={handleClose}
-              style={{ position: 'absolute', top: '16px', right: '16px', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(193,96,58,0.1)', border: '1px solid rgba(193,96,58,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#c1603a' }}
+              onClick={onClose}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: 'rgba(193,96,58,0.08)',
+                border: '1px solid rgba(193,96,58,0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: '#c1603a',
+              }}
             >
-              <X size={16} />
+              <X size={15} />
             </button>
-            
-            <header style={{ marginBottom: '20px', textAlign: 'center' }}>
-              <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: '"Outfit", sans-serif', fontSize: '30px', color: '#c1603a', fontWeight: 700 }}>
-                 <Target size={20} color="#c1603a" /> Nuevo Proyecto
-              </h2>
-            </header>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-              
-              {/* Name Input */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Nombre</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Ej. Diseño Landing Page"
-                  className="modal-input"
-                />
-              </div>
 
-              {/* Venture */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Venture</label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {ventures.map((v) => (
-                    <motion.button
-                      key={v}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setVenture(v)}
-                      className="modal-chip"
-                      style={{ 
-                         transition: 'all 0.25s ease',
-                         borderColor: venture === v ? color : 'rgba(255,255,255,0.14)',
-                         color: venture === v ? color : 'rgba(255,255,255,0.7)',
-                         background: venture === v ? 'rgba(193,96,58,0.15)' : 'rgba(255,255,255,0.03)',
-                         boxShadow: venture === v ? 'inset 0 0 10px rgba(193,96,58,0.45)' : 'none'
-                      }}
-                    >
-                      {v}
-                    </motion.button>
-                  ))}
-                </div>
-              </div>
+            <h2 style={{
+              fontFamily: '"Outfit", sans-serif',
+              fontWeight: 800,
+              fontSize: '26px',
+              color: '#2d1a0e',
+              marginBottom: '4px',
+              paddingRight: '40px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}>
+              <Target size={20} color="#c1603a" />
+              Nuevo proyecto
+            </h2>
+            <p style={{
+              fontSize: '13px',
+              color: '#b08878',
+              marginBottom: '24px',
+              fontWeight: 400,
+            }}>
+              Registra tu nuevo proyecto
+            </p>
 
-              {/* Departments (Multi) */}
-               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Owner(s)</label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {depts.map((d) => {
-                     const isSel = departments.includes(d);
-                     return (
-                      <motion.button
-                        key={d}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => toggleDept(d)}
-                        className="modal-chip"
-                        style={{
-                          transition: 'all 0.25s ease',
-                          borderColor: isSel ? '#c1603a' : 'rgba(255,255,255,0.14)',
-                          color: isSel ? '#c1603a' : 'rgba(255,255,255,0.7)',
-                          background: isSel ? 'rgba(193,96,58,0.15)' : 'rgba(255,255,255,0.03)',
-                          boxShadow: isSel ? 'inset 0 0 10px rgba(193,96,58,0.35)' : 'none'
-                        }}
-                      >
-                        {d}
-                      </motion.button>
-                    )
-                  })}
-                </div>
-              </div>
+            <p style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: '#b08878',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: '8px',
+            }}>
+              Nombre
+            </p>
+            <input
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="ej. Diseño Landing Page"
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                borderRadius: '12px',
+                border: '1.5px solid #e8d5c8',
+                background: '#fdf6f0',
+                fontFamily: '"Outfit", sans-serif',
+                fontSize: '15px',
+                fontWeight: 500,
+                color: '#2d1a0e',
+                outline: 'none',
+                marginBottom: '16px',
+              }}
+              onFocus={e => e.target.style.borderColor = '#c1603a'}
+              onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+            />
 
-              {/* Priority */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Prioridad</label>
-                <div style={{ display: 'flex', background: 'rgba(193,96,58,0.08)', padding: '4px', borderRadius: '12px', border: '1px solid rgba(193,96,58,0.15)' }}>
-                   {(['Baja', 'Media', 'Alta'] as const).map(p => (
-                      <button
-                        key={p}
-                        onClick={() => setPriority(p)}
-                        style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '10px 0', borderRadius: '10px', fontSize: '14px', fontWeight: 700, transition: 'all 0.25s ease', color: priority === p ? (p === 'Alta' ? '#fca5a5' : p === 'Media' ? '#fde047' : '#4a9068') : '#b08878', background: priority === p ? (p === 'Alta' ? 'rgba(248,113,113,0.18)' : p === 'Media' ? 'rgba(250,204,21,0.18)' : 'rgba(74,222,128,0.18)') : 'transparent' }}
-                      >
-                        {p}
-                      </button>
-                   ))}
-                </div>
-              </div>
-
-              {/* Progress */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Progreso ({progress}%)</label>
-                 </div>
-                 <input 
-                   type="range"
-                   min="0" max="100" step="10"
-                   value={progress}
-                   onChange={(e) => setProgress(Number(e.target.value))}
-                    style={{ width: '100%', accentColor: '#c1603a' }}
-                  />
-              </div>
-
-              {/* Actions */}
-              <button
-                onClick={handleClose}
-                disabled={!name || departments.length === 0}
-                style={{ marginTop: '8px', border: '1px solid rgba(193,96,58,0.5)', borderRadius: '14px', padding: '14px 16px', background: 'linear-gradient(135deg, #c1603a, #d4724a)', color: '#ffffff', fontWeight: 800, letterSpacing: '0.03em', cursor: 'pointer', opacity: !name || departments.length === 0 ? 0.45 : 1 }}
-              >
-                Guardar Proyecto
-              </button>
+            <p style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: '#b08878',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: '8px',
+            }}>
+              Venture
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
+              {ventures.map(opt => (
+                <button
+                  key={opt}
+                  onClick={() => setVenture(opt)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '100px',
+                    border: `1.5px solid ${venture === opt ? '#c1603a' : '#e8d5c8'}`,
+                    background: venture === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                    color: venture === opt ? '#c1603a' : '#7a4a36',
+                    fontFamily: '"Outfit", sans-serif',
+                    fontSize: '13px',
+                    fontWeight: venture === opt ? 700 : 400,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {opt}
+                </button>
+              ))}
             </div>
+
+            <p style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: '#b08878',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: '8px',
+            }}>
+              Prioridad
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
+              {priorities.map(opt => (
+                <button
+                  key={opt}
+                  onClick={() => setPriority(opt)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '100px',
+                    border: `1.5px solid ${priority === opt ? '#c1603a' : '#e8d5c8'}`,
+                    background: priority === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                    color: priority === opt ? '#c1603a' : '#7a4a36',
+                    fontFamily: '"Outfit", sans-serif',
+                    fontSize: '13px',
+                    fontWeight: priority === opt ? 700 : 400,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+
+            <p style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: '#b08878',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: '8px',
+            }}>
+              Progreso ({progress}%)
+            </p>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              step="10"
+              value={progress}
+              onChange={e => setProgress(Number(e.target.value))}
+              style={{
+                width: '100%',
+                marginBottom: '16px',
+                accentColor: '#c1603a',
+              }}
+            />
+
+            <p style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: '#b08878',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: '8px',
+            }}>
+              Estado
+            </p>
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
+              {statuses.map(opt => (
+                <button
+                  key={opt}
+                  onClick={() => setStatus(opt)}
+                  style={{
+                    flex: 1,
+                    padding: '10px 0',
+                    borderRadius: '12px',
+                    border: `1.5px solid ${status === opt ? '#c1603a' : '#e8d5c8'}`,
+                    background: status === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                    color: status === opt ? '#c1603a' : '#7a4a36',
+                    fontFamily: '"Outfit", sans-serif',
+                    fontSize: '14px',
+                    fontWeight: status === opt ? 700 : 400,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+
+            <button
+              className="btn-gold"
+              onClick={handleClose}
+              disabled={!name || !venture || !priority}
+              style={{ opacity: !name || !venture || !priority ? 0.45 : 1, cursor: !name || !venture || !priority ? 'not-allowed' : 'pointer' }}
+            >
+              Guardar
+            </button>
           </motion.div>
         </>
       )}

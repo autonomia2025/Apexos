@@ -1,78 +1,104 @@
+import React from 'react';
+
 /**
  * PURE CSS PROGRESS BAR
- * 0-100 value implementation with inline width transitions.
+ * Memoized to prevent re-renders on parent state changes.
  */
-export const ProgressBar = ({ 
-  value, 
-  color, 
-  height = 6 
-}: { 
-  value: number; 
-  color: string; 
-  height?: number 
+export const ProgressBar = React.memo(({
+  value,
+  color,
+  height = 6
+}: {
+  value: number;
+  color: string;
+  height?: number
 }) => (
-  <div className="progress-track" style={{ height }}>
-    <div
-      className="progress-fill"
-      style={{ 
-        width: `${Math.min(value, 100)}%`, 
-        background: color,
-        boxShadow: `0 0 10px ${color}33`
-      }}
-    />
+  <div style={{
+    height,
+    borderRadius: height / 2,
+    background: 'rgba(193,96,58,0.1)',
+    overflow: 'hidden',
+  }}>
+    <div style={{
+      height: '100%',
+      width: `${Math.min(Math.max(value, 0), 100)}%`,
+      background: color,
+      borderRadius: height / 2,
+      transition: 'width 0.6s ease-out',
+    }}/>
   </div>
-);
+));
 
 /**
  * SVG-BASED AVATAR RING
- * Premium circular progress avatar for metric overviews.
+ * Memoized, no framer-motion — pure CSS transition.
  */
-export const AvatarRing = ({ 
-  initials, 
-  color, 
-  size = 64, 
-  progress = 0 
-}: { 
-  initials: string; 
-  color: string; 
-  size?: number; 
-  progress?: number 
+export const AvatarRing = React.memo(({
+  initials,
+  color,
+  size = 72,
+  progress = 0
+}: {
+  initials: string;
+  color: string;
+  size?: number;
+  progress?: number
 }) => {
-  const r = (size / 2) - 3;
+  const r = (size / 2) - 5;
   const circ = 2 * Math.PI * r;
-  const offset = circ - (Math.min(progress, 100) / 100) * circ;
-  
+  const offset = circ * (1 - Math.min(progress, 100) / 100);
+
   return (
     <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
-      {/* Circle Track */}
-      <svg width={size} height={size} style={{ position: 'absolute', top: 0, left: 0, transform: 'rotate(-90deg)' }}>
-        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5"/>
-        <circle 
-          cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth="2.5"
-          strokeDasharray={circ} strokeDashoffset={offset}
-          strokeLinecap="round" 
-          style={{ transition: 'stroke-dashoffset 1s ease-out' }}
+      <svg
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
+        style={{ position: 'absolute', top: 0, left: 0, transform: 'rotate(-90deg)' }}
+      >
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke="rgba(193,96,58,0.12)"
+          strokeWidth="3"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke={color}
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeDasharray={circ}
+          strokeDashoffset={offset}
+          style={{ transition: 'stroke-dashoffset 0.8s ease-out' }}
         />
       </svg>
-      {/* Avatar Center */}
       <div style={{
-        position: 'absolute', inset: '5px',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%,-50%)',
+        width: size - 14,
+        height: size - 14,
         borderRadius: '50%',
-        background: `linear-gradient(135deg, ${color}20, ${color}08)`,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        border: '1px solid rgba(193,96,58,0.08)',
-        boxShadow: '0 4px 12px rgba(180, 100, 60, 0.08)'
+        background: `${color}18`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}>
-        <span style={{ 
-          color, 
-          fontSize: Math.round(size * 0.28), 
-          fontWeight: 700, 
-          fontFamily: '"Outfit", sans-serif',
-          letterSpacing: '0.05em'
+        <span style={{
+          fontFamily: '"Outfit",sans-serif',
+          fontWeight: 800,
+          fontSize: size * 0.3,
+          color,
         }}>
           {initials}
         </span>
       </div>
     </div>
   );
-};
+});
