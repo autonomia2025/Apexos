@@ -2,25 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import './styles/globals.css';
-import FontFaceObserver from 'fontfaceobserver';
 
-// Wait for fonts to load before rendering the app to avoid CLS and FOUT,
-// especially with Playfair Display layout shifts.
-const loadFonts = async () => {
-  const dmSans = new FontFaceObserver('DM Sans');
-  const playfair = new FontFaceObserver('Playfair Display');
+console.log('App mounting started...');
 
-  try {
-    await Promise.all([dmSans.load(), playfair.load()]);
-  } catch (e) {
-    console.warn('Fonts failed to load', e);
-  }
+window.onerror = (msg, url, lineNo, columnNo, error) => {
+  console.error('GLOBAL ERROR:', msg, error);
+  document.body.innerHTML = `<div style="background:red; color:white; padding:20px;">ERROR: ${msg}</div>`;
+  return false;
 };
 
-loadFonts().finally(() => {
-  ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>,
-  );
-});
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { GlassCard } from '../../ui/GlassCard';
 import { TablioData, Department } from '../../../types/tablio';
 
