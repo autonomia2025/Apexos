@@ -15,6 +15,7 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color: _c
   const [title, setTitle] = useState('');
   const [value, setValue] = useState('');
   const [deadline, setDeadline] = useState('');
+  const [isShortScreen, setIsShortScreen] = useState(window.innerHeight < 700);
 
   const modules: { id: GoalModule; label: string }[] = [
     { id: 'nutrition', label: 'Nutrición' },
@@ -23,6 +24,12 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color: _c
     { id: 'learning', label: 'Aprendizaje' },
     { id: 'general', label: 'General' },
   ];
+
+  useEffect(() => {
+    const handleResize = () => setIsShortScreen(window.innerHeight < 700);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -79,19 +86,21 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color: _c
             onClick={e => e.stopPropagation()}
             style={{
               position: 'fixed',
-              top: '50%',
+              top: isShortScreen ? '44%' : '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
               zIndex: 101,
               width: '92%',
               maxWidth: '440px',
-              maxHeight: '85vh',
+              maxHeight: '80vh',
+              height: 'auto',
               overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch',
               background: '#ffffff',
               borderRadius: '24px',
               border: '1px solid #e8d5c8',
               boxShadow: '0 24px 60px rgba(45,26,14,0.18)',
-              padding: '28px 24px 24px',
+              padding: '28px 24px 32px',
             }}
           >
             <button
@@ -110,6 +119,7 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color: _c
                 justifyContent: 'center',
                 cursor: 'pointer',
                 color: '#c1603a',
+                zIndex: 1,
               }}
             >
               <X size={15} />
@@ -134,176 +144,194 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, color: _c
               Define tu objetivo
             </p>
 
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-            }}>
-              Tipo
-            </p>
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-              {(['personal', 'shared'] as GoalType[]).map(t => (
-                <button
-                  key={t}
-                  onClick={() => setType(t)}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Tipo
+                </p>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  {(['personal', 'shared'] as GoalType[]).map(t => (
+                    <button
+                      key={t}
+                      onClick={() => setType(t)}
+                      style={{
+                        flex: 1,
+                        padding: '10px 0',
+                        borderRadius: '12px',
+                        border: `1.5px solid ${type === t ? '#c1603a' : '#e8d5c8'}`,
+                        background: type === t ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                        color: type === t ? '#c1603a' : '#7a4a36',
+                        fontFamily: '"Outfit", sans-serif',
+                        fontSize: '14px',
+                        fontWeight: type === t ? 700 : 400,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      {t === 'personal' ? 'Personal' : 'De pareja'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Módulo
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {modules.map(opt => (
+                    <button
+                      key={opt.id}
+                      onClick={() => setModule(opt.id)}
+                      style={{
+                        padding: '8px 16px',
+                        borderRadius: '100px',
+                        border: `1.5px solid ${module === opt.id ? '#c1603a' : '#e8d5c8'}`,
+                        background: module === opt.id ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                        color: module === opt.id ? '#c1603a' : '#7a4a36',
+                        fontFamily: '"Outfit", sans-serif',
+                        fontSize: '13px',
+                        fontWeight: module === opt.id ? 700 : 400,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Título
+                </p>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  placeholder="ej. Leer 5 libros"
                   style={{
-                    flex: 1,
-                    padding: '10px 0',
+                    width: '100%',
+                    padding: '12px 16px',
                     borderRadius: '12px',
-                    border: `1.5px solid ${type === t ? '#c1603a' : '#e8d5c8'}`,
-                    background: type === t ? 'rgba(193,96,58,0.08)' : '#ffffff',
-                    color: type === t ? '#c1603a' : '#7a4a36',
+                    border: '1.5px solid #e8d5c8',
+                    background: '#fdf6f0',
                     fontFamily: '"Outfit", sans-serif',
-                    fontSize: '14px',
-                    fontWeight: type === t ? 700 : 400,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s',
+                    fontSize: '15px',
+                    fontWeight: 500,
+                    color: '#2d1a0e',
+                    outline: 'none',
                   }}
-                >
-                  {t === 'personal' ? 'Personal' : 'De pareja'}
-                </button>
-              ))}
-            </div>
+                  onFocus={e => e.target.style.borderColor = '#c1603a'}
+                  onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+                />
+              </div>
 
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-            }}>
-              Módulo
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
-              {modules.map(opt => (
-                <button
-                  key={opt.id}
-                  onClick={() => setModule(opt.id)}
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Valor objetivo
+                </p>
+                <input
+                  type="number"
+                  value={value}
+                  onChange={e => setValue(e.target.value)}
+                  placeholder="ej. 5"
                   style={{
-                    padding: '8px 16px',
-                    borderRadius: '100px',
-                    border: `1.5px solid ${module === opt.id ? '#c1603a' : '#e8d5c8'}`,
-                    background: module === opt.id ? 'rgba(193,96,58,0.08)' : '#ffffff',
-                    color: module === opt.id ? '#c1603a' : '#7a4a36',
+                    width: '100%',
+                    padding: '12px 16px',
+                    borderRadius: '12px',
+                    border: '1.5px solid #e8d5c8',
+                    background: '#fdf6f0',
                     fontFamily: '"Outfit", sans-serif',
-                    fontSize: '13px',
-                    fontWeight: module === opt.id ? 700 : 400,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s',
+                    fontSize: '15px',
+                    fontWeight: 500,
+                    color: '#2d1a0e',
+                    outline: 'none',
                   }}
-                >
-                  {opt.label}
-                </button>
-              ))}
+                  onFocus={e => e.target.style.borderColor = '#c1603a'}
+                  onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+                />
+              </div>
+
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Fecha límite
+                </p>
+                <input
+                  type="date"
+                  value={deadline}
+                  onChange={e => setDeadline(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    borderRadius: '12px',
+                    border: '1.5px solid #e8d5c8',
+                    background: '#fdf6f0',
+                    fontFamily: '"Outfit", sans-serif',
+                    fontSize: '15px',
+                    fontWeight: 500,
+                    color: '#2d1a0e',
+                    outline: 'none',
+                  }}
+                  onFocus={e => e.target.style.borderColor = '#c1603a'}
+                  onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+                />
+              </div>
             </div>
 
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
+            <div style={{
+              position: 'sticky',
+              bottom: 0,
+              background: '#ffffff',
+              paddingTop: '12px',
+              paddingBottom: '4px',
+              marginTop: '16px',
             }}>
-              Título
-            </p>
-            <input
-              type="text"
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              placeholder="ej. Leer 5 libros"
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: '12px',
-                border: '1.5px solid #e8d5c8',
-                background: '#fdf6f0',
-                fontFamily: '"Outfit", sans-serif',
-                fontSize: '15px',
-                fontWeight: 500,
-                color: '#2d1a0e',
-                outline: 'none',
-                marginBottom: '16px',
-              }}
-              onFocus={e => e.target.style.borderColor = '#c1603a'}
-              onBlur={e => e.target.style.borderColor = '#e8d5c8'}
-            />
-
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-            }}>
-              Valor objetivo
-            </p>
-            <input
-              type="number"
-              value={value}
-              onChange={e => setValue(e.target.value)}
-              placeholder="ej. 5"
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: '12px',
-                border: '1.5px solid #e8d5c8',
-                background: '#fdf6f0',
-                fontFamily: '"Outfit", sans-serif',
-                fontSize: '15px',
-                fontWeight: 500,
-                color: '#2d1a0e',
-                outline: 'none',
-                marginBottom: '16px',
-              }}
-              onFocus={e => e.target.style.borderColor = '#c1603a'}
-              onBlur={e => e.target.style.borderColor = '#e8d5c8'}
-            />
-
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-            }}>
-              Fecha límite
-            </p>
-            <input
-              type="date"
-              value={deadline}
-              onChange={e => setDeadline(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: '12px',
-                border: '1.5px solid #e8d5c8',
-                background: '#fdf6f0',
-                fontFamily: '"Outfit", sans-serif',
-                fontSize: '15px',
-                fontWeight: 500,
-                color: '#2d1a0e',
-                outline: 'none',
-                marginBottom: '24px',
-              }}
-              onFocus={e => e.target.style.borderColor = '#c1603a'}
-              onBlur={e => e.target.style.borderColor = '#e8d5c8'}
-            />
-
-            <button
-              className="btn-gold"
-              onClick={handleClose}
-              disabled={!title || !value || !deadline || !module}
-              style={{ opacity: !title || !value || !deadline || !module ? 0.45 : 1, cursor: !title || !value || !deadline || !module ? 'not-allowed' : 'pointer' }}
-            >
-              Guardar
-            </button>
+              <button
+                className="btn-gold"
+                onClick={handleClose}
+                disabled={!title || !value || !deadline || !module}
+                style={{ opacity: !title || !value || !deadline || !module ? 0.45 : 1, cursor: !title || !value || !deadline || !module ? 'not-allowed' : 'pointer' }}
+              >
+                Guardar
+              </button>
+            </div>
           </motion.div>
         </>
       )}

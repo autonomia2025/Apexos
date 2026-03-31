@@ -13,9 +13,16 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
   const [topic, setTopic] = useState('');
   const [duration, setDuration] = useState<string | null>(null);
   const [resource, setResource] = useState<LearningResource | null>(null);
+  const [isShortScreen, setIsShortScreen] = useState(window.innerHeight < 700);
 
   const durations = ['15min', '30min', '45min', '1h', '1.5h', '2h+'];
   const resources: LearningResource[] = ['Libro', 'Curso', 'Podcast', 'Video', 'Práctica'];
+
+  useEffect(() => {
+    const handleResize = () => setIsShortScreen(window.innerHeight < 700);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -70,19 +77,21 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
             onClick={e => e.stopPropagation()}
             style={{
               position: 'fixed',
-              top: '50%',
+              top: isShortScreen ? '44%' : '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
               zIndex: 101,
               width: '92%',
               maxWidth: '440px',
-              maxHeight: '85vh',
+              maxHeight: '80vh',
+              height: 'auto',
               overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch',
               background: '#ffffff',
               borderRadius: '24px',
               border: '1px solid #e8d5c8',
               boxShadow: '0 24px 60px rgba(45,26,14,0.18)',
-              padding: '28px 24px 24px',
+              padding: '28px 24px 32px',
             }}
           >
             <button
@@ -101,6 +110,7 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
                 justifyContent: 'center',
                 cursor: 'pointer',
                 color: '#c1603a',
+                zIndex: 1,
               }}
             >
               <X size={15} />
@@ -125,112 +135,128 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
               ¿Qué estudiaste?
             </p>
 
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-            }}>
-              Tema
-            </p>
-            <input
-              type="text"
-              value={topic}
-              onChange={e => setTopic(e.target.value)}
-              placeholder="ej. React Componentes"
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: '12px',
-                border: '1.5px solid #e8d5c8',
-                background: '#fdf6f0',
-                fontFamily: '"Outfit", sans-serif',
-                fontSize: '15px',
-                fontWeight: 500,
-                color: '#2d1a0e',
-                outline: 'none',
-                marginBottom: '16px',
-              }}
-              onFocus={e => e.target.style.borderColor = '#c1603a'}
-              onBlur={e => e.target.style.borderColor = '#e8d5c8'}
-            />
-
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-            }}>
-              Duración
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
-              {durations.map(opt => (
-                <button
-                  key={opt}
-                  onClick={() => setDuration(opt)}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Tema
+                </p>
+                <input
+                  type="text"
+                  value={topic}
+                  onChange={e => setTopic(e.target.value)}
+                  placeholder="ej. React Componentes"
                   style={{
-                    padding: '8px 16px',
-                    borderRadius: '100px',
-                    border: `1.5px solid ${duration === opt ? '#c1603a' : '#e8d5c8'}`,
-                    background: duration === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
-                    color: duration === opt ? '#c1603a' : '#7a4a36',
+                    width: '100%',
+                    padding: '12px 16px',
+                    borderRadius: '12px',
+                    border: '1.5px solid #e8d5c8',
+                    background: '#fdf6f0',
                     fontFamily: '"Outfit", sans-serif',
-                    fontSize: '13px',
-                    fontWeight: duration === opt ? 700 : 400,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s',
+                    fontSize: '15px',
+                    fontWeight: 500,
+                    color: '#2d1a0e',
+                    outline: 'none',
                   }}
-                >
-                  {opt}
-                </button>
-              ))}
+                  onFocus={e => e.target.style.borderColor = '#c1603a'}
+                  onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+                />
+              </div>
+
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Duración
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {durations.map(opt => (
+                    <button
+                      key={opt}
+                      onClick={() => setDuration(opt)}
+                      style={{
+                        padding: '8px 16px',
+                        borderRadius: '100px',
+                        border: `1.5px solid ${duration === opt ? '#c1603a' : '#e8d5c8'}`,
+                        background: duration === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                        color: duration === opt ? '#c1603a' : '#7a4a36',
+                        fontFamily: '"Outfit", sans-serif',
+                        fontSize: '13px',
+                        fontWeight: duration === opt ? 700 : 400,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Tipo
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {resources.map(opt => (
+                    <button
+                      key={opt}
+                      onClick={() => setResource(opt)}
+                      style={{
+                        padding: '8px 16px',
+                        borderRadius: '100px',
+                        border: `1.5px solid ${resource === opt ? '#c1603a' : '#e8d5c8'}`,
+                        background: resource === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                        color: resource === opt ? '#c1603a' : '#7a4a36',
+                        fontFamily: '"Outfit", sans-serif',
+                        fontSize: '13px',
+                        fontWeight: resource === opt ? 700 : 400,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
+            <div style={{
+              position: 'sticky',
+              bottom: 0,
+              background: '#ffffff',
+              paddingTop: '12px',
+              paddingBottom: '4px',
+              marginTop: '16px',
             }}>
-              Tipo
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '24px' }}>
-              {resources.map(opt => (
-                <button
-                  key={opt}
-                  onClick={() => setResource(opt)}
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: '100px',
-                    border: `1.5px solid ${resource === opt ? '#c1603a' : '#e8d5c8'}`,
-                    background: resource === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
-                    color: resource === opt ? '#c1603a' : '#7a4a36',
-                    fontFamily: '"Outfit", sans-serif',
-                    fontSize: '13px',
-                    fontWeight: resource === opt ? 700 : 400,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s',
-                  }}
-                >
-                  {opt}
-                </button>
-              ))}
+              <button
+                className="btn-gold"
+                onClick={handleClose}
+                disabled={!topic || !duration || !resource}
+                style={{ opacity: !topic || !duration || !resource ? 0.45 : 1, cursor: !topic || !duration || !resource ? 'not-allowed' : 'pointer' }}
+              >
+                Guardar
+              </button>
             </div>
-
-            <button
-              className="btn-gold"
-              onClick={handleClose}
-              disabled={!topic || !duration || !resource}
-              style={{ opacity: !topic || !duration || !resource ? 0.45 : 1, cursor: !topic || !duration || !resource ? 'not-allowed' : 'pointer' }}
-            >
-              Guardar
-            </button>
           </motion.div>
         </>
       )}

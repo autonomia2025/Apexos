@@ -12,8 +12,15 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
   const [mealName, setMealName] = useState('');
   const [calories, setCalories] = useState('');
   const [mealType, setMealType] = useState<string | null>(null);
+  const [isShortScreen, setIsShortScreen] = useState(window.innerHeight < 700);
 
   const mealTypes = ['Desayuno', 'Almuerzo', 'Cena', 'Snack'];
+
+  useEffect(() => {
+    const handleResize = () => setIsShortScreen(window.innerHeight < 700);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -68,19 +75,21 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
             onClick={e => e.stopPropagation()}
             style={{
               position: 'fixed',
-              top: '50%',
+              top: isShortScreen ? '44%' : '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
               zIndex: 101,
               width: '92%',
               maxWidth: '440px',
-              maxHeight: '85vh',
+              maxHeight: '80vh',
+              height: 'auto',
               overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch',
               background: '#ffffff',
               borderRadius: '24px',
               border: '1px solid #e8d5c8',
               boxShadow: '0 24px 60px rgba(45,26,14,0.18)',
-              padding: '28px 24px 24px',
+              padding: '28px 24px 32px',
             }}
           >
             <button
@@ -99,6 +108,7 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
                 justifyContent: 'center',
                 cursor: 'pointer',
                 color: '#c1603a',
+                zIndex: 1,
               }}
             >
               <X size={15} />
@@ -123,111 +133,126 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
               ¿Qué comiste?
             </p>
 
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-            }}>
-              Nombre del alimento
-            </p>
-            <input
-              type="text"
-              value={mealName}
-              onChange={e => setMealName(e.target.value)}
-              placeholder="ej. Pollo con arroz"
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: '12px',
-                border: '1.5px solid #e8d5c8',
-                background: '#fdf6f0',
-                fontFamily: '"Outfit", sans-serif',
-                fontSize: '15px',
-                fontWeight: 500,
-                color: '#2d1a0e',
-                outline: 'none',
-                marginBottom: '16px',
-              }}
-              onFocus={e => e.target.style.borderColor = '#c1603a'}
-              onBlur={e => e.target.style.borderColor = '#e8d5c8'}
-            />
-
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-            }}>
-              Calorías estimadas
-            </p>
-            <input
-              type="number"
-              value={calories}
-              onChange={e => setCalories(e.target.value)}
-              placeholder="ej. 450"
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: '12px',
-                border: '1.5px solid #e8d5c8',
-                background: '#fdf6f0',
-                fontFamily: '"Outfit", sans-serif',
-                fontSize: '15px',
-                fontWeight: 500,
-                color: '#2d1a0e',
-                outline: 'none',
-                marginBottom: '16px',
-              }}
-              onFocus={e => e.target.style.borderColor = '#c1603a'}
-              onBlur={e => e.target.style.borderColor = '#e8d5c8'}
-            />
-
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-            }}>
-              Tipo de comida
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '24px' }}>
-              {mealTypes.map(opt => (
-                <button
-                  key={opt}
-                  onClick={() => setMealType(opt)}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Nombre del alimento
+                </p>
+                <input
+                  type="text"
+                  value={mealName}
+                  onChange={e => setMealName(e.target.value)}
+                  placeholder="ej. Pollo con arroz"
                   style={{
-                    padding: '8px 16px',
-                    borderRadius: '100px',
-                    border: `1.5px solid ${mealType === opt ? '#c1603a' : '#e8d5c8'}`,
-                    background: mealType === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
-                    color: mealType === opt ? '#c1603a' : '#7a4a36',
+                    width: '100%',
+                    padding: '12px 16px',
+                    borderRadius: '12px',
+                    border: '1.5px solid #e8d5c8',
+                    background: '#fdf6f0',
                     fontFamily: '"Outfit", sans-serif',
-                    fontSize: '13px',
-                    fontWeight: mealType === opt ? 700 : 400,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s',
+                    fontSize: '15px',
+                    fontWeight: 500,
+                    color: '#2d1a0e',
+                    outline: 'none',
                   }}
-                >
-                  {opt}
-                </button>
-              ))}
+                  onFocus={e => e.target.style.borderColor = '#c1603a'}
+                  onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+                />
+              </div>
+
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Calorías estimadas
+                </p>
+                <input
+                  type="number"
+                  value={calories}
+                  onChange={e => setCalories(e.target.value)}
+                  placeholder="ej. 450"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    borderRadius: '12px',
+                    border: '1.5px solid #e8d5c8',
+                    background: '#fdf6f0',
+                    fontFamily: '"Outfit", sans-serif',
+                    fontSize: '15px',
+                    fontWeight: 500,
+                    color: '#2d1a0e',
+                    outline: 'none',
+                  }}
+                  onFocus={e => e.target.style.borderColor = '#c1603a'}
+                  onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+                />
+              </div>
+
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Tipo de comida
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {mealTypes.map(opt => (
+                    <button
+                      key={opt}
+                      onClick={() => setMealType(opt)}
+                      style={{
+                        padding: '8px 16px',
+                        borderRadius: '100px',
+                        border: `1.5px solid ${mealType === opt ? '#c1603a' : '#e8d5c8'}`,
+                        background: mealType === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                        color: mealType === opt ? '#c1603a' : '#7a4a36',
+                        fontFamily: '"Outfit", sans-serif',
+                        fontSize: '13px',
+                        fontWeight: mealType === opt ? 700 : 400,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <button
-              className="btn-gold"
-              onClick={handleClose}
-              disabled={!mealName || !mealType}
-              style={{ opacity: !mealName || !mealType ? 0.45 : 1, cursor: !mealName || !mealType ? 'not-allowed' : 'pointer' }}
-            >
-              Guardar
-            </button>
+            <div style={{
+              position: 'sticky',
+              bottom: 0,
+              background: '#ffffff',
+              paddingTop: '12px',
+              paddingBottom: '4px',
+              marginTop: '16px',
+            }}>
+              <button
+                className="btn-gold"
+                onClick={handleClose}
+                disabled={!mealName || !mealType}
+                style={{ opacity: !mealName || !mealType ? 0.45 : 1, cursor: !mealName || !mealType ? 'not-allowed' : 'pointer' }}
+              >
+                Guardar
+              </button>
+            </div>
           </motion.div>
         </>
       )}

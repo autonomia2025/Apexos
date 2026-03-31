@@ -15,10 +15,17 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, col
   const [priority, setPriority] = useState<string | null>(null);
   const [status, setStatus] = useState<string>('Activo');
   const [progress, setProgress] = useState(0);
+  const [isShortScreen, setIsShortScreen] = useState(window.innerHeight < 700);
 
   const ventures = ['RecepcionistaAI', 'AutonomIA', 'BotFactory', 'ROMO OS', 'Otro'];
   const priorities = ['Alta', 'Media', 'Baja'];
   const statuses = ['Activo', 'En pausa'];
+
+  useEffect(() => {
+    const handleResize = () => setIsShortScreen(window.innerHeight < 700);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -75,19 +82,21 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, col
             onClick={e => e.stopPropagation()}
             style={{
               position: 'fixed',
-              top: '50%',
+              top: isShortScreen ? '44%' : '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
               zIndex: 101,
               width: '92%',
               maxWidth: '440px',
-              maxHeight: '85vh',
+              maxHeight: '80vh',
+              height: 'auto',
               overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch',
               background: '#ffffff',
               borderRadius: '24px',
               border: '1px solid #e8d5c8',
               boxShadow: '0 24px 60px rgba(45,26,14,0.18)',
-              padding: '28px 24px 24px',
+              padding: '28px 24px 32px',
             }}
           >
             <button
@@ -106,6 +115,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, col
                 justifyContent: 'center',
                 cursor: 'pointer',
                 color: '#c1603a',
+                zIndex: 1,
               }}
             >
               <X size={15} />
@@ -134,170 +144,186 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, col
               Registra tu nuevo proyecto
             </p>
 
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-            }}>
-              Nombre
-            </p>
-            <input
-              type="text"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="ej. Diseño Landing Page"
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: '12px',
-                border: '1.5px solid #e8d5c8',
-                background: '#fdf6f0',
-                fontFamily: '"Outfit", sans-serif',
-                fontSize: '15px',
-                fontWeight: 500,
-                color: '#2d1a0e',
-                outline: 'none',
-                marginBottom: '16px',
-              }}
-              onFocus={e => e.target.style.borderColor = '#c1603a'}
-              onBlur={e => e.target.style.borderColor = '#e8d5c8'}
-            />
-
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-            }}>
-              Venture
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
-              {ventures.map(opt => (
-                <button
-                  key={opt}
-                  onClick={() => setVenture(opt)}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Nombre
+                </p>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  placeholder="ej. Diseño Landing Page"
                   style={{
-                    padding: '8px 16px',
-                    borderRadius: '100px',
-                    border: `1.5px solid ${venture === opt ? '#c1603a' : '#e8d5c8'}`,
-                    background: venture === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
-                    color: venture === opt ? '#c1603a' : '#7a4a36',
-                    fontFamily: '"Outfit", sans-serif',
-                    fontSize: '13px',
-                    fontWeight: venture === opt ? 700 : 400,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s',
-                  }}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
-
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-            }}>
-              Prioridad
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
-              {priorities.map(opt => (
-                <button
-                  key={opt}
-                  onClick={() => setPriority(opt)}
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: '100px',
-                    border: `1.5px solid ${priority === opt ? '#c1603a' : '#e8d5c8'}`,
-                    background: priority === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
-                    color: priority === opt ? '#c1603a' : '#7a4a36',
-                    fontFamily: '"Outfit", sans-serif',
-                    fontSize: '13px',
-                    fontWeight: priority === opt ? 700 : 400,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s',
-                  }}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
-
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-            }}>
-              Progreso ({progress}%)
-            </p>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              step="10"
-              value={progress}
-              onChange={e => setProgress(Number(e.target.value))}
-              style={{
-                width: '100%',
-                marginBottom: '16px',
-                accentColor: '#c1603a',
-              }}
-            />
-
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-            }}>
-              Estado
-            </p>
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
-              {statuses.map(opt => (
-                <button
-                  key={opt}
-                  onClick={() => setStatus(opt)}
-                  style={{
-                    flex: 1,
-                    padding: '10px 0',
+                    width: '100%',
+                    padding: '12px 16px',
                     borderRadius: '12px',
-                    border: `1.5px solid ${status === opt ? '#c1603a' : '#e8d5c8'}`,
-                    background: status === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
-                    color: status === opt ? '#c1603a' : '#7a4a36',
+                    border: '1.5px solid #e8d5c8',
+                    background: '#fdf6f0',
                     fontFamily: '"Outfit", sans-serif',
-                    fontSize: '14px',
-                    fontWeight: status === opt ? 700 : 400,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s',
+                    fontSize: '15px',
+                    fontWeight: 500,
+                    color: '#2d1a0e',
+                    outline: 'none',
                   }}
-                >
-                  {opt}
-                </button>
-              ))}
+                  onFocus={e => e.target.style.borderColor = '#c1603a'}
+                  onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+                />
+              </div>
+
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Venture
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {ventures.map(opt => (
+                    <button
+                      key={opt}
+                      onClick={() => setVenture(opt)}
+                      style={{
+                        padding: '8px 16px',
+                        borderRadius: '100px',
+                        border: `1.5px solid ${venture === opt ? '#c1603a' : '#e8d5c8'}`,
+                        background: venture === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                        color: venture === opt ? '#c1603a' : '#7a4a36',
+                        fontFamily: '"Outfit", sans-serif',
+                        fontSize: '13px',
+                        fontWeight: venture === opt ? 700 : 400,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Prioridad
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {priorities.map(opt => (
+                    <button
+                      key={opt}
+                      onClick={() => setPriority(opt)}
+                      style={{
+                        padding: '8px 16px',
+                        borderRadius: '100px',
+                        border: `1.5px solid ${priority === opt ? '#c1603a' : '#e8d5c8'}`,
+                        background: priority === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                        color: priority === opt ? '#c1603a' : '#7a4a36',
+                        fontFamily: '"Outfit", sans-serif',
+                        fontSize: '13px',
+                        fontWeight: priority === opt ? 700 : 400,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Progreso ({progress}%)
+                </p>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="10"
+                  value={progress}
+                  onChange={e => setProgress(Number(e.target.value))}
+                  style={{ width: '100%', accentColor: '#c1603a' }}
+                />
+              </div>
+
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Estado
+                </p>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  {statuses.map(opt => (
+                    <button
+                      key={opt}
+                      onClick={() => setStatus(opt)}
+                      style={{
+                        flex: 1,
+                        padding: '10px 0',
+                        borderRadius: '12px',
+                        border: `1.5px solid ${status === opt ? '#c1603a' : '#e8d5c8'}`,
+                        background: status === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                        color: status === opt ? '#c1603a' : '#7a4a36',
+                        fontFamily: '"Outfit", sans-serif',
+                        fontSize: '14px',
+                        fontWeight: status === opt ? 700 : 400,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <button
-              className="btn-gold"
-              onClick={handleClose}
-              disabled={!name || !venture || !priority}
-              style={{ opacity: !name || !venture || !priority ? 0.45 : 1, cursor: !name || !venture || !priority ? 'not-allowed' : 'pointer' }}
-            >
-              Guardar
-            </button>
+            <div style={{
+              position: 'sticky',
+              bottom: 0,
+              background: '#ffffff',
+              paddingTop: '12px',
+              paddingBottom: '4px',
+              marginTop: '16px',
+            }}>
+              <button
+                className="btn-gold"
+                onClick={handleClose}
+                disabled={!name || !venture || !priority}
+                style={{ opacity: !name || !venture || !priority ? 0.45 : 1, cursor: !name || !venture || !priority ? 'not-allowed' : 'pointer' }}
+              >
+                Guardar
+              </button>
+            </div>
           </motion.div>
         </>
       )}

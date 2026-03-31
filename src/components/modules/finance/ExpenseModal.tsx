@@ -13,8 +13,15 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState<ExpenseCategory | null>(null);
   const [note, setNote] = useState('');
+  const [isShortScreen, setIsShortScreen] = useState(window.innerHeight < 700);
 
   const categories: ExpenseCategory[] = ['Comida', 'Transporte', 'Salud', 'Ocio', 'Ropa', 'Otro'];
+
+  useEffect(() => {
+    const handleResize = () => setIsShortScreen(window.innerHeight < 700);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -69,19 +76,21 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
             onClick={e => e.stopPropagation()}
             style={{
               position: 'fixed',
-              top: '50%',
+              top: isShortScreen ? '44%' : '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
               zIndex: 101,
               width: '92%',
               maxWidth: '440px',
-              maxHeight: '85vh',
+              maxHeight: '80vh',
+              height: 'auto',
               overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch',
               background: '#ffffff',
               borderRadius: '24px',
               border: '1px solid #e8d5c8',
               boxShadow: '0 24px 60px rgba(45,26,14,0.18)',
-              padding: '28px 24px 24px',
+              padding: '28px 24px 32px',
             }}
           >
             <button
@@ -100,6 +109,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
                 justifyContent: 'center',
                 cursor: 'pointer',
                 color: '#c1603a',
+                zIndex: 1,
               }}
             >
               <X size={15} />
@@ -124,106 +134,119 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
               ¿En qué gastaste?
             </p>
 
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingBottom: '16px',
-              borderBottom: '1px solid #e8d5c8',
-              marginBottom: '16px',
-            }}>
-              <span style={{ fontSize: '28px', color: '#b08878', marginRight: '8px', fontWeight: 300 }}>$</span>
-              <input
-                type="number"
-                value={amount}
-                onChange={e => setAmount(e.target.value)}
-                placeholder="0"
-                style={{
-                  background: 'transparent',
-                  fontSize: '32px',
-                  fontFamily: '"Outfit", sans-serif',
-                  textAlign: 'center',
-                  color: '#2d1a0e',
-                  outline: 'none',
-                  width: '100%',
-                  fontWeight: 800,
-                }}
-              />
-            </div>
-
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-            }}>
-              Categoría
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
-              {categories.map(opt => (
-                <button
-                  key={opt}
-                  onClick={() => setCategory(opt)}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                paddingBottom: '16px',
+                borderBottom: '1px solid #e8d5c8',
+              }}>
+                <span style={{ fontSize: '28px', color: '#b08878', marginRight: '8px', fontWeight: 300 }}>$</span>
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={e => setAmount(e.target.value)}
+                  placeholder="0"
                   style={{
-                    padding: '8px 16px',
-                    borderRadius: '100px',
-                    border: `1.5px solid ${category === opt ? '#c1603a' : '#e8d5c8'}`,
-                    background: category === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
-                    color: category === opt ? '#c1603a' : '#7a4a36',
+                    background: 'transparent',
+                    fontSize: '32px',
                     fontFamily: '"Outfit", sans-serif',
-                    fontSize: '13px',
-                    fontWeight: category === opt ? 700 : 400,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s',
+                    textAlign: 'center',
+                    color: '#2d1a0e',
+                    outline: 'none',
+                    width: '100%',
+                    fontWeight: 800,
                   }}
-                >
-                  {opt}
-                </button>
-              ))}
+                />
+              </div>
+
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Categoría
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {categories.map(opt => (
+                    <button
+                      key={opt}
+                      onClick={() => setCategory(opt)}
+                      style={{
+                        padding: '8px 16px',
+                        borderRadius: '100px',
+                        border: `1.5px solid ${category === opt ? '#c1603a' : '#e8d5c8'}`,
+                        background: category === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                        color: category === opt ? '#c1603a' : '#7a4a36',
+                        fontFamily: '"Outfit", sans-serif',
+                        fontSize: '13px',
+                        fontWeight: category === opt ? 700 : 400,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#b08878',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                }}>
+                  Nota (opcional)
+                </p>
+                <input
+                  type="text"
+                  value={note}
+                  onChange={e => setNote(e.target.value)}
+                  placeholder="ej. Almuerzo de negocios"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    borderRadius: '12px',
+                    border: '1.5px solid #e8d5c8',
+                    background: '#fdf6f0',
+                    fontFamily: '"Outfit", sans-serif',
+                    fontSize: '15px',
+                    fontWeight: 500,
+                    color: '#2d1a0e',
+                    outline: 'none',
+                  }}
+                  onFocus={e => e.target.style.borderColor = '#c1603a'}
+                  onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+                />
+              </div>
             </div>
 
-            <p style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#b08878',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
+            <div style={{
+              position: 'sticky',
+              bottom: 0,
+              background: '#ffffff',
+              paddingTop: '12px',
+              paddingBottom: '4px',
+              marginTop: '16px',
             }}>
-              Nota (opcional)
-            </p>
-            <input
-              type="text"
-              value={note}
-              onChange={e => setNote(e.target.value)}
-              placeholder="ej. Almuerzo de negocios"
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: '12px',
-                border: '1.5px solid #e8d5c8',
-                background: '#fdf6f0',
-                fontFamily: '"Outfit", sans-serif',
-                fontSize: '15px',
-                fontWeight: 500,
-                color: '#2d1a0e',
-                outline: 'none',
-                marginBottom: '24px',
-              }}
-              onFocus={e => e.target.style.borderColor = '#c1603a'}
-              onBlur={e => e.target.style.borderColor = '#e8d5c8'}
-            />
-
-            <button
-              className="btn-gold"
-              onClick={handleClose}
-              disabled={!amount || !category}
-              style={{ opacity: !amount || !category ? 0.45 : 1, cursor: !amount || !category ? 'not-allowed' : 'pointer' }}
-            >
-              Guardar
-            </button>
+              <button
+                className="btn-gold"
+                onClick={handleClose}
+                disabled={!amount || !category}
+                style={{ opacity: !amount || !category ? 0.45 : 1, cursor: !amount || !category ? 'not-allowed' : 'pointer' }}
+              >
+                Guardar
+              </button>
+            </div>
           </motion.div>
         </>
       )}

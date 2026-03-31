@@ -18,6 +18,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
   const [weight, setWeight] = useState<string>('');
   const [water, setWater] = useState<number>(0);
   const [goalMet, setGoalMet] = useState<boolean | null>(null);
+  const [isShortScreen, setIsShortScreen] = useState(window.innerHeight < 700);
 
   const moods = [
     { value: 1, emoji: '😫' },
@@ -38,6 +39,12 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
     setGoalMet(null);
     onClose();
   };
+
+  useEffect(() => {
+    const handleResize = () => setIsShortScreen(window.innerHeight < 700);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -94,19 +101,21 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
             onClick={e => e.stopPropagation()}
             style={{
               position: 'fixed',
-              top: '50%',
+              top: isShortScreen ? '44%' : '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
               zIndex: 101,
               width: '92%',
               maxWidth: '440px',
-              maxHeight: '85vh',
+              maxHeight: '80vh',
+              height: 'auto',
               overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch',
               background: '#ffffff',
               borderRadius: '24px',
               border: '1px solid #e8d5c8',
               boxShadow: '0 24px 60px rgba(45,26,14,0.18)',
-              padding: '28px 24px 24px',
+              padding: '28px 24px 32px',
             }}
           >
             <button
@@ -125,6 +134,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                 justifyContent: 'center',
                 cursor: 'pointer',
                 color: '#c1603a',
+                zIndex: 1,
               }}
             >
               <X size={15} />
@@ -190,10 +200,12 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
-                  style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
+                  style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
                 >
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Peso de hoy (kg)</label>
+                  <div>
+                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
+                      Peso de hoy (kg)
+                    </label>
                     <input
                       type="number"
                       value={weight}
@@ -216,8 +228,8 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                     />
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div>
+                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <Droplets size={14} color="#c1603a" /> Agua (vasos)
                     </label>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fdf6f0', borderRadius: '12px', border: '1.5px solid #e8d5c8', padding: '4px' }}>
@@ -233,8 +245,8 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div>
+                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <Target size={14} color="#c1603a" /> ¿Cumpliste tu objetivo?
                     </label>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
@@ -271,7 +283,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', marginTop: '8px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}>
                     <button
                       onClick={handleBack}
                       style={{
@@ -347,13 +359,23 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                     </GlassCard>
                   </div>
 
-                  <button
-                    onClick={handleClose}
-                    className="btn-gold"
-                    style={{ width: '100%' }}
-                  >
-                    Cerrar
-                  </button>
+                  <div style={{
+                    position: 'sticky',
+                    bottom: 0,
+                    background: '#ffffff',
+                    paddingTop: '12px',
+                    paddingBottom: '4px',
+                    marginTop: '8px',
+                    width: '100%',
+                  }}>
+                    <button
+                      onClick={handleClose}
+                      className="btn-gold"
+                      style={{ width: '100%' }}
+                    >
+                      Cerrar
+                    </button>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
