@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Target, Flag } from 'lucide-react';
+import { Trophy, Flag } from 'lucide-react';
 import { GlassCard } from '../../ui/GlassCard';
 import { Goal } from '../../../types/goals';
 import { useCouple } from '../../../hooks/useCouple';
@@ -46,7 +46,8 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, activeUserId }) => {
   const isCompleted = isShared ? totalSharedProgress === 100 : personalProgress === 100;
 
   return (
-    <GlassCard className="p-5 flex flex-col gap-4 relative overflow-hidden group">
+    <motion.div whileHover={{ y: -3 }} transition={{ duration: 0.2 }}>
+      <GlassCard className="p-5 flex flex-col gap-4 relative overflow-hidden group border-white/12">
       {/* Background glow if completed */}
       {isCompleted && (
         <div className="absolute inset-0 bg-gold-400/5 z-0 pointer-events-none" />
@@ -54,18 +55,18 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, activeUserId }) => {
 
       {/* Header */}
       <div className="flex justify-between items-start z-10 w-full">
-        <div className="flex flex-col gap-1.5 min-w-0 pr-4">
+        <div className="flex flex-col gap-1.5 min-w-0 pr-4" style={{ maxWidth: 'calc(100% - 112px)' }}>
            {/* Module Chip */}
            <div 
-             className="w-fit px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest border border-white/10"
+             className="w-fit px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-widest border border-white/12"
              style={{ color: moduleColor, backgroundColor: `${moduleColor}15` }}
            >
              {MODULE_LABELS[goal.module]}
            </div>
-           <h3 className="font-display font-bold text-white text-lg leading-tight truncate">
+           <h3 className="font-display font-bold text-white break-words leading-[0.95]" style={{ fontSize: 'clamp(28px, 7vw, 38px)' }}>
              {goal.title}
            </h3>
-           <span className="text-gray-500 font-mono text-xs flex items-center gap-1">
+           <span className="text-gray-400 font-mono text-xs flex items-center gap-1 uppercase tracking-[0.08em]">
              <Flag size={10} /> {goal.deadline}
            </span>
         </div>
@@ -82,7 +83,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, activeUserId }) => {
             {isCompleted ? 'Logrado' : goal.status === 'active' ? 'En Curso' : 'En Pausa'}
           </div>
           {!isCompleted && (
-             <span className="text-xl font-display font-bold text-white">
+             <span className="text-3xl font-display font-bold text-white leading-none">
                {isShared ? Math.round(totalSharedProgress) : Math.round(personalProgress)}%
              </span>
           )}
@@ -157,6 +158,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, activeUserId }) => {
         )}
       </div>
 
-    </GlassCard>
+      </GlassCard>
+    </motion.div>
   );
 };

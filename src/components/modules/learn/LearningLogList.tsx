@@ -25,15 +25,14 @@ export const LearningLogList: React.FC<LearningLogListProps> = ({ logs, color, o
 
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-sm font-display font-semibold text-gold-300 uppercase tracking-widest">
+      <div className="lux-list-header">
+        <h3 className="lux-list-title">
           Historial de Estudio
         </h3>
         
         <button 
           onClick={onOpenAdd}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold-400 text-navy-900 font-bold text-xs hover:bg-gold-300 transition-colors shadow-lg active:scale-95"
-          style={{ boxShadow: `0 0 10px rgba(240,192,64,0.3)` }}
+          className="lux-add-btn active:scale-95"
         >
           <Plus size={14} /> Registrar
         </button>
@@ -50,7 +49,7 @@ export const LearningLogList: React.FC<LearningLogListProps> = ({ logs, color, o
                 transition={{ delay: index * 0.1 }}
                 className="w-full"
               >
-                <GlassCard className="p-4 flex items-center gap-4 hover:bg-white/5 transition-colors relative overflow-hidden group">
+                <GlassCard className="lux-item p-4 flex items-center gap-4 transition-colors relative overflow-hidden group border-white/12">
                   <div 
                     className="absolute left-0 top-0 w-1 h-full opacity-60 transition-opacity group-hover:opacity-100" 
                     style={{ backgroundColor: color }}
@@ -63,11 +62,11 @@ export const LearningLogList: React.FC<LearningLogListProps> = ({ logs, color, o
                     {getIcon(log.resource)}
                   </div>
                   
-                  <div className="flex-1 flex flex-col justify-center">
-                    <h4 className="text-white font-medium text-sm sm:text-base leading-snug">{log.topic}</h4>
-                    <span className="text-gray-500 font-mono text-[10px] mt-0.5">{log.date} · {log.resource}</span>
-                    {log.notes && (
-                       <div className="flex items-start gap-1.5 text-gray-500 text-xs italic mt-1.5">
+                   <div className="flex-1 flex flex-col justify-center">
+                     <h4 className="text-white font-semibold text-lg sm:text-xl font-display leading-snug">{log.topic}</h4>
+                     <span className="text-gray-400 font-mono text-[10px] mt-0.5 uppercase tracking-[0.1em]">{log.date} · {log.resource}</span>
+                     {log.notes && (
+                        <div className="flex items-start gap-1.5 text-gray-500 text-xs italic mt-1.5">
                          <FileText size={12} className="mt-[3px] opacity-60" />
                          {log.notes}
                        </div>

@@ -34,7 +34,8 @@ export const AgentMessage: React.FC<AgentMessageProps> = ({ agentType, userName,
   }, [agentType, userName]);
 
   return (
-    <GlassCard className="p-4 md:p-6 mb-6 flex items-start gap-4">
+    <GlassCard className="p-4 md:p-6 mb-6 flex items-start gap-4 border-gold-400/25 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-r from-gold-400/8 via-transparent to-transparent pointer-events-none" />
       {/* Dynamic glow behind the icon */}
       <div className="relative">
         <div 
@@ -49,15 +50,17 @@ export const AgentMessage: React.FC<AgentMessageProps> = ({ agentType, userName,
         </div>
       </div>
 
-      <div className="flex-1 min-w-0 flex flex-col justify-center min-h-[40px] md:min-h-[48px] relative">
-         {/* Refresh Button - Top Right */}
-         <button 
-           onClick={(e) => { e.stopPropagation(); fetchInsight(); }}
-           className="absolute -top-1 -right-1 p-2 flex items-center gap-1 text-gold-400 hover:text-gold-300 transition-colors uppercase text-[10px] tracking-widest font-bold"
-         >
-           <RefreshCw size={12} className={isLoading ? "animate-spin" : ""} />
-           <span className="hidden sm:inline">Actualizar</span>
-         </button>
+      <div className="flex-1 min-w-0 flex flex-col justify-center min-h-[40px] md:min-h-[48px]">
+         <div className="flex items-center justify-between gap-3 mb-1">
+           <span className="text-[10px] font-bold tracking-[0.16em] uppercase text-gold-300/90">Insight IA</span>
+           <button
+             onClick={(e) => { e.stopPropagation(); fetchInsight(); }}
+             className="p-1.5 flex items-center gap-1 text-gold-400 hover:text-gold-300 transition-colors uppercase text-[10px] tracking-widest font-bold"
+           >
+             <RefreshCw size={12} className={isLoading ? "animate-spin" : ""} />
+             <span className="hidden sm:inline">Actualizar</span>
+           </button>
+         </div>
 
         {isLoading ? (
           <div className="flex items-center gap-1 mt-2">
@@ -66,7 +69,7 @@ export const AgentMessage: React.FC<AgentMessageProps> = ({ agentType, userName,
             <span className="w-1.5 h-1.5 bg-gold-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
           </div>
         ) : (
-          <p className="text-gray-200 text-sm md:text-base pr-8 md:pr-12 italic leading-relaxed mt-1">
+          <p className="text-gray-200 text-sm md:text-base italic leading-relaxed mt-1">
             "{message}"
           </p>
         )}

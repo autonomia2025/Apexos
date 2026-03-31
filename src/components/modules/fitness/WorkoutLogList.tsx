@@ -14,15 +14,14 @@ interface WorkoutLogListProps {
 export const WorkoutLogList: React.FC<WorkoutLogListProps> = ({ logs, color, onOpenAdd }) => {
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-sm font-display font-semibold text-gold-300 uppercase tracking-widest">
+      <div className="lux-list-header">
+        <h3 className="lux-list-title">
           Historial de Entrenos
         </h3>
         
         <button 
           onClick={onOpenAdd}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold-400 text-navy-900 font-bold text-xs hover:bg-gold-300 transition-colors shadow-lg active:scale-95"
-          style={{ boxShadow: `0 0 10px rgba(240,192,64,0.3)` }}
+          className="lux-add-btn active:scale-95"
         >
           <Plus size={14} /> Registrar
         </button>
@@ -39,21 +38,21 @@ export const WorkoutLogList: React.FC<WorkoutLogListProps> = ({ logs, color, onO
                 transition={{ delay: index * 0.1 }}
                 className="w-full"
               >
-                <GlassCard className="p-4 flex flex-col hover:bg-white/5 transition-colors relative overflow-hidden group">
+                <GlassCard className="lux-item p-4 flex flex-col transition-colors relative overflow-hidden group border-white/12">
                    <div 
                     className="absolute left-0 top-0 w-1 h-full opacity-60 transition-opacity group-hover:opacity-100" 
                     style={{ backgroundColor: color }}
                   />
                   <div className="flex justify-between items-center w-full mb-3 ml-2">
-                    <h4 className="text-white font-medium text-base">{log.type}</h4>
-                    <span className="text-gray-500 font-mono text-xs">{log.date}</span>
+                    <h4 className="text-white font-semibold text-xl font-display">{log.type}</h4>
+                    <span className="text-gray-400 font-mono text-xs bg-white/5 border border-white/10 px-2 py-0.5 rounded-md">{log.date}</span>
                   </div>
                   
                   <div className="flex flex-col gap-2 ml-2">
-                     <div className="flex items-center gap-2 text-gray-400 text-xs font-medium">
-                       <Timer size={14} className="text-gold-300" />
-                       {log.duration} minutos
-                     </div>
+                     <div className="flex items-center gap-2 text-gray-300 text-xs font-semibold uppercase tracking-[0.1em]">
+                        <Timer size={14} className="text-gold-300" />
+                        {log.duration} minutos
+                      </div>
                      {log.notes && (
                        <div className="text-gray-500 text-xs italic">
                          {log.notes}

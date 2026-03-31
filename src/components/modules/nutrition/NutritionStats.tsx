@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { GlassCard } from '../../ui/GlassCard';
 import { DonutChart } from '../../ui/DonutChart';
 import { ProgressBar } from '../../ui/ProgressBar';
@@ -13,18 +12,19 @@ export const NutritionStats: React.FC<NutritionStatsProps> = ({ user }) => {
   const { metrics, user: profile } = user;
 
   return (
-    <GlassCard className="p-6">
+    <GlassCard className="p-6 md:p-7">
       <div className="flex flex-col items-center mb-8">
-        <div className="flex items-center gap-3 w-full mb-4">
+        <div className="flex items-center gap-3 w-full mb-4 pb-4 border-b border-white/10">
           <div 
             className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border border-white/10"
             style={{ backgroundColor: `${profile.color}22`, color: profile.color }}
           >
             {profile.initials}
           </div>
-          <h2 className="text-xl font-display font-semibold text-white">
-            Resumen de Hoy
-          </h2>
+          <div>
+            <h2 className="text-[34px] leading-none font-display font-semibold text-white">Resumen de Hoy</h2>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-gray-500 mt-1">Nutricion diaria</p>
+          </div>
         </div>
         
         <DonutChart 
@@ -36,7 +36,7 @@ export const NutritionStats: React.FC<NutritionStatsProps> = ({ user }) => {
       </div>
 
       <div className="space-y-4 w-full">
-        <h3 className="text-xs font-medium text-gray-500 uppercase tracking-widest mb-2">Desglose Macros</h3>
+        <h3 className="text-[34px] leading-none font-display font-semibold text-white">Desglose Macros</h3>
         <ProgressBar 
           label="Proteína" 
           current={metrics.macros.protein} 
@@ -58,7 +58,7 @@ export const NutritionStats: React.FC<NutritionStatsProps> = ({ user }) => {
       </div>
       
       <div className="mt-8 pt-6 border-t border-white/5 flex justify-between items-center w-full">
-          <span className="text-sm font-medium text-gray-400">Cumplimiento Semanal</span>
+          <span className="text-sm font-semibold text-gray-300">Cumplimiento Semanal</span>
           <div className="flex items-center gap-2">
             <span className="text-xl font-bold font-display text-gold-400">{metrics.compliance}%</span>
             <span className="text-lg">🔥</span>

@@ -13,8 +13,8 @@ export const FitnessStats: React.FC<FitnessStatsProps> = ({ user }) => {
   const lastWorkout = recentWorkouts.length > 0 ? recentWorkouts[0] : null;
 
   return (
-    <GlassCard className="p-6">
-      <div className="flex items-center gap-3 w-full mb-6 pb-6 border-b border-white/5">
+    <GlassCard className="p-6 md:p-7">
+      <div className="flex items-center gap-3 w-full mb-6 pb-6 border-b border-white/10">
          <div 
           className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border border-white/10"
           style={{ backgroundColor: `${profile.color}22`, color: profile.color }}
@@ -22,10 +22,10 @@ export const FitnessStats: React.FC<FitnessStatsProps> = ({ user }) => {
           {profile.initials}
         </div>
         <div>
-          <h2 className="text-xl font-display font-semibold text-white">
+          <h2 className="text-[34px] leading-none font-display font-semibold text-white">
             Actividad
           </h2>
-          <p className="text-xs text-gray-400 font-mono mt-0.5">ESTADÍSTICAS SEMANALES</p>
+          <p className="text-[11px] text-gray-500 font-mono mt-1 tracking-[0.14em] uppercase">Estadisticas semanales</p>
         </div>
       </div>
 

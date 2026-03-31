@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
+import { motion } from 'framer-motion';
+import {
   Home, 
   Apple, 
   Dumbbell, 
@@ -11,7 +11,6 @@ import {
   Target,
   Settings
 } from 'lucide-react';
-import { useCouple } from '../../hooks/useCouple';
 import { UserToggle } from '../ui/UserToggle';
 
 const NAV_ITEMS = [
@@ -27,8 +26,6 @@ const NAV_ITEMS = [
  * HIGH-END DESKTOP SEGMENTED NAVIGATION
  */
 export const DesktopSideNav: React.FC = () => {
-  const { activeUserId } = useCouple();
-
   return (
     <nav className="desktop-nav-segmented flex flex-col items-center">
       

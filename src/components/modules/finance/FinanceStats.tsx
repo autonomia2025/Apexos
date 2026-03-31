@@ -19,9 +19,9 @@ export const FinanceStats: React.FC<FinanceStatsProps> = ({ user }) => {
   else if (budgetCompliance > 50) complianceColor = 'text-yellow-400 bg-yellow-400/10 border-yellow-400/30';
 
   return (
-    <GlassCard className="p-6">
+    <GlassCard className="p-6 md:p-7">
       <div className="flex flex-col items-center mb-6">
-        <div className="flex items-center justify-between w-full mb-4">
+        <div className="flex items-center justify-between w-full mb-4 pb-4 border-b border-white/10">
           <div className="flex items-center gap-3">
              <div 
               className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border border-white/10"
@@ -29,7 +29,7 @@ export const FinanceStats: React.FC<FinanceStatsProps> = ({ user }) => {
             >
               {profile.initials}
             </div>
-            <h2 className="text-xl font-display font-semibold text-white">
+            <h2 className="text-[34px] leading-none font-display font-semibold text-white">
               Presupuesto
             </h2>
           </div>

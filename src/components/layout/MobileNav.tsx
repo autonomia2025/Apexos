@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Home, Utensils, Dumbbell, Wallet, MoreHorizontal, BookOpen, Target, X, Briefcase } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';

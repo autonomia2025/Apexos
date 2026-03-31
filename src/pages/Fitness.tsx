@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Dumbbell } from 'lucide-react';
 import { PageWrapper } from '../components/layout/PageWrapper';
-import { UserToggle } from '../components/ui/UserToggle';
+import { ModuleHeader } from '../components/layout/ModuleHeader';
 import { AgentMessage } from '../components/ui/AgentMessage';
 import { FitnessStats } from '../components/modules/fitness/FitnessStats';
 import { ActivityGrid } from '../components/modules/fitness/ActivityGrid';
@@ -30,25 +31,31 @@ export const Fitness: React.FC = () => {
 
   return (
     <PageWrapper>
-      <header className="flex justify-between items-start mb-8">
-        <div>
-          <h1 className="text-3xl font-display text-gold-400 font-bold tracking-tight">Fitness</h1>
-          <p className="text-sm font-body text-gray-400 mt-1">Rendimiento y actividad física</p>
-        </div>
-        <div className="md:hidden">
-          <UserToggle />
-        </div>
-      </header>
+      <ModuleHeader
+        title="Fitness"
+        subtitle="Rendimiento y actividad fisica"
+        badge="Training"
+        icon={<Dumbbell size={18} />}
+      />
 
-      <div className="space-y-8">
-        <section>
+      <motion.div
+        className="space-y-8"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0.05 }}
+      >
+        <motion.section
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+        >
           <AgentMessage 
             agentType="fitness"
             userName={activeUserData.user.name}
             color={activeUserData.user.color} 
             contextData={getFitnessContext(activeUserData)}
           />
-        </section>
+        </motion.section>
 
         {isMobile ? (
           <AnimatePresence mode="wait">
@@ -91,7 +98,7 @@ export const Fitness: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
+      </motion.div>
 
       <WorkoutModal 
         isOpen={isWorkoutModalOpen} 

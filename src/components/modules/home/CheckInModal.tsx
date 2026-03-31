@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ArrowRight, ArrowLeft, Target, Droplets, CheckCircle, Flame } from 'lucide-react';
-import { useCouple } from '../../../hooks/useCouple';
+import { X, ArrowRight, ArrowLeft, Target, Droplets, CheckCircle } from 'lucide-react';
 import { useActiveUser } from '../../../hooks/useActiveUser';
 import { GlassCard } from '../../ui/GlassCard';
 
@@ -11,7 +10,6 @@ interface CheckInModalProps {
 }
 
 export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) => {
-  const { activeUserId } = useCouple();
   const activeUserData = useActiveUser();
   const profile = activeUserData.user;
   
@@ -70,21 +68,20 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-            className="fixed inset-0 bg-navy-900/80 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center sm:p-4"
+            className="modal-backdrop"
           />
           
           {/* Modal Container */}
           <motion.div
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-x-0 bottom-0 sm:inset-auto sm:w-full sm:max-w-md h-[85vh] sm:h-auto sm:min-h-[500px] z-50 bg-navy-900 border border-gold-400/20 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden glass-panel-gold border-b-0 sm:border-b"
+            initial={{ y: 40, opacity: 0, scale: 0.98 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: 40, opacity: 0, scale: 0.98 }}
+            transition={{ type: 'spring', damping: 26, stiffness: 230 }}
+            className="modal-sheet flex flex-col overflow-hidden sm:min-h-[500px]"
+            style={{ maxHeight: '85vh' }}
           >
             {/* Drag Handle (Mobile) */}
-            <div className="w-full flex justify-center pt-3 pb-1 sm:hidden">
-              <div className="w-12 h-1.5 bg-gray-600 rounded-full" />
-            </div>
+            <div className="modal-handle" />
 
             {/* Header */}
             <header className="px-6 py-4 flex items-center justify-between border-b border-white/5 relative">

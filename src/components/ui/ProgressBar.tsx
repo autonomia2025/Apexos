@@ -19,9 +19,9 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   const percentage = Math.min(100, Math.max(0, (current / max) * 100));
 
   return (
-    <div className="flex flex-col gap-1.5 w-full">
+    <div className="flex flex-col gap-2 w-full">
       <div className="flex justify-between items-end">
-        <span className="text-xs font-medium text-gray-300 uppercase tracking-wide">
+        <span className="text-[11px] font-semibold text-gray-300 uppercase tracking-[0.08em]">
           {label}
         </span>
         {showValue && (
@@ -31,15 +31,16 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         )}
       </div>
       
-      <div className="h-2.5 w-full bg-navy-800 rounded-full overflow-hidden border border-white/5 shadow-inner">
+      <div className="h-2.5 w-full bg-navy-800/90 rounded-full overflow-hidden border border-white/10 shadow-inner">
         <motion.div
-          className="h-full rounded-full"
+          className="h-full rounded-full relative"
           style={{ backgroundColor: color }}
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
         />
       </div>
+      <span className="text-[10px] font-medium text-gray-500 text-right">{Math.round(percentage)}% completado</span>
     </div>
   );
 };

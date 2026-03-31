@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { CoupleProvider } from './context/CoupleContext';
 
 // Navigation Components
-import { MobileNav } from './components/layout/MobileNav';
-import { DesktopSideNav } from './components/layout/DesktopSideNav';
+import { MobileNav, DesktopSideNav } from './components/layout/Navigation';
 
 // Pages from the barrel export
 import { 
@@ -18,13 +17,6 @@ import {
   WeeklyReview, 
   Tablio 
 } from './pages';
-
-const LoadingFallback = () => (
-  <div className="fixed inset-0 bg-navy-900 flex flex-col items-center justify-center z-[100]">
-    <div className="w-12 h-12 border-4 border-gold-400/20 border-t-gold-400 rounded-full animate-spin mb-4" />
-    <span className="text-gold-400 font-mono text-sm uppercase tracking-widest">Cargando OS...</span>
-  </div>
-);
 
 // Protected route to check onboarding state
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {

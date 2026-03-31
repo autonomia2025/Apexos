@@ -19,22 +19,23 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   className = ""
 }) => {
   return (
-    <GlassCard className={`p-8 flex flex-col items-center justify-center text-center border-dashed border-white/10 group ${className}`}>
-       <div className="mb-4 text-gold-400/50 group-hover:text-gold-400/70 transition-colors duration-300">
+    <GlassCard className={`p-8 flex flex-col items-center justify-center text-center border-dashed border-white/20 bg-white/[0.02] group ${className}`}>
+       <div className="mb-4 w-14 h-14 rounded-2xl border border-gold-400/20 bg-gold-400/10 text-gold-400/70 group-hover:text-gold-300 transition-colors duration-300 flex items-center justify-center">
          {icon}
        </div>
-       <h3 className="text-lg font-display font-medium text-gray-400 mb-2">{title}</h3>
-       
+       <h3 className="text-xl font-display font-semibold text-gray-200 mb-1">{title}</h3>
+       <p className="text-xs uppercase tracking-[0.12em] text-gray-500 mb-3">Sin registros por ahora</p>
+        
        {onAction && (
-         <motion.button 
+          <motion.button 
            whileHover={{ scale: 1.05 }}
            whileTap={{ scale: 0.95 }}
            onClick={onAction}
-           className="text-sm font-bold text-gold-400 hover:text-gold-300 tracking-wide uppercase transition-colors"
-         >
-           {subtitle}
-         </motion.button>
-       )}
+            className="text-xs font-bold text-gold-300 hover:text-gold-200 tracking-[0.12em] uppercase transition-colors"
+          >
+            {subtitle}
+          </motion.button>
+        )}
     </GlassCard>
   );
 };

@@ -1,183 +1,168 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Target, ArrowRight, TrendingUp, Calendar, Zap } from 'lucide-react';
+import { Target, ArrowRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 import { PageWrapper } from '../components/layout/PageWrapper';
 import { UserToggle } from '../components/ui/UserToggle';
 import { GlassCard } from '../components/ui/GlassCard';
 import { AgentMessage } from '../components/ui/AgentMessage';
 import { FAB } from '../components/ui/FAB';
+import { AvatarRing, ProgressBar } from '../components/ui/MetricsUI';
 
 import { useCouple } from '../hooks/useCouple';
 import { UserData } from '../types';
 
-// Subcomponents
-const CoupleOverview: React.FC<{ user: UserData }> = ({ user }) => (
-  <GlassCard 
-    jose={user.user.id === 'jose'} 
-    anto={user.user.id === 'anto'}
-    className="p-6 relative group overflow-hidden"
-  >
-    <div className="flex justify-between items-start relative z-10">
-      <div className="space-y-4">
-        <div className="flex items-center gap-3">
-          <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs ring-1 ring-white/10`} style={{ backgroundColor: `${user.user.color}22`, color: user.user.color }}>
-            {user.user.initials}
-          </div>
-          <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-500">{user.user.name}</span>
-        </div>
-        
+/**
+ * PURE CSS COUPLE OVERVIEW CARD
+ */
+const UserSummaryCard: React.FC<{ user: UserData }> = ({ user }) => {
+  const isJose = user.user.id === 'jose';
+  return (
+    <GlassCard variant={isJose ? 'jose' : 'anto'} className="p-5 md:p-6">
+      <div className="flex gap-4 items-center mb-5">
+        <AvatarRing 
+          initials={user.user.initials} 
+          color={user.user.color} 
+          size={56} 
+          progress={user.metrics.compliance}
+        />
         <div>
-          <div className="text-4xl font-display font-bold text-white tracking-tight flex items-baseline gap-1">
-            {user.metrics.compliance}
-            <span className="text-sm font-body font-normal text-gray-500 uppercase tracking-widest">%</span>
-          </div>
-          <p className="text-[10px] text-gray-400 font-mono uppercase tracking-widest mt-1">Cumplimiento Semanal</p>
+          <h3 className="text-[38px] leading-none font-display font-semibold text-white">{user.user.name}</h3>
+          <p className="text-[11px] text-gray-400 uppercase tracking-[0.12em] mt-1 font-semibold">
+            {user.metrics.streak} días de racha 🔥
+          </p>
         </div>
       </div>
-      
-      <div className="flex flex-col items-end gap-1">
-        <div className="flex items-center gap-1 text-gold-400">
-           <Zap size={14} />
-           <span className="text-sm font-bold">{user.metrics.streak}d</span>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div className="metric-pill">
+           <span className="label">Calorías</span>
+           <span className="value">{user.metrics.calories.consumed}</span>
+           <ProgressBar value={(user.metrics.calories.consumed / user.metrics.calories.target) * 100} color={user.user.color} />
         </div>
-        <div className="flex items-center gap-1 text-blue-400">
-           <TrendingUp size={14} />
-           <span className="text-[10px] font-bold">TOP 5%</span>
+        <div className="metric-pill">
+           <span className="label">Entrenos</span>
+           <span className="value">{user.metrics.trainingDays}/5</span>
+           <ProgressBar value={(user.metrics.trainingDays / 5) * 100} color={user.user.color} />
         </div>
       </div>
-    </div>
-    
-    {/* Micro charts or indicators */}
-    <div className="mt-8 grid grid-cols-3 gap-2 relative z-10">
-       {[
-         { l: 'Nut', v: user.metrics.calories.consumed / user.metrics.calories.target },
-         { l: 'Fit', v: user.metrics.trainingDays / 5 },
-         { l: 'Lrn', v: user.metrics.studyHours / 10 }
-       ].map(m => (
-         <div key={m.l} className="space-y-1">
-           <div className="h-1 bg-white/5 rounded-full overflow-hidden">
-             <motion.div 
-               initial={{ width: 0 }}
-               animate={{ width: `${m.v * 100}%` }}
-               transition={{ duration: 1, ease: "easeOut" }}
-               className="h-full bg-white opacity-40" 
-             />
-           </div>
-           <span className="text-[8px] uppercase tracking-tighter text-gray-500 font-mono">{m.l}</span>
-         </div>
-       ))}
-    </div>
-  </GlassCard>
-);
+    </GlassCard>
+  );
+};
 
 export const Home: React.FC = () => {
-  const { users, activeUserId, isMobile } = useCouple();
-  const activeUserData = users[activeUserId];
-  const [isCheckInOpen, setIsCheckInOpen] = useState(false);
+  const { users, activeUserId } = useCouple();
+  const activeUser = users[activeUserId];
+  const [, setIsCheckInOpen] = useState(false);
+  const today = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
 
   return (
     <PageWrapper>
-      <div className="page-wrapper-luxury max-w-4xl mx-auto px-4 pt-12">
-        
-        {/* TOP HEADER (Expert Layout) */}
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-16 animate-in">
-          <div>
-            <div className="flex items-center gap-4 mb-2">
-               <span className="w-12 h-px bg-gold-400/40" />
-               <span className="text-[11px] font-mono text-gold-400/60 uppercase tracking-[0.4em] font-bold">Executive OS</span>
-            </div>
-            <h1 className="text-5xl md:text-6xl font-display font-medium text-white tracking-tighter">
-              Apex<span className="text-gold-400">OS</span>
-            </h1>
-            <p className="text-sm font-body text-gray-500 mt-4 max-w-sm leading-relaxed">
-               Gestionando los pilares fundamentales de tu vida de alto rendimiento junto a {activeUserId === 'jose' ? 'Anto' : 'Jose'}.
-            </p>
-          </div>
-          
-          <div className="flex flex-col items-end gap-3 self-end md:self-auto">
-             <div className="flex items-center gap-2 text-gray-400 font-mono text-[10px] tracking-widest bg-white/5 px-4 py-2 rounded-full border border-white/5">
-                <Calendar size={14} />
-                {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase()}
-             </div>
-             <UserToggle />
-          </div>
-        </header>
+      <motion.div
+        className="flex justify-between items-center mb-7 pt-1 gap-3 hero-panel"
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: 'easeOut' }}
+      >
+        <div className="min-w-0">
+          <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.15em] text-gold-300/90 mb-2 font-semibold">
+            <Sparkles size={12} /> Panel Diario
+          </span>
+          <h1 className="text-[44px] leading-none font-display font-bold text-gold-400 tracking-[0.01em]">APEX OS</h1>
+          <p className="text-sm text-gray-300 mt-2">
+            Buenos días, {activeUser.user.name} <span className="opacity-40 mx-1">|</span> {today}
+          </p>
+        </div>
+        <UserToggle />
+      </motion.div>
 
-        {/* DASHBOARD GRID */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 animate-in" style={{ animationDelay: '0.1s' }}>
-          
-          {/* User Overviews */}
-          <section className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            <CoupleOverview user={users.jose} />
-            <CoupleOverview user={users.anto} />
-          </section>
+      <motion.div
+        className="couple-grid mb-6"
+        initial="hidden"
+        animate="show"
+        variants={{
+          hidden: { opacity: 0 },
+          show: { opacity: 1, transition: { staggerChildren: 0.08 } },
+        }}
+      >
+        <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
+          <UserSummaryCard user={users.jose} />
+        </motion.div>
+        <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
+          <UserSummaryCard user={users.anto} />
+        </motion.div>
+      </motion.div>
 
-          {/* Side Module: Goals (High Intensity CTA) */}
-          <section className="lg:col-span-4 flex flex-col gap-4">
-            <Link to="/goals" className="h-full">
-              <GlassCard gold className="h-full p-6 flex flex-col justify-between group">
-                <div className="flex justify-between items-start">
-                  <div className="w-12 h-12 rounded-2xl bg-gold-400/10 flex items-center justify-center border border-gold-400/20 shadow-[0_0_15px_rgba(240,192,64,0.1)]">
-                    <Target size={24} className="text-gold-400" />
-                  </div>
-                  <ArrowRight size={20} className="text-gold-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+      <motion.div
+        className="mb-7"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.12 }}
+      >
+        <AgentMessage 
+          agentType="planner"
+          userName={activeUser.user.name}
+          color={activeUser.user.color} 
+          contextData={{
+             userName: activeUser.user.name,
+             caloriasHoy: activeUser.metrics.calories.consumed,
+             caloriasMeta: activeUser.metrics.calories.target,
+             proteinaHoy: activeUser.metrics.macros.protein,
+             proteinaMeta: 180,
+             pesoActual: 75,
+             pesoMeta: 70,
+             tendenciaPeso: 'estable',
+             cumplimientoSemana: activeUser.metrics.compliance,
+             entrenosSemana: activeUser.metrics.trainingDays,
+             metaEntrenosSemana: 5,
+             ultimoEntreno: 'Fuerza',
+             rachaActual: activeUser.metrics.streak,
+             pasosHoy: activeUser.metrics.steps,
+             gastosMes: activeUser.metrics.finance.spent,
+             presupuestoMes: activeUser.metrics.finance.budget,
+             tasaAhorro: activeUser.metrics.finance.savingsRate,
+             categoriaTopGasto: activeUser.metrics.finance.topCategory.name,
+             cumplimientoPresupuesto: Math.round((activeUser.metrics.finance.spent / activeUser.metrics.finance.budget) * 100),
+             horasEstaSemana: activeUser.metrics.studyHours,
+             metaHorasSemana: 10,
+             temaActivo: activeUser.metrics.learning.activeTopics[0] || 'Ninguno',
+             recursoTipo: 'Video'
+          }}
+        />
+      </motion.div>
+
+      <motion.div
+        className="mb-6"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.16 }}
+      >
+        <Link to="/goals" style={{ textDecoration: 'none' }}>
+          <GlassCard variant="gold" className="flex justify-between items-center px-5 py-4">
+            <div className="flex items-center gap-3.5">
+               <div className="w-10 h-10 rounded-xl bg-gold-400/15 flex items-center justify-center border border-gold-400/25">
+                  <Target size={22} color="#f0c040" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-display font-bold text-white mb-2">Metas Compartidas</h3>
-                  <p className="text-xs text-gray-500 leading-relaxed">Visionado conjunto del trimestre Q2 2024.</p>
+                   <h3 className="text-[28px] leading-none font-display font-semibold text-white">Metas Compartidas 🎯</h3>
+                   <p className="text-[12px] text-gray-400 mt-1">
+                     Visión conjunta del trimestre Q2 2024
+                   </p>
                 </div>
-              </GlassCard>
-            </Link>
-          </section>
+            </div>
+            <ArrowRight size={20} color="#f0c040" opacity={0.6} />
+          </GlassCard>
+        </Link>
+      </motion.div>
 
-          {/* AI Intelligence Sector */}
-          <section className="lg:col-span-12 relative mt-4">
-             <div className="absolute -top-3 left-4 bg-navy-950 px-2 z-10">
-               <span className="text-[10px] font-bold text-gold-300 uppercase tracking-[0.2em]">Neural Insight Processed</span>
-             </div>
-             <AgentMessage 
-               agentType="planner"
-               userName={activeUserData.user.name}
-               color={activeUserData.user.color} 
-               contextData={{ /* mock context */ }}
-             />
-          </section>
-        </div>
-
-        {/* WEEKLY TRACKER (Integrated) */}
-        <footer className="mt-20 border-t border-white/5 pt-12 pb-32 animate-in" style={{ animationDelay: '0.2s' }}>
-           <div className="flex justify-between items-baseline mb-12">
-              <h3 className="text-xl font-display font-medium text-gray-400">Rendimiento <span className="italic text-white">Semanal</span></h3>
-              <Link to="/review" className="text-xs font-bold text-gold-400 hover:text-white transition-colors uppercase tracking-[0.2em] flex items-center gap-2">
-                Ver Informe Detallado <ArrowRight size={14} />
-              </Link>
-           </div>
-           
-           <div className="grid grid-cols-7 gap-2 md:gap-4">
-              {[18, 19, 20, 21, 22, 23, 24].map((d, i) => {
-                const isToday = i === 6;
-                return (
-                  <div key={d} className="flex flex-col items-center gap-4">
-                     <span className={`text-[10px] font-mono tracking-tighter uppercase ${isToday ? 'text-gold-400 font-bold' : 'text-gray-600'}`}>
-                       {['Lun','Mar','Mie','Jue','Vie','Sab','Dom'][i]}
-                     </span>
-                     <div className={`w-full aspect-[2/3] rounded-2xl border flex flex-col items-center justify-center gap-1 transition-all ${
-                       isToday ? 'bg-gold-400/10 border-gold-400/40 shadow-lg shadow-gold-400/5' : 'bg-white/[0.02] border-white/5'
-                     }`}>
-                        <span className={`text-lg font-display ${isToday ? 'text-gold-400 font-bold' : 'text-gray-400'}`}>{d}</span>
-                        {isToday && <div className="w-1 h-1 rounded-full bg-gold-400" />}
-                     </div>
-                  </div>
-                );
-              })}
-           </div>
-        </footer>
-
-        {/* Global CTA */}
-        <FAB onClick={() => setIsCheckInOpen(true)} pulse />
+      <div className="text-center mb-20">
+        <Link to="/review" className="inline-flex items-center gap-1 text-[12px] font-semibold text-gold-400 uppercase tracking-[0.12em] no-underline">
+          Revisión Semanal Completa <ArrowRight size={12} />
+        </Link>
       </div>
+
+      <FAB onClick={() => setIsCheckInOpen(true)} />
     </PageWrapper>
   );
 };
