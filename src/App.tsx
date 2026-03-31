@@ -6,7 +6,8 @@ import { CoupleProvider } from './context/CoupleContext';
 import { MobileNav, DesktopSideNav } from './components/layout/Navigation';
 
 // Pages — static (load immediately)
-import { Onboarding, Home } from './pages';
+import { Onboarding } from './pages/Onboarding';
+import { Home } from './pages/Home';
 
 // Pages — lazy loaded for performance
 const Nutrition = lazy(() =>
