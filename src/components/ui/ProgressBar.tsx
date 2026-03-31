@@ -25,13 +25,13 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
           {label}
         </span>
         {showValue && (
-          <span style={{ fontSize: '12px', fontWeight: 700, fontFamily: 'monospace', color: '#fff' }}>
-            {current} <span style={{ color: '#6b7280', fontWeight: 400 }}>/ {max}g</span>
+          <span style={{ fontSize: '12px', fontWeight: 700, fontFamily: '"Outfit", sans-serif', color: '#2d1a0e' }}>
+            {current} <span style={{ color: '#b08878', fontWeight: 400 }}>/ {max}g</span>
           </span>
         )}
       </div>
       
-      <div style={{ height: '10px', width: '100%', background: 'rgba(15,23,42,0.9)', borderRadius: '999px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.25)' }}>
+      <div style={{ height: '10px', width: '100%', background: 'rgba(193,96,58,0.1)', borderRadius: '999px', overflow: 'hidden', border: '1px solid rgba(193,96,58,0.15)', boxShadow: 'inset 0 1px 2px rgba(180, 100, 60, 0.08)' }}>
         <motion.div
           style={{ height: '100%', borderRadius: '999px', backgroundColor: color }}
           initial={{ width: 0 }}
@@ -39,7 +39,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
         />
       </div>
-      <span style={{ fontSize: '10px', fontWeight: 500, color: '#6b7280', textAlign: 'right' }}>{Math.round(percentage)}% completado</span>
+      <span style={{ fontSize: '10px', fontWeight: 500, color: '#b08878', textAlign: 'right' }}>{Math.round(percentage)}% completado</span>
     </div>
   );
 };

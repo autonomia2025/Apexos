@@ -46,14 +46,14 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
             <div className="modal-handle" />
             
             <header style={{ marginBottom: '20px', textAlign: 'center' }}>
-              <h2 style={{ margin: 0, fontFamily: '"Playfair Display", serif', fontSize: '30px', color: '#f0c040', fontWeight: 700 }}>Registrar Entreno</h2>
-              <p style={{ marginTop: '6px', color: 'rgba(255,255,255,0.5)', fontSize: '13px' }}>Anadir nueva sesion</p>
+              <h2 style={{ margin: 0, fontFamily: '"Outfit", sans-serif', fontSize: '30px', color: '#c1603a', fontWeight: 700 }}>Registrar Entreno</h2>
+              <p style={{ marginTop: '6px', color: '#b08878', fontSize: '13px' }}>Anadir nueva sesion</p>
             </header>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               {/* Type */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Tipo de Entreno</label>
+                <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Tipo de Entreno</label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {types.map((t) => (
                     <motion.button
@@ -65,8 +65,8 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
                          transition: 'all 0.25s ease',
                          borderColor: workoutType === t ? color : 'rgba(255,255,255,0.14)',
                          color: workoutType === t ? color : 'rgba(255,255,255,0.7)',
-                         background: workoutType === t ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)',
-                         boxShadow: workoutType === t ? 'inset 0 0 10px rgba(240,192,64,0.45)' : 'none'
+                         background: workoutType === t ? 'rgba(193,96,58,0.15)' : 'rgba(255,255,255,0.03)',
+                         boxShadow: workoutType === t ? 'inset 0 0 10px rgba(193,96,58,0.45)' : 'none'
                       }}
                     >
                       {t}
@@ -77,7 +77,7 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
 
                {/* Duration */}
                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>
                   Duración (minutos)
                 </label>
                 <input
@@ -91,7 +91,7 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
 
               {/* Note */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Nota (Opcional)</label>
+                <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Nota (Opcional)</label>
                 <textarea
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
@@ -105,7 +105,7 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
               <button
                 onClick={handleClose}
                 disabled={!duration || !workoutType}
-                style={{ marginTop: '4px', border: '1px solid rgba(240,192,64,0.5)', borderRadius: '14px', padding: '14px 16px', background: 'linear-gradient(135deg, #f0c040, #f7d97a)', color: '#0b1328', fontWeight: 800, letterSpacing: '0.03em', cursor: 'pointer', opacity: !duration || !workoutType ? 0.45 : 1 }}
+                style={{ marginTop: '4px', border: '1px solid rgba(193,96,58,0.5)', borderRadius: '14px', padding: '14px 16px', background: 'linear-gradient(135deg, #c1603a, #d4724a)', color: '#ffffff', fontWeight: 800, letterSpacing: '0.03em', cursor: 'pointer', opacity: !duration || !workoutType ? 0.45 : 1 }}
               >
                 Guardar Entreno
               </button>

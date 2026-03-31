@@ -48,16 +48,16 @@ export const DonutChart: React.FC<DonutChartProps> = ({ current, max, color, lab
 
         {/* Center Content */}
         <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-          <span style={{ fontSize: '36px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', letterSpacing: '-0.01em', lineHeight: 1 }}>
+          <span style={{ fontSize: '36px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#2d1a0e', letterSpacing: '-0.01em', lineHeight: 1 }}>
             {current}
           </span>
-          <span style={{ fontSize: '12px', fontWeight: 600, color: '#9ca3af', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.14em' }}>
+          <span style={{ fontSize: '12px', fontWeight: 600, color: '#b08878', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.14em' }}>
             / {max}
           </span>
-          <span style={{ fontSize: '10px', color: '#6b7280', marginTop: '8px', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+          <span style={{ fontSize: '10px', color: '#b08878', marginTop: '8px', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
             {label}
           </span>
-          <span style={{ marginTop: '8px', display: 'inline-flex', alignItems: 'center', borderRadius: '999px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', fontSize: '10px', fontWeight: 600, color: '#f0c040' }}>
+          <span style={{ marginTop: '8px', display: 'inline-flex', alignItems: 'center', borderRadius: '999px', border: '1px solid rgba(193,96,58,0.15)', background: 'rgba(193,96,58,0.08)', padding: '2px 8px', fontSize: '10px', fontWeight: 600, color: '#c1603a' }}>
             {Math.round((current / safeMax) * 100)}%
           </span>
         </div>

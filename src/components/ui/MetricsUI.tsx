@@ -60,14 +60,14 @@ export const AvatarRing = ({
         borderRadius: '50%',
         background: `linear-gradient(135deg, ${color}20, ${color}08)`,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        border: '1px solid rgba(255,255,255,0.05)',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+        border: '1px solid rgba(193,96,58,0.08)',
+        boxShadow: '0 4px 12px rgba(180, 100, 60, 0.08)'
       }}>
         <span style={{ 
           color, 
           fontSize: Math.round(size * 0.28), 
           fontWeight: 700, 
-          fontFamily: '"DM Sans", sans-serif',
+          fontFamily: '"Outfit", sans-serif',
           letterSpacing: '0.05em'
         }}>
           {initials}

@@ -25,7 +25,7 @@ export const WeekStrip: React.FC = () => {
 
   return (
     <GlassCard style={{ padding: '24px', marginBottom: '24px' }}>
-      <h3 style={{ fontSize: '14px', fontFamily: '"Playfair Display", serif', fontWeight: 600, color: '#f7d97a', marginBottom: '16px', marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+      <h3 style={{ fontSize: '14px', fontFamily: '"Outfit", sans-serif', fontWeight: 600, color: '#d4724a', marginBottom: '16px', marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
         Resumen Semanal
       </h3>
       
@@ -37,7 +37,7 @@ export const WeekStrip: React.FC = () => {
           return (
             <div key={userId} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div 
-                style={{ width: '32px', height: '32px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '10px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: `${profile.color}22`, color: profile.color }}
+                style={{ width: '32px', height: '32px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '10px', border: '1px solid rgba(193,96,58,0.15)', backgroundColor: `${profile.color}22`, color: profile.color }}
               >
                 {profile.initials}
               </div>
@@ -53,13 +53,13 @@ export const WeekStrip: React.FC = () => {
                       key={index} 
                       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', width: '32px', opacity: isNone ? 0.5 : 1 }}
                     >
-                      <span style={{ fontSize: '10px', fontFamily: '"JetBrains Mono", monospace', color: 'rgba(255,255,255,0.55)' }}>{day}</span>
+                      <span style={{ fontSize: '10px', fontFamily: '"Outfit", sans-serif', color: '#b08878' }}>{day}</span>
                       <div 
                         style={{ 
                           width: '100%',
                           height: '8px',
                           borderRadius: '999px',
-                          border: '1px solid rgba(255,255,255,0.1)',
+                          border: '1px solid rgba(193,96,58,0.15)',
                           backgroundColor: bgColor,
                           boxShadow: !isNone ? `0 0 8px ${bgColor}66` : 'none'
                         }}

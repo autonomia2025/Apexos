@@ -25,15 +25,15 @@ export const Tablio = () => {
     return (
       <PageWrapper>
         <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <GlassCard style={{ padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', maxWidth: '384px', width: '100%', position: 'relative', overflow: 'hidden', borderColor: 'rgba(240,192,64,0.2)' }}>
-            <div style={{ position: 'absolute', inset: 0, background: 'rgba(240,192,64,0.05)', filter: 'blur(24px)' }} />
-            <div style={{ width: '64px', height: '64px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(240,192,64,0.1)', border: '1px solid rgba(240,192,64,0.3)', color: '#f0c040', marginBottom: '24px', position: 'relative', zIndex: 10, boxShadow: '0 0 20px rgba(240,192,64,0.2)' }}>
+          <GlassCard style={{ padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', maxWidth: '384px', width: '100%', position: 'relative', overflow: 'hidden', borderColor: 'rgba(193,96,58,0.2)' }}>
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(193,96,58,0.05)', filter: 'blur(24px)' }} />
+            <div style={{ width: '64px', height: '64px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(193,96,58,0.1)', border: '1px solid rgba(193,96,58,0.3)', color: '#c1603a', marginBottom: '24px', position: 'relative', zIndex: 10, boxShadow: '0 0 20px rgba(193,96,58,0.2)' }}>
               <Lock size={32} />
             </div>
-            <h2 style={{ fontSize: '20px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', position: 'relative', zIndex: 10 }}>
-              Este espacio es de Jose <span style={{ color: '#f0c040' }}>🔒</span>
+            <h2 style={{ fontSize: '20px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#2d1a0e', position: 'relative', zIndex: 10 }}>
+              Este espacio es de Jose <span style={{ color: '#c1603a' }}>🔒</span>
             </h2>
-            <p style={{ fontSize: '14px', color: '#9ca3af', marginTop: '8px', position: 'relative', zIndex: 10 }}>
+            <p style={{ fontSize: '14px', color: '#b08878', marginTop: '8px', position: 'relative', zIndex: 10 }}>
               Módulo de negocio exclusivo.
             </p>
           </GlassCard>
@@ -70,20 +70,20 @@ export const Tablio = () => {
   return (
     <PageWrapper>
       {/* Header */}
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', background: 'linear-gradient(to bottom, rgba(15,23,42,1), transparent)', position: 'sticky', top: 0, zIndex: 20, padding: '8px 0' }}>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', background: '#fdf6f0', position: 'sticky', top: 0, zIndex: 20, padding: '8px 0' }}>
         <div>
-           <h1 style={{ fontSize: '30px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#f0c040', letterSpacing: '0.04em' }}>
+           <h1 style={{ fontSize: '30px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#c1603a', letterSpacing: '0.04em' }}>
              TABLIO
            </h1>
-           <p style={{ fontSize: '14px', color: '#9ca3af', marginTop: '2px', letterSpacing: '0.02em' }}>
+           <p style={{ fontSize: '14px', color: '#b08878', marginTop: '2px', letterSpacing: '0.02em' }}>
              Tu empresa. Tu visión.
            </p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-           <span style={{ fontSize: '14px', color: '#9ca3af', fontFamily: 'monospace' }}>
+           <span style={{ fontSize: '14px', color: '#b08878', fontFamily: '"Outfit", sans-serif' }}>
              {todayStr}
            </span>
-           <div style={{ padding: '4px 12px', background: 'rgba(240,192,64,0.1)', border: '1px solid rgba(240,192,64,0.3)', color: '#f0c040', borderRadius: '8px', fontSize: '14px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+           <div style={{ padding: '4px 12px', background: 'rgba(193,96,58,0.1)', border: '1px solid rgba(193,96,58,0.3)', color: '#c1603a', borderRadius: '8px', fontSize: '14px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
              {getQuarter()}
            </div>
         </div>
@@ -94,8 +94,8 @@ export const Tablio = () => {
         
         {/* Agent Insight */}
         <section style={{ position: 'relative' }}>
-          <div style={{ position: 'absolute', top: '-12px', left: '16px', background: '#0f172a', padding: '0 8px', zIndex: 10 }}>
-            <span style={{ fontSize: '10px', fontWeight: 700, color: '#f7d97a', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+          <div style={{ position: 'absolute', top: '-12px', left: '16px', background: '#ffffff', padding: '0 8px', zIndex: 10 }}>
+            <span style={{ fontSize: '10px', fontWeight: 700, color: '#d4724a', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
               Advisor IA →
             </span>
           </div>

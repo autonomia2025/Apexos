@@ -26,7 +26,7 @@ export const MobileNav = () => {
             to={item.path}
             className={`nav-item ${isActive ? 'active' : ''}`}
           >
-            <item.icon size={22} color={isActive ? '#f0c040' : 'rgba(255,255,255,0.35)'} />
+            <item.icon size={22} color={isActive ? '#c1603a' : 'rgba(255,255,255,0.35)'} />
             <span>{item.label}</span>
             {isActive && <span className="nav-dot" />}
           </NavLink>
@@ -56,8 +56,8 @@ export const DesktopSideNav = () => {
     <nav className="desktop-nav">
       <div style={{ marginBottom: '32px' }}>
          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-           <path d="M16 4L28 24H4L16 4Z" fill="#f0c040" fillOpacity="0.2" stroke="#f0c040" strokeWidth="2" strokeLinejoin="round"/>
-           <path d="M16 12L22 22H10L16 12Z" fill="#f0c040" fillOpacity="0.4"/>
+           <path d="M16 4L28 24H4L16 4Z" fill="#c1603a" fillOpacity="0.2" stroke="#c1603a" strokeWidth="2" strokeLinejoin="round"/>
+           <path d="M16 12L22 22H10L16 12Z" fill="#c1603a" fillOpacity="0.4"/>
           </svg>
       </div>
 
@@ -70,7 +70,7 @@ export const DesktopSideNav = () => {
             className={`nav-item ${isActive ? 'active' : ''}`}
             title={item.label}
           >
-            <item.icon size={24} color={isActive ? '#f0c040' : 'rgba(255,255,255,0.35)'} />
+            <item.icon size={24} color={isActive ? '#c1603a' : 'rgba(255,255,255,0.35)'} />
             <span className="desktop-nav-label">{item.label}</span>
           </NavLink>
         );

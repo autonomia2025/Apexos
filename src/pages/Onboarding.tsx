@@ -21,13 +21,13 @@ export const Onboarding: React.FC = () => {
   if (finished) return <Navigate to="/" replace />;
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', background: 'radial-gradient(620px 320px at 20% 12%,rgba(74,144,217,0.2),transparent 70%),radial-gradient(560px 300px at 92% 8%,rgba(240,192,64,0.16),transparent 72%),linear-gradient(180deg,#08142b 0%,#030918 60%,#01040e 100%)' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', background: '#fdf6f0' }}>
       {step === 0 ? (
         <div className="glass-gold" style={{ textAlign: 'center', maxWidth: '448px', width: '100%', padding: '32px' }}>
-          <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: 'rgba(240,192,64,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 32px', border: '1px solid rgba(240,192,64,0.3)', boxShadow: '0 0 28px rgba(240,192,64,0.16)' }}>
-            <Sparkles size={32} color="#f0c040" />
+          <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: 'rgba(193,96,58,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 32px', border: '1px solid rgba(193,96,58,0.3)', boxShadow: '0 0 28px rgba(193,96,58,0.16)' }}>
+            <Sparkles size={32} color="#c1603a" />
           </div>
-          <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.2em', color: '#f7d97a', fontWeight: 600 }}>Bienvenido</span>
+          <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.2em', color: '#d4724a', fontWeight: 600 }}>Bienvenido</span>
           <h1 style={{ marginTop: '8px', marginBottom: '16px', fontSize: '42px', lineHeight: 1 }}>Apex Operating System</h1>
           <p style={{ color: 'rgba(209,213,219,0.8)', marginBottom: '32px', fontSize: '15px', lineHeight: 1.6 }}>
             Tu plataforma personal de alto rendimiento para gestionar nutrición, finanzas y metas.
@@ -39,7 +39,7 @@ export const Onboarding: React.FC = () => {
       ) : (
         <div style={{ width: '100%', maxWidth: '512px' }}>
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-             <span style={{ fontSize: '10px', fontWeight: 600, color: '#f0c040', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Configuracion</span>
+             <span style={{ fontSize: '10px', fontWeight: 600, color: '#c1603a', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Configuracion</span>
              <h2 style={{ marginTop: '8px', fontSize: '38px', lineHeight: 1 }}>¿Quién está operando?</h2>
           </div>
           
@@ -49,10 +49,10 @@ export const Onboarding: React.FC = () => {
               onClick={() => startApp('jose')}
               style={{ cursor: 'pointer', textAlign: 'center', display: 'flex', alignItems: 'center', gap: '20px' }}
             >
-              <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'rgba(74,144,217,0.2)', color: '#4a90d9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, border: '1px solid rgba(74,144,217,0.35)' }}>J</div>
+              <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'rgba(193,96,58,0.2)', color: '#c1603a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, border: '1px solid rgba(193,96,58,0.35)' }}>J</div>
               <div style={{ textAlign: 'left' }}>
                 <h3 style={{ margin: 0, fontSize: '28px', lineHeight: 1 }}>Jose</h3>
-                <p style={{ margin: 0, fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Socio Fundador</p>
+                <p style={{ margin: 0, fontSize: '12px', color: '#b08878', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Socio Fundador</p>
               </div>
             </button>
 
@@ -61,10 +61,10 @@ export const Onboarding: React.FC = () => {
               onClick={() => startApp('anto')}
               style={{ cursor: 'pointer', textAlign: 'center', display: 'flex', alignItems: 'center', gap: '20px' }}
             >
-              <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'rgba(232,121,160,0.2)', color: '#e879a0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, border: '1px solid rgba(232,121,160,0.35)' }}>A</div>
+              <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'rgba(212,132,158,0.2)', color: '#d4849e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, border: '1px solid rgba(212,132,158,0.35)' }}>A</div>
               <div style={{ textAlign: 'left' }}>
                 <h3 style={{ margin: 0, fontSize: '28px', lineHeight: 1 }}>Anto</h3>
-                <p style={{ margin: 0, fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Socia Fundadora</p>
+                <p style={{ margin: 0, fontSize: '12px', color: '#b08878', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Socia Fundadora</p>
               </div>
             </button>
           </div>

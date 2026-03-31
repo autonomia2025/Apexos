@@ -32,9 +32,9 @@ export const WeeklyReview: React.FC = () => {
   const scoresAnto = computeScores(users.anto);
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return { color: '#f0c040', background: 'rgba(240,192,64,0.1)', borderColor: 'rgba(240,192,64,0.3)' };
-    if (score >= 60) return { color: '#facc15', background: 'rgba(250,204,21,0.1)', borderColor: 'rgba(250,204,21,0.3)' };
-    return { color: '#f87171', background: 'rgba(248,113,113,0.1)', borderColor: 'rgba(248,113,113,0.3)' };
+    if (score >= 80) return { color: '#c1603a', background: 'rgba(193,96,58,0.1)', borderColor: 'rgba(193,96,58,0.3)' };
+    if (score >= 60) return { color: '#d4922a', background: 'rgba(250,204,21,0.1)', borderColor: 'rgba(250,204,21,0.3)' };
+    return { color: '#c94040', background: 'rgba(248,113,113,0.1)', borderColor: 'rgba(248,113,113,0.3)' };
   };
 
   const getCombinedContext = (userData: UserData): AgentContext => ({
@@ -115,22 +115,22 @@ export const WeeklyReview: React.FC = () => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 50 }}
       transition={{ type: 'spring', damping: 20 }}
-      style={{ position: 'fixed', inset: 0, zIndex: 50, background: '#0f172a', overflowY: 'auto' }}
+      style={{ position: 'fixed', inset: 0, zIndex: 50, background: '#ffffff', overflowY: 'auto' }}
     >
       <div style={{ maxWidth: '896px', margin: '0 auto', padding: '16px', paddingBottom: '96px' }}>
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', marginTop: '8px' }}>
           <div>
-            <h1 style={{ fontSize: '30px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', letterSpacing: '-0.01em' }}>
+            <h1 style={{ fontSize: '30px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#2d1a0e', letterSpacing: '-0.01em' }}>
               Semana del 18 al 24 May
             </h1>
-            <p style={{ fontSize: '14px', color: '#9ca3af', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>
+            <p style={{ fontSize: '14px', color: '#b08878', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>
               Tu resumen de la semana
             </p>
           </div>
           <button 
             onClick={() => navigate('/')}
-            style={{ width: '40px', height: '40px', borderRadius: '999px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af', border: 'none', cursor: 'pointer' }}
+            style={{ width: '40px', height: '40px', borderRadius: '999px', background: 'rgba(193,96,58,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#b08878', border: 'none', cursor: 'pointer' }}
           >
             <X size={20} />
           </button>
@@ -140,7 +140,7 @@ export const WeeklyReview: React.FC = () => {
           
           {/* Section 1: Resumen de pareja */}
           <section>
-            <h2 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#f7d97a', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h2 style={{ fontSize: '18px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#d4724a', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Star size={18} /> Score Semanal
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
@@ -150,30 +150,30 @@ export const WeeklyReview: React.FC = () => {
               ] as const).map(({ u, s }) => (
                 <GlassCard key={u.user.id} style={{ padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                    <div 
-                     style={{ width: '48px', height: '48px', borderRadius: '999px', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontFamily: '"Playfair Display", serif', boxShadow: '0 8px 16px rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: `${u.user.color}15`, color: u.user.color }}
+                     style={{ width: '48px', height: '48px', borderRadius: '999px', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontFamily: '"Outfit", sans-serif', boxShadow: '0 8px 16px rgba(180, 100, 60, 0.08)', border: '1px solid rgba(193,96,58,0.15)', backgroundColor: `${u.user.color}15`, color: u.user.color }}
                     >
                      {u.user.initials}
                    </div>
-                   <div style={{ fontSize: '40px', fontFamily: '"Playfair Display", serif', fontWeight: 700, marginBottom: '8px', border: '1px solid', padding: '4px 16px', borderRadius: '16px', ...getScoreColor(s.total) }}>
+                   <div style={{ fontSize: '40px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, marginBottom: '8px', border: '1px solid', padding: '4px 16px', borderRadius: '16px', ...getScoreColor(s.total) }}>
                      {s.total}
                    </div>
                     
-                   <div style={{ width: '100%', marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '16px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: 'monospace' }}>
-                        <span style={{ color: '#9ca3af' }}>NUT</span>
-                        <span style={{ color: '#e5e7eb' }}>{s.nut}%</span>
+                   <div style={{ width: '100%', marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid rgba(193,96,58,0.08)', paddingTop: '16px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: '"Outfit", sans-serif' }}>
+                        <span style={{ color: '#b08878' }}>NUT</span>
+                        <span style={{ color: '#2d1a0e' }}>{s.nut}%</span>
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: 'monospace' }}>
-                        <span style={{ color: '#9ca3af' }}>FIT</span>
-                        <span style={{ color: '#e5e7eb' }}>{s.fit.toFixed(0)}%</span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: '"Outfit", sans-serif' }}>
+                        <span style={{ color: '#b08878' }}>FIT</span>
+                        <span style={{ color: '#2d1a0e' }}>{s.fit.toFixed(0)}%</span>
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: 'monospace' }}>
-                        <span style={{ color: '#9ca3af' }}>LRN</span>
-                        <span style={{ color: '#e5e7eb' }}>{s.learn.toFixed(0)}%</span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: '"Outfit", sans-serif' }}>
+                        <span style={{ color: '#b08878' }}>LRN</span>
+                        <span style={{ color: '#2d1a0e' }}>{s.learn.toFixed(0)}%</span>
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: 'monospace' }}>
-                        <span style={{ color: '#9ca3af' }}>FIN</span>
-                        <span style={{ color: '#e5e7eb' }}>{s.fin}%</span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: '"Outfit", sans-serif' }}>
+                        <span style={{ color: '#b08878' }}>FIN</span>
+                        <span style={{ color: '#2d1a0e' }}>{s.fin}%</span>
                       </div>
                    </div>
                 </GlassCard>
@@ -183,7 +183,7 @@ export const WeeklyReview: React.FC = () => {
 
           {/* Section 2: Highlights */}
           <section>
-            <h2 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#f7d97a', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h2 style={{ fontSize: '18px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#d4724a', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Target size={18} /> Highlights
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
@@ -192,11 +192,11 @@ export const WeeklyReview: React.FC = () => {
                 { u: users.anto, s: scoresAnto }
               ] as const).map(({ u, s }) => (
                 <div key={u.user.id} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.1em', paddingLeft: '4px' }}>{u.user.name}</h3>
+                  <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', paddingLeft: '4px' }}>{u.user.name}</h3>
                   {getHighlights(u, s).map((h, i) => (
                     <div 
                       key={i} 
-                      style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '12px', border: `1px solid ${h.type === 'good' ? 'rgba(74,222,128,0.2)' : 'rgba(250,204,21,0.2)'}`, fontSize: '14px', fontWeight: 500, color: h.type === 'good' ? '#86efac' : '#fde68a', background: h.type === 'good' ? 'rgba(74,222,128,0.05)' : 'rgba(250,204,21,0.05)' }}
+                      style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '12px', border: `1px solid ${h.type === 'good' ? 'rgba(74,222,128,0.2)' : 'rgba(250,204,21,0.2)'}`, fontSize: '14px', fontWeight: 500, color: h.type === 'good' ? '#4a9068' : '#7a4a36', background: h.type === 'good' ? 'rgba(74,222,128,0.05)' : 'rgba(250,204,21,0.05)' }}
                     >
                       {h.type === 'good' ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
                       {h.text}
@@ -209,7 +209,7 @@ export const WeeklyReview: React.FC = () => {
 
           {/* Section 3: AI Weekly Coach */}
           <section>
-             <h2 style={{ fontSize: '18px', fontFamily: 'monospace', fontWeight: 700, color: '#f7d97a', marginBottom: '24px', letterSpacing: '0.1em', textTransform: 'uppercase', textAlign: 'center', background: 'rgba(240,192,64,0.05)', padding: '16px 0', borderTop: '1px solid rgba(240,192,64,0.2)', borderBottom: '1px solid rgba(240,192,64,0.2)' }}>
+             <h2 style={{ fontSize: '18px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#d4724a', marginBottom: '24px', letterSpacing: '0.1em', textTransform: 'uppercase', textAlign: 'center', background: 'rgba(193,96,58,0.05)', padding: '16px 0', borderTop: '1px solid rgba(193,96,58,0.2)', borderBottom: '1px solid rgba(193,96,58,0.2)' }}>
                Coaching Inteligente
              </h2>
              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -235,7 +235,7 @@ export const WeeklyReview: React.FC = () => {
                             ))}
                           </div>
                         ) : (
-                          <p style={{ color: '#e5e7eb', fontSize: '14px', lineHeight: 1.6, fontStyle: 'italic', paddingRight: '16px' }}>
+                          <p style={{ color: '#2d1a0e', fontSize: '14px', lineHeight: 1.6, fontStyle: 'italic', paddingRight: '16px' }}>
                             "{msg}"
                           </p>
                         )}
@@ -247,7 +247,7 @@ export const WeeklyReview: React.FC = () => {
 
           {/* Section 4: Próxima semana */}
           <section>
-            <h2 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', marginBottom: '24px' }}>Próxima Semana</h2>
+            <h2 style={{ fontSize: '18px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#2d1a0e', marginBottom: '24px' }}>Próxima Semana</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
                {([
                 { u: users.jose, s: scoresJose }, 
@@ -255,9 +255,9 @@ export const WeeklyReview: React.FC = () => {
               ] as const).map(({ u, s }) => {
                  const focus = getLowestModule(s);
                  return (
-                    <GlassCard key={u.user.id} style={{ padding: '20px', borderColor: 'rgba(240,192,64,0.3)' }}>
-                      <p style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '4px' }}>El enfoque principal de {u.user.name} debe ser:</p>
-                      <p style={{ fontSize: '20px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: focus.name === 'Nutrición' ? '#4ade80' : focus.name === 'Fitness' ? '#60a5fa' : focus.name === 'Finanzas' ? '#f0c040' : '#c084fc' }}>
+                    <GlassCard key={u.user.id} style={{ padding: '20px', borderColor: 'rgba(193,96,58,0.3)' }}>
+                      <p style={{ fontSize: '14px', color: '#b08878', marginBottom: '4px' }}>El enfoque principal de {u.user.name} debe ser:</p>
+                      <p style={{ fontSize: '20px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: focus.name === 'Nutrición' ? '#4a9068' : focus.name === 'Fitness' ? '#c1603a' : focus.name === 'Finanzas' ? '#c1603a' : '#d4849e' }}>
                         {focus.name}
                       </p>
                     </GlassCard>

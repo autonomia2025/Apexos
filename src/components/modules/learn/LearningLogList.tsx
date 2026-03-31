@@ -26,7 +26,7 @@ export const LearningLogList: React.FC<LearningLogListProps> = ({ logs, color, o
   return (
     <div style={{ width: '100%' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-        <h3 style={{ fontSize: '28px', lineHeight: 1, color: '#fff', letterSpacing: '0.01em', fontFamily: '"Playfair Display", serif' }}>
+        <h3 style={{ fontSize: '28px', lineHeight: 1, color: '#2d1a0e', letterSpacing: '0.01em', fontFamily: '"Outfit", sans-serif' }}>
           Historial de Estudio
         </h3>
         
@@ -55,16 +55,16 @@ export const LearningLogList: React.FC<LearningLogListProps> = ({ logs, color, o
                   />
                   
                   <div 
-                    style={{ width: '40px', height: '40px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0f172a', border: `1px solid ${color}40`, color }}
+                    style={{ width: '40px', height: '40px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ffffff', border: `1px solid ${color}40`, color }}
                   >
                     {getIcon(log.resource)}
                   </div>
                   
                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                     <h4 style={{ color: '#fff', fontWeight: 600, fontSize: '20px', fontFamily: '"Playfair Display", serif', lineHeight: 1.2 }}>{log.topic}</h4>
-                     <span style={{ color: '#9ca3af', fontFamily: 'monospace', fontSize: '10px', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{log.date} · {log.resource}</span>
+                     <h4 style={{ color: '#2d1a0e', fontWeight: 600, fontSize: '20px', fontFamily: '"Outfit", sans-serif', lineHeight: 1.2 }}>{log.topic}</h4>
+                     <span style={{ color: '#b08878', fontFamily: '"Outfit", sans-serif', fontSize: '10px', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{log.date} · {log.resource}</span>
                      {log.notes && (
-                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', color: '#6b7280', fontSize: '12px', fontStyle: 'italic', marginTop: '6px' }}>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', color: '#b08878', fontSize: '12px', fontStyle: 'italic', marginTop: '6px' }}>
                          <FileText size={12} style={{ marginTop: '3px', opacity: 0.6 }} />
                          {log.notes}
                        </div>
@@ -72,7 +72,7 @@ export const LearningLogList: React.FC<LearningLogListProps> = ({ logs, color, o
                    </div>
                    
                   <div style={{ textAlign: 'right', display: 'flex', alignItems: 'center' }}>
-                    <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: '14px', color: '#f0c040', background: 'rgba(240,192,64,0.1)', padding: '4px 8px', borderRadius: '6px', border: '1px solid rgba(240,192,64,0.2)' }}>
+                    <span style={{ fontFamily: '"Outfit", sans-serif', fontWeight: 700, fontSize: '14px', color: '#c1603a', background: 'rgba(193,96,58,0.1)', padding: '4px 8px', borderRadius: '6px', border: '1px solid rgba(193,96,58,0.2)' }}>
                       {log.duration}m
                     </span>
                   </div>

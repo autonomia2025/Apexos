@@ -11,11 +11,11 @@ interface GoalCardProps {
 }
 
 const MODULE_COLORS = {
-  nutrition: '#4ade80', // green-400
-  fitness: '#60a5fa',   // blue-400
-  finance: '#f0c040',   // gold-400
-  learning: '#c084fc',  // purple-400
-  general: '#9ca3af',   // gray-400
+  nutrition: '#4a9068', // green-400
+  fitness: '#c1603a',   // blue-400
+  finance: '#c1603a',   // gold-400
+  learning: '#d4849e',  // purple-400
+  general: '#b08878',   // gray-400
 };
 
 const MODULE_LABELS = {
@@ -50,7 +50,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, activeUserId }) => {
       <GlassCard style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', overflow: 'hidden', borderColor: 'rgba(255,255,255,0.12)' }}>
       {/* Background glow if completed */}
       {isCompleted && (
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(240,192,64,0.05)', zIndex: 0, pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(193,96,58,0.05)', zIndex: 0, pointerEvents: 'none' }} />
       )}
 
       {/* Header */}
@@ -62,10 +62,10 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, activeUserId }) => {
             >
              {MODULE_LABELS[goal.module]}
            </div>
-           <h3 style={{ margin: 0, fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', wordBreak: 'break-word', lineHeight: 0.95, fontSize: 'clamp(28px, 7vw, 38px)' }}>
+           <h3 style={{ margin: 0, fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#2d1a0e', wordBreak: 'break-word', lineHeight: 0.95, fontSize: 'clamp(28px, 7vw, 38px)' }}>
              {goal.title}
            </h3>
-           <span style={{ color: 'rgba(255,255,255,0.55)', fontFamily: '"JetBrains Mono", monospace', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+           <span style={{ color: '#b08878', fontFamily: '"Outfit", sans-serif', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
              <Flag size={10} /> {goal.deadline}
            </span>
          </div>
@@ -73,12 +73,12 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, activeUserId }) => {
         {/* Status Badge / % complete */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px', flexShrink: 0 }}>
           <div 
-             style={{ padding: '4px 10px', borderRadius: '999px', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', border: `1px solid ${isCompleted ? 'rgba(240,192,64,0.5)' : goal.status === 'active' ? 'rgba(255,255,255,0.1)' : 'rgba(248,113,113,0.3)'}`, background: isCompleted ? 'rgba(240,192,64,0.2)' : goal.status === 'active' ? 'rgba(255,255,255,0.05)' : 'rgba(248,113,113,0.1)', color: isCompleted ? '#f7d97a' : goal.status === 'active' ? 'rgba(255,255,255,0.75)' : '#fca5a5' }}
+             style={{ padding: '4px 10px', borderRadius: '999px', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', border: `1px solid ${isCompleted ? 'rgba(193,96,58,0.5)' : goal.status === 'active' ? 'rgba(193,96,58,0.15)' : 'rgba(248,113,113,0.3)'}`, background: isCompleted ? 'rgba(193,96,58,0.2)' : goal.status === 'active' ? 'rgba(193,96,58,0.08)' : 'rgba(248,113,113,0.1)', color: isCompleted ? '#d4724a' : goal.status === 'active' ? '#7a4a36' : '#fca5a5' }}
           >
             {isCompleted ? 'Logrado' : goal.status === 'active' ? 'En Curso' : 'En Pausa'}
           </div>
           {!isCompleted && (
-             <span style={{ fontSize: '30px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', lineHeight: 1 }}>
+             <span style={{ fontSize: '30px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#2d1a0e', lineHeight: 1 }}>
                {isShared ? Math.round(totalSharedProgress) : Math.round(personalProgress)}%
              </span>
           )}
@@ -92,14 +92,14 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, activeUserId }) => {
              {/* Jose's Bar */}
              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', fontSize: '12px' }}>
-                  <span style={{ fontWeight: 500, color: 'rgba(255,255,255,0.75)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    Jose {joseProgress > antoProgress && <Trophy size={12} color="#f0c040" />}
+                  <span style={{ fontWeight: 500, color: '#7a4a36', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    Jose {joseProgress > antoProgress && <Trophy size={12} color="#c1603a" />}
                   </span>
-                  <span style={{ color: 'rgba(255,255,255,0.55)', fontFamily: '"JetBrains Mono", monospace', fontSize: '10px' }}>
+                  <span style={{ color: '#b08878', fontFamily: '"Outfit", sans-serif', fontSize: '10px' }}>
                     {goal.currentValueJose} / {goal.targetValue} {goal.unit}
                   </span>
                 </div>
-                <div style={{ width: '100%', height: '6px', background: 'rgba(8,15,35,0.9)', borderRadius: '999px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ width: '100%', height: '6px', background: 'rgba(193,96,58,0.1)', borderRadius: '999px', overflow: 'hidden', border: '1px solid rgba(193,96,58,0.08)' }}>
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${joseProgress}%` }}
@@ -111,14 +111,14 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, activeUserId }) => {
              {/* Anto's Bar */}
              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', fontSize: '12px' }}>
-                  <span style={{ fontWeight: 500, color: 'rgba(255,255,255,0.75)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    Anto {antoProgress > joseProgress && <Trophy size={12} color="#f0c040" />}
+                  <span style={{ fontWeight: 500, color: '#7a4a36', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    Anto {antoProgress > joseProgress && <Trophy size={12} color="#c1603a" />}
                   </span>
-                  <span style={{ color: 'rgba(255,255,255,0.55)', fontFamily: '"JetBrains Mono", monospace', fontSize: '10px' }}>
+                  <span style={{ color: '#b08878', fontFamily: '"Outfit", sans-serif', fontSize: '10px' }}>
                     {goal.currentValueAnto} / {goal.targetValue} {goal.unit}
                   </span>
                 </div>
-                <div style={{ width: '100%', height: '6px', background: 'rgba(8,15,35,0.9)', borderRadius: '999px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ width: '100%', height: '6px', background: 'rgba(193,96,58,0.1)', borderRadius: '999px', overflow: 'hidden', border: '1px solid rgba(193,96,58,0.08)' }}>
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${antoProgress}%` }}
@@ -131,12 +131,12 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, activeUserId }) => {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '6px' }}>
-               <span style={{ color: 'rgba(255,255,255,0.75)', fontSize: '12px' }}>{goal.description}</span>
-               <span style={{ color: 'rgba(255,255,255,0.55)', fontFamily: '"JetBrains Mono", monospace', fontSize: '10px', whiteSpace: 'nowrap', marginLeft: '8px' }}>
+               <span style={{ color: '#7a4a36', fontSize: '12px' }}>{goal.description}</span>
+               <span style={{ color: '#b08878', fontFamily: '"Outfit", sans-serif', fontSize: '10px', whiteSpace: 'nowrap', marginLeft: '8px' }}>
                  {activeUserId === 'jose' ? goal.currentValueJose : goal.currentValueAnto} / {goal.targetValue} {goal.unit}
                </span>
              </div>
-             <div style={{ width: '100%', height: '8px', background: 'rgba(8,15,35,0.9)', borderRadius: '999px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+             <div style={{ width: '100%', height: '8px', background: 'rgba(193,96,58,0.1)', borderRadius: '999px', overflow: 'hidden', border: '1px solid rgba(193,96,58,0.08)' }}>
                 <motion.div 
                   initial={{ width: 0 }}
                   animate={{ width: `${personalProgress}%` }}

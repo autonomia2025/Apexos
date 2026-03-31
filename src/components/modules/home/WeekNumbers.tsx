@@ -7,7 +7,7 @@ export const WeekNumbers: React.FC = () => {
 
   return (
     <GlassCard style={{ padding: '24px', marginBottom: '24px' }}>
-      <h3 style={{ fontSize: '14px', fontFamily: '"Playfair Display", serif', fontWeight: 600, color: '#f7d97a', marginBottom: '16px', marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+      <h3 style={{ fontSize: '14px', fontFamily: '"Outfit", sans-serif', fontWeight: 600, color: '#d4724a', marginBottom: '16px', marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
         Semana en números
       </h3>
       
@@ -18,9 +18,9 @@ export const WeekNumbers: React.FC = () => {
           const m = user.metrics;
           
           return (
-            <div key={userId} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', paddingLeft: userId === 'anto' ? '16px' : 0, borderLeft: userId === 'anto' ? '1px solid rgba(255,255,255,0.1)' : 'none' }}>
+            <div key={userId} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', paddingLeft: userId === 'anto' ? '16px' : 0, borderLeft: userId === 'anto' ? '1px solid rgba(193,96,58,0.15)' : 'none' }}>
               <div 
-                 style={{ padding: '4px 12px', borderRadius: '999px', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(255,255,255,0.1)',
+                 style={{ padding: '4px 12px', borderRadius: '999px', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(193,96,58,0.15)',
                    color: profile.color, 
                    backgroundColor: `${profile.color}11`,
                    borderColor: `${profile.color}33`
@@ -31,26 +31,26 @@ export const WeekNumbers: React.FC = () => {
 
               <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px' }}>
-                  <span style={{ color: 'rgba(255,255,255,0.55)', fontWeight: 500 }}>Total Calorías</span>
-                  <span style={{ color: profile.color, fontFamily: '"JetBrains Mono", monospace', fontWeight: 700 }}>
+                  <span style={{ color: '#b08878', fontWeight: 500 }}>Total Calorías</span>
+                  <span style={{ color: profile.color, fontFamily: '"Outfit", sans-serif', fontWeight: 700 }}>
                     {(m.calories.consumed * 7).toLocaleString('es-ES')}
                   </span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px' }}>
-                  <span style={{ color: 'rgba(255,255,255,0.55)', fontWeight: 500 }}>Total Entrenos</span>
-                  <span style={{ color: profile.color, fontFamily: '"JetBrains Mono", monospace', fontWeight: 700 }}>
+                  <span style={{ color: '#b08878', fontWeight: 500 }}>Total Entrenos</span>
+                  <span style={{ color: profile.color, fontFamily: '"Outfit", sans-serif', fontWeight: 700 }}>
                     {m.trainingDays}
                   </span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px' }}>
-                  <span style={{ color: 'rgba(255,255,255,0.55)', fontWeight: 500 }}>Hrs Estudio</span>
-                  <span style={{ color: profile.color, fontFamily: '"JetBrains Mono", monospace', fontWeight: 700 }}>
+                  <span style={{ color: '#b08878', fontWeight: 500 }}>Hrs Estudio</span>
+                  <span style={{ color: profile.color, fontFamily: '"Outfit", sans-serif', fontWeight: 700 }}>
                     {m.studyHours}h
                   </span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px' }}>
-                  <span style={{ color: 'rgba(255,255,255,0.55)', fontWeight: 500 }}>Ahorro Semana</span>
-                  <span style={{ color: profile.color, fontFamily: '"JetBrains Mono", monospace', fontWeight: 700 }}>
+                  <span style={{ color: '#b08878', fontWeight: 500 }}>Ahorro Semana</span>
+                  <span style={{ color: profile.color, fontFamily: '"Outfit", sans-serif', fontWeight: 700 }}>
                     {m.finance.savingsRate}%
                   </span>
                 </div>

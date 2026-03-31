@@ -5,7 +5,7 @@ export const mockData: CoupleData = {
     user: {
       id: 'jose',
       name: 'Jose',
-      color: 'var(--user-jose)',
+      color: '#c1603a',
       initials: 'JS',
     },
     metrics: {
@@ -59,7 +59,7 @@ export const mockData: CoupleData = {
     user: {
       id: 'anto',
       name: 'Anto',
-      color: 'var(--user-anto)',
+      color: '#d4849e',
       initials: 'AM',
     },
     metrics: {

@@ -28,8 +28,8 @@ const UserSummaryCard: React.FC<{ user: UserData }> = ({ user }) => {
           progress={user.metrics.compliance}
         />
         <div>
-          <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '28px', lineHeight: 1, fontWeight: 600, color: '#fff', margin: 0 }}>{user.user.name}</h3>
-          <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', letterSpacing: '0.12em', marginTop: '4px', fontWeight: 600 }}>
+          <h3 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '28px', lineHeight: 1, fontWeight: 700, color: '#2d1a0e', margin: 0 }}>{user.user.name}</h3>
+          <p style={{ fontSize: '11px', color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.12em', marginTop: '4px', fontWeight: 300 }}>
             {user.metrics.streak} días de racha 🔥
           </p>
         </div>
@@ -70,8 +70,8 @@ export const Home: React.FC = () => {
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'rgba(247,217,122,0.9)', marginBottom: '8px', fontWeight: 600 }}>
             <Sparkles size={12} /> Panel Diario
           </span>
-          <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '42px', lineHeight: 1, fontWeight: 700, color: '#f0c040', letterSpacing: '0.01em', margin: 0 }}>APEX OS</h1>
-          <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginTop: '8px' }}>
+          <h1 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '42px', lineHeight: 1, fontWeight: 800, color: '#c1603a', letterSpacing: '0.01em', margin: 0 }}>APEX OS</h1>
+          <p style={{ fontSize: '14px', color: '#7a4a36', marginTop: '8px', fontWeight: 400 }}>
             Buenos días, {activeUser.user.name} · {today}
           </p>
         </div>
@@ -146,23 +146,23 @@ export const Home: React.FC = () => {
             style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-               <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'rgba(240,192,64,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(240,192,64,0.25)', flexShrink: 0 }}>
-                  <Target size={22} color="#f0c040" />
+               <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'rgba(193,96,58,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(193,96,58,0.25)', flexShrink: 0 }}>
+                  <Target size={22} color="#c1603a" />
                 </div>
                 <div>
-                   <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '20px', fontWeight: 600, color: '#fff', margin: 0 }}>Metas compartidas</h3>
-                   <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)', marginTop: '3px' }}>
+                   <h3 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '20px', fontWeight: 700, color: '#2d1a0e', margin: 0 }}>Metas compartidas</h3>
+                   <p style={{ fontSize: '12px', color: '#b08878', marginTop: '3px', fontWeight: 300 }}>
                      Visión conjunta · Q2 2025
                    </p>
                 </div>
             </div>
-            <ArrowRight size={18} color="#f0c040" opacity={0.6} />
+            <ArrowRight size={18} color="#c1603a" opacity={0.6} />
           </GlassCard>
         </Link>
       </motion.div>
 
       <div style={{ textAlign: 'center', marginBottom: '80px' }}>
-        <Link to="/review" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 600, color: '#f0c040', textTransform: 'uppercase', letterSpacing: '0.12em', textDecoration: 'none' }}>
+        <Link to="/review" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 600, color: '#c1603a', textTransform: 'uppercase', letterSpacing: '0.12em', textDecoration: 'none' }}>
           Revisión Semanal Completa <ArrowRight size={12} />
         </Link>
       </div>

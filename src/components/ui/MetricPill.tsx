@@ -16,7 +16,7 @@ export const MetricPill: React.FC<MetricPillProps> = ({ label, value, highlightC
         />
       )}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-        {icon && <span style={{ opacity: 0.8, color: '#f0c040' }}>{icon}</span>}
+        {icon && <span style={{ opacity: 0.8, color: '#c1603a' }}>{icon}</span>}
         <span className="label">{label}</span>
       </div>
       <span className="value" style={{ marginLeft: '4px' }}>{value}</span>

@@ -26,7 +26,7 @@ export const ExpenseLogList: React.FC<ExpenseLogListProps> = ({ logs, color, onO
   return (
     <div style={{ width: '100%' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-        <h3 style={{ fontSize: '28px', lineHeight: 1, color: '#fff', letterSpacing: '0.01em', fontFamily: '"Playfair Display", serif' }}>
+        <h3 style={{ fontSize: '28px', lineHeight: 1, color: '#2d1a0e', letterSpacing: '0.01em', fontFamily: '"Outfit", sans-serif' }}>
           Historial Financiero
         </h3>
         
@@ -55,18 +55,18 @@ export const ExpenseLogList: React.FC<ExpenseLogListProps> = ({ logs, color, onO
                   />
                   
                   <div 
-                    style={{ width: '40px', height: '40px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0f172a', border: `1px solid ${color}40`, color }}
+                    style={{ width: '40px', height: '40px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ffffff', border: `1px solid ${color}40`, color }}
                   >
                     {getIcon(log.category)}
                   </div>
                   
                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                     <h4 style={{ color: '#fff', fontWeight: 600, fontSize: '20px', fontFamily: '"Playfair Display", serif', lineHeight: 1.2 }}>{log.description}</h4>
-                     <span style={{ color: '#9ca3af', fontFamily: 'monospace', fontSize: '10px', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{log.date}</span>
+                     <h4 style={{ color: '#2d1a0e', fontWeight: 600, fontSize: '20px', fontFamily: '"Outfit", sans-serif', lineHeight: 1.2 }}>{log.description}</h4>
+                     <span style={{ color: '#b08878', fontFamily: '"Outfit", sans-serif', fontSize: '10px', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{log.date}</span>
                    </div>
                    
                    <div style={{ textAlign: 'right' }}>
-                     <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: '14px', padding: '4px 8px', borderRadius: '6px', border: '1px solid', color: log.amount < 0 ? '#f87171' : '#34d399', borderColor: log.amount < 0 ? 'rgba(248,113,113,0.3)' : 'rgba(52,211,153,0.3)', background: log.amount < 0 ? 'rgba(248,113,113,0.1)' : 'rgba(52,211,153,0.1)' }}>
+                     <span style={{ fontFamily: '"Outfit", sans-serif', fontWeight: 700, fontSize: '14px', padding: '4px 8px', borderRadius: '6px', border: '1px solid', color: log.amount < 0 ? '#c94040' : '#4a9068', borderColor: log.amount < 0 ? 'rgba(248,113,113,0.3)' : 'rgba(52,211,153,0.3)', background: log.amount < 0 ? 'rgba(248,113,113,0.1)' : 'rgba(52,211,153,0.1)' }}>
                        {log.amount < 0 ? '-' : '+'}${Math.abs(log.amount).toFixed(2)}
                      </span>
                    </div>

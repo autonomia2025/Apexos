@@ -95,7 +95,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                   />
                 ))}
               </div>
-              <button onClick={handleClose} style={{ padding: '8px', color: 'rgba(255,255,255,0.5)', transition: 'color 0.2s ease' }}>
+              <button onClick={handleClose} style={{ padding: '8px', color: '#b08878', transition: 'color 0.2s ease' }}>
                 <X size={20} />
               </button>
             </header>
@@ -113,7 +113,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                      exit={{ opacity: 0, x: -20 }}
                      style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
                    >
-                    <h2 style={{ fontSize: '30px', fontFamily: '"Playfair Display", serif', fontWeight: 700, textAlign: 'center', marginBottom: '40px', color: '#fff' }}>
+                    <h2 style={{ fontSize: '30px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, textAlign: 'center', marginBottom: '40px', color: '#2d1a0e' }}>
                       ¿Cómo te sentís hoy, {profile.name}?
                     </h2>
                     
@@ -149,47 +149,47 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                      style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}
                    >
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      <label style={{ fontSize: '14px', fontWeight: 600, color: '#f7d97a' }}>Peso de hoy (kg)</label>
+                      <label style={{ fontSize: '14px', fontWeight: 600, color: '#d4724a' }}>Peso de hoy (kg)</label>
                       <input 
                         type="number"
                         value={weight}
                         onChange={(e) => setWeight(e.target.value)}
                         placeholder="Ej. 75.4"
-                        style={{ width: '100%', background: 'rgba(8,15,35,0.85)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '12px 16px', color: '#fff', fontFamily: '"JetBrains Mono", monospace', fontSize: '18px', outline: 'none' }}
+                        style={{ width: '100%', background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(193,96,58,0.15)', borderRadius: '12px', padding: '12px 16px', color: '#2d1a0e', fontFamily: '"Outfit", sans-serif', fontSize: '18px', outline: 'none' }}
                       />
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      <label style={{ fontSize: '14px', fontWeight: 600, color: '#f7d97a', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Droplets size={16} color="#60a5fa" /> Agua (vasos)
+                      <label style={{ fontSize: '14px', fontWeight: 600, color: '#d4724a', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Droplets size={16} color="#c1603a" /> Agua (vasos)
                       </label>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(8,15,35,0.85)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', overflow: 'hidden' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.92)', borderRadius: '12px', border: '1px solid rgba(193,96,58,0.15)', overflow: 'hidden' }}>
                          <button 
                            onClick={() => setWater(Math.max(0, water - 1))}
-                           style={{ padding: '16px 24px', background: 'rgba(255,255,255,0.05)', color: '#fff', fontSize: '22px' }}
+                           style={{ padding: '16px 24px', background: 'rgba(193,96,58,0.08)', color: '#2d1a0e', fontSize: '22px' }}
                          >-</button>
-                         <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: '28px', fontWeight: 700 }}>{water}</span>
+                         <span style={{ fontFamily: '"Outfit", sans-serif', fontSize: '28px', fontWeight: 700 }}>{water}</span>
                          <button 
                            onClick={() => setWater(water + 1)}
-                           style={{ padding: '16px 24px', background: 'rgba(255,255,255,0.05)', color: '#fff', fontSize: '22px' }}
+                           style={{ padding: '16px 24px', background: 'rgba(193,96,58,0.08)', color: '#2d1a0e', fontSize: '22px' }}
                          >+</button>
                       </div>
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                      <label style={{ fontSize: '14px', fontWeight: 600, color: '#f7d97a', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Target size={16} color="#f87171" /> ¿Cumpliste tu objetivo principal hoy?
+                      <label style={{ fontSize: '14px', fontWeight: 600, color: '#d4724a', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Target size={16} color="#c94040" /> ¿Cumpliste tu objetivo principal hoy?
                       </label>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                          <button
                            onClick={() => setGoalMet(true)}
-                           style={{ padding: '12px 0', borderRadius: '12px', border: `1px solid ${goalMet === true ? '#f0c040' : 'rgba(255,255,255,0.1)'}`, fontWeight: 700, transition: 'all 0.2s ease', background: goalMet === true ? 'rgba(240,192,64,0.2)' : 'rgba(8,15,35,0.85)', color: goalMet === true ? '#f7d97a' : 'rgba(255,255,255,0.6)' }}
+                           style={{ padding: '12px 0', borderRadius: '12px', border: `1px solid ${goalMet === true ? '#c1603a' : 'rgba(193,96,58,0.15)'}`, fontWeight: 700, transition: 'all 0.2s ease', background: goalMet === true ? 'rgba(193,96,58,0.2)' : 'rgba(255,255,255,0.92)', color: goalMet === true ? '#d4724a' : '#7a4a36' }}
                          >
                            Sí
                          </button>
                          <button
                            onClick={() => setGoalMet(false)}
-                           style={{ padding: '12px 0', borderRadius: '12px', border: `1px solid ${goalMet === false ? '#f87171' : 'rgba(255,255,255,0.1)'}`, fontWeight: 700, transition: 'all 0.2s ease', background: goalMet === false ? 'rgba(248,113,113,0.2)' : 'rgba(8,15,35,0.85)', color: goalMet === false ? '#fca5a5' : 'rgba(255,255,255,0.6)' }}
+                           style={{ padding: '12px 0', borderRadius: '12px', border: `1px solid ${goalMet === false ? '#c94040' : 'rgba(193,96,58,0.15)'}`, fontWeight: 700, transition: 'all 0.2s ease', background: goalMet === false ? 'rgba(248,113,113,0.2)' : 'rgba(255,255,255,0.92)', color: goalMet === false ? '#fca5a5' : '#7a4a36' }}
                          >
                            No
                          </button>
@@ -210,15 +210,15 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                         initial={{ scale: 0, rotate: -45 }}
                         animate={{ scale: 1, rotate: 0 }}
                         transition={{ type: 'spring', damping: 15 }}
-                        style={{ width: '80px', height: '80px', borderRadius: '999px', background: 'rgba(240,192,64,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #f0c040', boxShadow: '0 0 30px rgba(240,192,64,0.3)' }}
+                        style={{ width: '80px', height: '80px', borderRadius: '999px', background: 'rgba(193,96,58,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #c1603a', boxShadow: '0 0 30px rgba(193,96,58,0.3)' }}
                      >
-                       <CheckCircle size={40} color="#f0c040" />
+                       <CheckCircle size={40} color="#c1603a" />
                      </motion.div>
                      
                      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                       <h3 style={{ fontSize: '30px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', margin: 0 }}>¡Check-in Completo!</h3>
-                       <GlassCard style={{ padding: '16px', background: 'rgba(8,15,35,0.5)', borderColor: 'rgba(240,192,64,0.3)' }}>
-                         <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '14px', fontStyle: 'italic', lineHeight: 1.6, margin: 0 }}>
+                       <h3 style={{ fontSize: '30px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#2d1a0e', margin: 0 }}>¡Check-in Completo!</h3>
+                        <GlassCard style={{ padding: '16px', background: '#fff8f4', borderColor: 'rgba(193,96,58,0.3)' }}>
+                         <p style={{ color: '#7a4a36', fontSize: '14px', fontStyle: 'italic', lineHeight: 1.6, margin: 0 }}>
                            "{getAiMessage()}"
                          </p>
                        </GlassCard>
@@ -234,7 +234,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
               {step > 1 && step < 3 && (
                  <button 
                   onClick={handleBack}
-                  style={{ padding: '12px 16px', borderRadius: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.55)', background: 'transparent' }}
+                  style={{ padding: '12px 16px', borderRadius: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', color: '#b08878', background: 'transparent' }}
                  >
                    <ArrowLeft size={18} /> Atrás
                  </button>
@@ -245,7 +245,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
               {step === 2 && (
                 <button 
                   onClick={handleNext}
-                  style={{ padding: '12px 24px', borderRadius: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', background: '#f0c040', color: '#060d1f', boxShadow: '0 10px 24px rgba(0,0,0,0.28)' }}
+                  style={{ padding: '12px 24px', borderRadius: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', background: '#c1603a', color: '#fdf6f0', boxShadow: '0 10px 24px rgba(180, 100, 60, 0.08)' }}
                 >
                   Siguiente <ArrowRight size={18} />
                 </button>
@@ -254,7 +254,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
               {step === 3 && (
                 <button 
                   onClick={handleClose}
-                  style={{ width: '100%', padding: '16px 24px', borderRadius: '12px', fontWeight: 700, textAlign: 'center', background: '#f0c040', color: '#060d1f', boxShadow: '0 10px 24px rgba(240,192,64,0.2)' }}
+                  style={{ width: '100%', padding: '16px 24px', borderRadius: '12px', fontWeight: 700, textAlign: 'center', background: '#c1603a', color: '#fdf6f0', boxShadow: '0 10px 24px rgba(193,96,58,0.2)' }}
                 >
                   Cerrar
                 </button>

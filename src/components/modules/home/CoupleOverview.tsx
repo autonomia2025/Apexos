@@ -82,18 +82,18 @@ export const CoupleOverview: React.FC<CoupleOverviewProps> = ({ user }) => {
             size={100}
           />
           <div style={{ textAlign: 'center' }}>
-            <h2 style={{ fontSize: '30px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: '#fff', letterSpacing: '0.02em', margin: 0 }}>
+            <h2 style={{ fontSize: '30px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#2d1a0e', letterSpacing: '0.02em', margin: 0 }}>
               {profile.name}
             </h2>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '4px', background: 'rgba(255,255,255,0.05)', padding: '4px 12px', borderRadius: '999px', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '4px', background: 'rgba(193,96,58,0.08)', padding: '4px 12px', borderRadius: '999px', border: '1px solid rgba(193,96,58,0.15)' }}>
               <Flame size={14} color="#f97316" />
-              <span style={{ fontSize: '12px', fontWeight: 500, color: 'rgba(255,255,255,0.75)' }}>
+              <span style={{ fontSize: '12px', fontWeight: 500, color: '#7a4a36' }}>
                 Día {metrics.streak} de racha
               </span>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '8px', marginTop: '8px', background: 'rgba(8,15,35,0.8)', padding: '8px 16px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.28)' }}>
+          <div style={{ display: 'flex', gap: '8px', marginTop: '8px', background: 'rgba(255,255,255,1)', padding: '8px 16px', borderRadius: '16px', border: '1px solid rgba(193,96,58,0.08)', boxShadow: 'inset 0 2px 8px rgba(180, 100, 60, 0.08)' }}>
             {getMoodEmojis(metrics.mood)}
           </div>
         </motion.div>

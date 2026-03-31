@@ -11,7 +11,7 @@ export const UserToggle = () => {
     <div className="user-toggle">
       {(['jose', 'anto'] as const).map((id) => {
         const isActive = activeUserId === id;
-        const activeColor = id === 'jose' ? '#4a90d9' : '#e879a0';
+        const activeColor = id === 'jose' ? '#c1603a' : '#d4849e';
         
         return (
           <button
@@ -21,7 +21,7 @@ export const UserToggle = () => {
             aria-pressed={isActive}
             style={{
               background: isActive ? activeColor : 'transparent',
-              color: isActive ? '#060d1f' : 'rgba(255,255,255,0.4)',
+              color: isActive ? '#fdf6f0' : '#b08878',
               boxShadow: isActive ? `0 0 14px ${activeColor}60` : 'none',
               fontWeight: isActive ? 700 : 500,
             }}

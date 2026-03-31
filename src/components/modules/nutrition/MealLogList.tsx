@@ -15,7 +15,7 @@ export const MealLogList: React.FC<MealLogListProps> = ({ logs, color, onOpenAdd
   return (
     <div style={{ width: '100%' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-        <h3 style={{ fontSize: '28px', lineHeight: 1, color: '#fff', letterSpacing: '0.01em', fontFamily: '"Playfair Display", serif' }}>
+        <h3 style={{ fontSize: '28px', lineHeight: 1, color: '#2d1a0e', letterSpacing: '0.01em', fontFamily: '"Outfit", sans-serif' }}>
           Historial de Hoy
         </h3>
         
@@ -46,8 +46,8 @@ export const MealLogList: React.FC<MealLogListProps> = ({ logs, color, onOpenAdd
                   
                   <div style={{ flex: 1, marginLeft: '8px', width: '100%' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: '4px' }}>
-                      <h4 style={{ color: '#fff', fontWeight: 600, fontSize: '20px', fontFamily: '"Playfair Display", serif' }}>{log.name}</h4>
-                      <span style={{ color: '#9ca3af', fontFamily: 'monospace', fontSize: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '6px' }}>{log.time}</span>
+                      <h4 style={{ color: '#2d1a0e', fontWeight: 600, fontSize: '20px', fontFamily: '"Outfit", sans-serif' }}>{log.name}</h4>
+                      <span style={{ color: '#b08878', fontFamily: '"Outfit", sans-serif', fontSize: '12px', background: 'rgba(193,96,58,0.08)', border: '1px solid rgba(193,96,58,0.15)', padding: '2px 8px', borderRadius: '6px' }}>{log.time}</span>
                     </div>
                     
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', marginTop: '8px' }}>
@@ -56,14 +56,14 @@ export const MealLogList: React.FC<MealLogListProps> = ({ logs, color, onOpenAdd
                        >
                          {log.calories} KCAL
                        </span>
-                        <span style={{ fontSize: '11px', color: '#6b7280', fontWeight: 600 }}>
-                          P: <span style={{ color: '#d1d5db' }}>{log.macros.protein}g</span>
+                        <span style={{ fontSize: '11px', color: '#b08878', fontWeight: 600 }}>
+                          P: <span style={{ color: '#7a4a36' }}>{log.macros.protein}g</span>
                         </span>
-                        <span style={{ fontSize: '11px', color: '#6b7280', fontWeight: 600 }}>
-                          C: <span style={{ color: '#d1d5db' }}>{log.macros.carbs}g</span>
+                        <span style={{ fontSize: '11px', color: '#b08878', fontWeight: 600 }}>
+                          C: <span style={{ color: '#7a4a36' }}>{log.macros.carbs}g</span>
                         </span>
-                        <span style={{ fontSize: '11px', color: '#6b7280', fontWeight: 600 }}>
-                          G: <span style={{ color: '#d1d5db' }}>{log.macros.fat}g</span>
+                        <span style={{ fontSize: '11px', color: '#b08878', fontWeight: 600 }}>
+                          G: <span style={{ color: '#7a4a36' }}>{log.macros.fat}g</span>
                         </span>
                     </div>
                   </div>

@@ -54,8 +54,8 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, col
             <div className="modal-handle" />
             
             <header style={{ marginBottom: '20px', textAlign: 'center' }}>
-              <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: '"Playfair Display", serif', fontSize: '30px', color: '#f0c040', fontWeight: 700 }}>
-                 <Target size={20} color="#f0c040" /> Nuevo Proyecto
+              <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: '"Outfit", sans-serif', fontSize: '30px', color: '#c1603a', fontWeight: 700 }}>
+                 <Target size={20} color="#c1603a" /> Nuevo Proyecto
               </h2>
             </header>
             
@@ -63,7 +63,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, col
               
               {/* Name Input */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Nombre</label>
+                <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Nombre</label>
                 <input
                   type="text"
                   value={name}
@@ -75,7 +75,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, col
 
               {/* Venture */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Venture</label>
+                <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Venture</label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {ventures.map((v) => (
                     <motion.button
@@ -87,8 +87,8 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, col
                          transition: 'all 0.25s ease',
                          borderColor: venture === v ? color : 'rgba(255,255,255,0.14)',
                          color: venture === v ? color : 'rgba(255,255,255,0.7)',
-                         background: venture === v ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)',
-                         boxShadow: venture === v ? 'inset 0 0 10px rgba(240,192,64,0.45)' : 'none'
+                         background: venture === v ? 'rgba(193,96,58,0.15)' : 'rgba(255,255,255,0.03)',
+                         boxShadow: venture === v ? 'inset 0 0 10px rgba(193,96,58,0.45)' : 'none'
                       }}
                     >
                       {v}
@@ -99,7 +99,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, col
 
               {/* Departments (Multi) */}
                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Owner(s)</label>
+                <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Owner(s)</label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {depts.map((d) => {
                      const isSel = departments.includes(d);
@@ -111,10 +111,10 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, col
                         className="modal-chip"
                         style={{
                           transition: 'all 0.25s ease',
-                          borderColor: isSel ? '#f0c040' : 'rgba(255,255,255,0.14)',
-                          color: isSel ? '#f0c040' : 'rgba(255,255,255,0.7)',
-                          background: isSel ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)',
-                          boxShadow: isSel ? 'inset 0 0 10px rgba(240,192,64,0.35)' : 'none'
+                          borderColor: isSel ? '#c1603a' : 'rgba(255,255,255,0.14)',
+                          color: isSel ? '#c1603a' : 'rgba(255,255,255,0.7)',
+                          background: isSel ? 'rgba(193,96,58,0.15)' : 'rgba(255,255,255,0.03)',
+                          boxShadow: isSel ? 'inset 0 0 10px rgba(193,96,58,0.35)' : 'none'
                         }}
                       >
                         {d}
@@ -126,13 +126,13 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, col
 
               {/* Priority */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Prioridad</label>
-                <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', padding: '4px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Prioridad</label>
+                <div style={{ display: 'flex', background: 'rgba(193,96,58,0.08)', padding: '4px', borderRadius: '12px', border: '1px solid rgba(193,96,58,0.15)' }}>
                    {(['Baja', 'Media', 'Alta'] as const).map(p => (
                       <button
                         key={p}
                         onClick={() => setPriority(p)}
-                        style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '10px 0', borderRadius: '10px', fontSize: '14px', fontWeight: 700, transition: 'all 0.25s ease', color: priority === p ? (p === 'Alta' ? '#fca5a5' : p === 'Media' ? '#fde047' : '#86efac') : 'rgba(255,255,255,0.5)', background: priority === p ? (p === 'Alta' ? 'rgba(248,113,113,0.18)' : p === 'Media' ? 'rgba(250,204,21,0.18)' : 'rgba(74,222,128,0.18)') : 'transparent' }}
+                        style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '10px 0', borderRadius: '10px', fontSize: '14px', fontWeight: 700, transition: 'all 0.25s ease', color: priority === p ? (p === 'Alta' ? '#fca5a5' : p === 'Media' ? '#fde047' : '#4a9068') : '#b08878', background: priority === p ? (p === 'Alta' ? 'rgba(248,113,113,0.18)' : p === 'Media' ? 'rgba(250,204,21,0.18)' : 'rgba(74,222,128,0.18)') : 'transparent' }}
                       >
                         {p}
                       </button>
@@ -143,14 +143,14 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, col
               {/* Progress */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Progreso ({progress}%)</label>
+                    <label style={{ fontSize: '12px', color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>Progreso ({progress}%)</label>
                  </div>
                  <input 
                    type="range"
                    min="0" max="100" step="10"
                    value={progress}
                    onChange={(e) => setProgress(Number(e.target.value))}
-                    style={{ width: '100%', accentColor: '#f0c040' }}
+                    style={{ width: '100%', accentColor: '#c1603a' }}
                   />
               </div>
 
@@ -158,7 +158,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, col
               <button
                 onClick={handleClose}
                 disabled={!name || departments.length === 0}
-                style={{ marginTop: '8px', border: '1px solid rgba(240,192,64,0.5)', borderRadius: '14px', padding: '14px 16px', background: 'linear-gradient(135deg, #f0c040, #f7d97a)', color: '#0b1328', fontWeight: 800, letterSpacing: '0.03em', cursor: 'pointer', opacity: !name || departments.length === 0 ? 0.45 : 1 }}
+                style={{ marginTop: '8px', border: '1px solid rgba(193,96,58,0.5)', borderRadius: '14px', padding: '14px 16px', background: 'linear-gradient(135deg, #c1603a, #d4724a)', color: '#ffffff', fontWeight: 800, letterSpacing: '0.03em', cursor: 'pointer', opacity: !name || departments.length === 0 ? 0.45 : 1 }}
               >
                 Guardar Proyecto
               </button>

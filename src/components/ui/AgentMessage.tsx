@@ -34,8 +34,8 @@ export const AgentMessage: React.FC<AgentMessageProps> = ({ agentType, userName,
   }, [agentType, userName]);
 
   return (
-    <GlassCard className="agent-card" style={{ marginBottom: '24px', position: 'relative', overflow: 'hidden', borderColor: 'rgba(240,192,64,0.3)' }}>
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(240,192,64,0.08), transparent, transparent)', pointerEvents: 'none' }} />
+    <GlassCard className="agent-card" style={{ marginBottom: '24px', position: 'relative', overflow: 'hidden', borderColor: 'rgba(193,96,58,0.3)' }}>
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(193,96,58,0.08), transparent, transparent)', pointerEvents: 'none' }} />
       {/* Dynamic glow behind the icon */}
       <div style={{ position: 'relative' }}>
         <div 
@@ -43,7 +43,7 @@ export const AgentMessage: React.FC<AgentMessageProps> = ({ agentType, userName,
         />
         <div 
           className="agent-icon"
-          style={{ backgroundColor: `${color}15`, color: color, border: '1px solid rgba(255,255,255,0.1)' }}
+          style={{ backgroundColor: `${color}15`, color: color, border: '1px solid rgba(193,96,58,0.15)' }}
         >
           <Bot size={20} />
         </div>
@@ -54,7 +54,7 @@ export const AgentMessage: React.FC<AgentMessageProps> = ({ agentType, userName,
            <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(247,217,122,0.9)' }}>Insight IA</span>
            <button
               onClick={(e) => { e.stopPropagation(); fetchInsight(); }}
-              style={{ padding: '6px', display: 'flex', alignItems: 'center', gap: '4px', color: '#f0c040', textTransform: 'uppercase', fontSize: '10px', letterSpacing: '0.1em', fontWeight: 700, background: 'transparent', border: 'none', cursor: 'pointer' }}
+              style={{ padding: '6px', display: 'flex', alignItems: 'center', gap: '4px', color: '#c1603a', textTransform: 'uppercase', fontSize: '10px', letterSpacing: '0.1em', fontWeight: 700, background: 'transparent', border: 'none', cursor: 'pointer' }}
             >
              <RefreshCw size={12} style={isLoading ? { transform: 'rotate(180deg)' } : undefined} />
              <span>Actualizar</span>
@@ -63,9 +63,9 @@ export const AgentMessage: React.FC<AgentMessageProps> = ({ agentType, userName,
 
         {isLoading ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '8px' }}>
-            <span style={{ width: '6px', height: '6px', background: '#f0c040', borderRadius: '999px' }} />
-            <span style={{ width: '6px', height: '6px', background: '#f0c040', borderRadius: '999px', opacity: 0.7 }} />
-            <span style={{ width: '6px', height: '6px', background: '#f0c040', borderRadius: '999px', opacity: 0.4 }} />
+            <span style={{ width: '6px', height: '6px', background: '#c1603a', borderRadius: '999px' }} />
+            <span style={{ width: '6px', height: '6px', background: '#c1603a', borderRadius: '999px', opacity: 0.7 }} />
+            <span style={{ width: '6px', height: '6px', background: '#c1603a', borderRadius: '999px', opacity: 0.4 }} />
           </div>
         ) : (
           <p style={{ color: 'rgba(229,231,235,1)', fontSize: '14px', fontStyle: 'italic', lineHeight: 1.6, marginTop: '4px' }}>

@@ -15,7 +15,7 @@ export const WorkoutLogList: React.FC<WorkoutLogListProps> = ({ logs, color, onO
   return (
     <div style={{ width: '100%' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-        <h3 style={{ fontSize: '28px', lineHeight: 1, color: '#fff', letterSpacing: '0.01em', fontFamily: '"Playfair Display", serif' }}>
+        <h3 style={{ fontSize: '28px', lineHeight: 1, color: '#2d1a0e', letterSpacing: '0.01em', fontFamily: '"Outfit", sans-serif' }}>
           Historial de Entrenos
         </h3>
         
@@ -43,17 +43,17 @@ export const WorkoutLogList: React.FC<WorkoutLogListProps> = ({ logs, color, onO
                     style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', opacity: 0.6, backgroundColor: color }}
                   />
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: '12px', marginLeft: '8px' }}>
-                    <h4 style={{ color: '#fff', fontWeight: 600, fontSize: '20px', fontFamily: '"Playfair Display", serif' }}>{log.type}</h4>
-                    <span style={{ color: '#9ca3af', fontFamily: 'monospace', fontSize: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '6px' }}>{log.date}</span>
+                    <h4 style={{ color: '#2d1a0e', fontWeight: 600, fontSize: '20px', fontFamily: '"Outfit", sans-serif' }}>{log.type}</h4>
+                    <span style={{ color: '#b08878', fontFamily: '"Outfit", sans-serif', fontSize: '12px', background: 'rgba(193,96,58,0.08)', border: '1px solid rgba(193,96,58,0.15)', padding: '2px 8px', borderRadius: '6px' }}>{log.date}</span>
                   </div>
                   
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginLeft: '8px' }}>
-                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#d1d5db', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                        <Timer size={14} color="#f0c040" />
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#7a4a36', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                        <Timer size={14} color="#c1603a" />
                         {log.duration} minutos
                       </div>
                      {log.notes && (
-                       <div style={{ color: '#6b7280', fontSize: '12px', fontStyle: 'italic' }}>
+                       <div style={{ color: '#b08878', fontSize: '12px', fontStyle: 'italic' }}>
                           {log.notes}
                         </div>
                      )}

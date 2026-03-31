@@ -16,17 +16,17 @@ export const LearnStats: React.FC<LearnStatsProps> = ({ user }) => {
 
   return (
     <GlassCard style={{ padding: '24px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', marginBottom: '24px', paddingBottom: '24px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', marginBottom: '24px', paddingBottom: '24px', borderBottom: '1px solid rgba(193,96,58,0.15)' }}>
          <div 
-          style={{ width: '40px', height: '40px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '14px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: `${profile.color}22`, color: profile.color }}
+          style={{ width: '40px', height: '40px', borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '14px', border: '1px solid rgba(193,96,58,0.15)', backgroundColor: `${profile.color}22`, color: profile.color }}
         >
           {profile.initials}
         </div>
         <div>
-          <h2 style={{ fontSize: '34px', lineHeight: 1, fontFamily: '"Playfair Display", serif', fontWeight: 600, color: '#fff' }}>
+          <h2 style={{ fontSize: '34px', lineHeight: 1, fontFamily: '"Outfit", sans-serif', fontWeight: 600, color: '#2d1a0e' }}>
             Progreso de Estudio
           </h2>
-          <p style={{ fontSize: '11px', color: '#6b7280', fontFamily: 'monospace', marginTop: '4px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Metas semanales</p>
+          <p style={{ fontSize: '11px', color: '#b08878', fontFamily: '"Outfit", sans-serif', marginTop: '4px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Metas semanales</p>
         </div>
       </div>
 
@@ -54,10 +54,10 @@ export const LearnStats: React.FC<LearnStatsProps> = ({ user }) => {
         />
       </div>
 
-      <div style={{ background: 'rgba(15,23,42,0.8)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+      <div style={{ background: '#ffffff', borderRadius: '12px', padding: '16px', border: '1px solid #e8d5c8' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-          <Target size={16} color="#9ca3af" />
-          <span style={{ fontSize: '12px', fontWeight: 500, color: '#d1d5db', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Foco Actual</span>
+          <Target size={16} color="#b08878" />
+          <span style={{ fontSize: '12px', fontWeight: 500, color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Foco Actual</span>
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
            {activeTopics.slice(0, 3).map((topic, index) => (
@@ -80,7 +80,7 @@ export const LearnStats: React.FC<LearnStatsProps> = ({ user }) => {
              </span>
            ))}
            {activeTopics.length > 3 && (
-             <span style={{ padding: '4px 10px', fontSize: '10px', fontWeight: 700, color: '#9ca3af', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)' }}>
+             <span style={{ padding: '4px 10px', fontSize: '10px', fontWeight: 700, color: '#b08878', background: 'rgba(193,96,58,0.08)', borderRadius: '6px', border: '1px solid rgba(193,96,58,0.15)' }}>
                 +{activeTopics.length - 3} MÁS
               </span>
            )}

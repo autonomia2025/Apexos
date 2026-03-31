@@ -86,7 +86,7 @@ export const MobileNav = () => {
                     />
                     {isActive && (
                       <div
-                        className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-gold-400 shadow-[0_0_8px_rgba(240,192,64,0.8)]"
+                        className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-gold-400 shadow-[0_0_8px_rgba(193,96,58,0.8)]"
                       />
                     )}
                   </div>
