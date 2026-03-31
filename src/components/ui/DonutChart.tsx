@@ -15,7 +15,6 @@ export const DonutChart = React.memo(({
   color,
   size = 140,
   label,
-  unit = ''
 }: DonutChartProps) => {
   const pct = Math.min((value / max) * 100, 100);
   const strokeW = 7;
