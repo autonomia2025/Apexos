@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap');
+
+@theme {
+  --color-navy-900: #060d1f;
+  --color-navy-800: #0a1628;
+  --color-navy-700: #0f2040;
+  --color-gold-400: #f0c040;
+  --color-gold-300: #f7d97a;
+  --color-user-jose: #4a90d9;
+  --color-user-anto: #e879a0;
+  --font-display: "Playfair Display", serif;
+  --font-body: "DM Sans", sans-serif;
+}
+
+:root {
+  background-color: #060d1f;
+  color: #ffffff;
+  font-family: "DM Sans", sans-serif;
+}
+
+body { margin:0; padding:0; min-height:100vh; background:#060d1f; overflow-x:hidden; }
+h1,h2,h3,h4,h5,h6 { font-family: "Playfair Display", serif; }
+
+.glass-panel {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(240,192,64,0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+}
+
+.glass-panel-gold {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(240,192,64,0.3);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(240,192,64,0.1);
+}
+
+.no-scrollbar::-webkit-scrollbar { display:none; }
+.no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }

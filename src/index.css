@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy-900: #060d1f;
+  --color-navy-800: #0a1628;
+  --color-navy-700: #0f2040;
+  --color-gold-400: #f0c040;
+  --color-gold-300: #f7d97a;
+  --color-user-jose: #4a90d9;
+  --color-user-anto: #e879a0;
+  --font-display: "Playfair Display", serif;
+  --font-body: "DM Sans", sans-serif;
+}
+
+@layer base {
+  :root {
+    background-color: var(--color-navy-900);
+    color: #ffffff;
+    font-family: var(--font-body);
+  }
+
+  body {
+    @apply m-0 p-0 overflow-x-hidden min-h-screen bg-navy-900;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display text-white;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-navy-800/40 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl;
+  }
+
+  .glass-panel-gold {
+    @apply bg-gold-400/5 backdrop-blur-lg rounded-2xl border border-gold-400/40 shadow-[0_0_20px_rgba(240,192,64,0.1)];
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background-size: 200% 100% !important;
+  animation: shimmer 2s infinite linear;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Ensure bottom padding globally for mobile nav */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}

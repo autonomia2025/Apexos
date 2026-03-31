@@ -1,0 +1,103 @@
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PageWrapper } from '../components/layout/PageWrapper';
+import { UserToggle } from '../components/ui/UserToggle';
+import { AgentMessage } from '../components/ui/AgentMessage';
+import { FitnessStats } from '../components/modules/fitness/FitnessStats';
+import { ActivityGrid } from '../components/modules/fitness/ActivityGrid';
+import { WorkoutLogList } from '../components/modules/fitness/WorkoutLogList';
+import { WorkoutModal } from '../components/modules/fitness/WorkoutModal';
+import { useCouple } from '../hooks/useCouple';
+import { useActiveUser } from '../hooks/useActiveUser';
+import { FitnessContext } from '../services/agentService';
+
+export const Fitness: React.FC = () => {
+  const { isMobile, users } = useCouple();
+  const activeUserData = useActiveUser();
+  const [isWorkoutModalOpen, setIsWorkoutModalOpen] = useState(false);
+
+  const handleOpenWorkoutModal = () => setIsWorkoutModalOpen(true);
+  const handleCloseWorkoutModal = () => setIsWorkoutModalOpen(false);
+
+  const getFitnessContext = (userData: typeof activeUserData): FitnessContext => ({
+    userName: userData.user.name,
+    entrenosSemana: userData.metrics.trainingDays,
+    metaEntrenosSemana: 5,
+    ultimoEntreno: userData.recentWorkouts.length > 0 ? `${userData.recentWorkouts[0].type} (${userData.recentWorkouts[0].date})` : 'Ninguno reciente',
+    rachaActual: userData.metrics.streak,
+    pasosHoy: userData.metrics.steps
+  });
+
+  return (
+    <PageWrapper>
+      <header className="flex justify-between items-start mb-8">
+        <div>
+          <h1 className="text-3xl font-display text-gold-400 font-bold tracking-tight">Fitness</h1>
+          <p className="text-sm font-body text-gray-400 mt-1">Rendimiento y actividad física</p>
+        </div>
+        <div className="md:hidden">
+          <UserToggle />
+        </div>
+      </header>
+
+      <div className="space-y-8">
+        <section>
+          <AgentMessage 
+            agentType="fitness"
+            userName={activeUserData.user.name}
+            color={activeUserData.user.color} 
+            contextData={getFitnessContext(activeUserData)}
+          />
+        </section>
+
+        {isMobile ? (
+          <AnimatePresence mode="wait">
+             <motion.div
+                key={activeUserData.user.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-8"
+             >
+                <FitnessStats user={activeUserData} />
+                <ActivityGrid user={activeUserData} />
+                <WorkoutLogList 
+                  logs={activeUserData.recentWorkouts} 
+                  color={activeUserData.user.color} 
+                  onOpenAdd={handleOpenWorkoutModal}
+                />
+             </motion.div>
+          </AnimatePresence>
+        ) : (
+          <div className="grid grid-cols-2 gap-8 items-start">
+            <div className="space-y-8">
+              <FitnessStats user={users.jose} />
+              <ActivityGrid user={users.jose} />
+              <WorkoutLogList 
+                logs={users.jose.recentWorkouts} 
+                color={users.jose.user.color} 
+                onOpenAdd={handleOpenWorkoutModal}
+              />
+            </div>
+            <div className="space-y-8">
+              <FitnessStats user={users.anto} />
+              <ActivityGrid user={users.anto} />
+              <WorkoutLogList 
+                logs={users.anto.recentWorkouts} 
+                color={users.anto.user.color} 
+                onOpenAdd={handleOpenWorkoutModal}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      <WorkoutModal 
+        isOpen={isWorkoutModalOpen} 
+        onClose={handleCloseWorkoutModal} 
+        color={activeUserData.user.color} 
+      />
+    </PageWrapper>
+  );
+};
