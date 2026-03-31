@@ -36,7 +36,7 @@ export const MobileNav = () => {
         )}
       </AnimatePresence>
 
-      <nav className="fixed bottom-0 left-0 w-full bg-navy-900/90 backdrop-blur-lg border-t border-gold-400/20 pb-safe z-50">
+      <nav className="mobile-nav">
         
         <AnimatePresence>
           {isMoreOpen && (

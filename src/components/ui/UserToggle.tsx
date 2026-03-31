@@ -1,43 +1,48 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCouple } from '../../hooks/useCouple';
-import { UserId } from '../../types';
 
+/**
+ * HIGH-END USER TOGGLE COMPONENT
+ * Minimalist pill design with elegant active animations.
+ */
 export const UserToggle: React.FC = () => {
-  const { activeUserId, setActiveUserId, users } = useCouple();
-
-  // If desktop, we don't necessarily need the toggle, or we can hide it.
-  // The plan says "Desktop: show BOTH users side by side always".
-  // But maybe the toggle is useful for some global context, so let's render it 
-  // only on mobile or conditionally. For now, we render it but the parent can hide.
+  const { activeUserId, setActiveUserId } = useCouple();
 
   return (
-    <div className="flex bg-navy-800/80 p-1 rounded-full border border-white/5 relative z-10 backdrop-blur-sm">
-      {(['jose', 'anto'] as UserId[]).map((userId) => {
-        const user = users[userId].user;
-        const isActive = activeUserId === userId;
-        
-        return (
-          <button
-            key={userId}
-            onClick={() => setActiveUserId(userId)}
-            className={`relative px-4 py-1.5 rounded-full text-sm font-medium transition-colors z-20 ${
-              isActive ? 'text-white' : 'text-gray-400 hover:text-gray-300'
-            }`}
-          >
-            {isActive && (
-              <motion.div
-                layoutId="user-toggle-pill"
-                className="absolute inset-0 rounded-full z-[-1]"
-                style={{ backgroundColor: user.color }}
-                initial={false}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              />
-            )}
-            {user.name}
-          </button>
-        );
-      })}
+    <div className="premium-pill p-1 gap-1 h-[42px] overflow-hidden min-w-[140px] relative">
+      <AnimatePresence mode="popLayout">
+        {['jose', 'anto'].map((user) => {
+          const isActive = activeUserId === user;
+          const color = user === 'jose' ? 'rgba(74, 144, 217, 0.2)' : 'rgba(232, 121, 160, 0.2)';
+          const textColor = user === 'jose' ? '#4a90d9' : '#e879a0';
+          
+          return (
+            <button
+              key={user}
+              onClick={() => setActiveUserId(user as 'jose' | 'anto')}
+              className="flex-1 h-full px-4 rounded-full relative z-10 transition-all cursor-pointer group"
+            >
+              {isActive && (
+                <motion.div
+                  layoutId="activePill"
+                  className="absolute inset-0 rounded-full shadow-inner border border-white/10"
+                  style={{ backgroundColor: color }}
+                  transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+              <span 
+                className={`relative z-10 text-[10px] font-bold uppercase tracking-widest transition-colors duration-300 ${
+                  isActive ? '' : 'text-gray-500 group-hover:text-gray-300'
+                }`}
+                style={{ color: isActive ? textColor : undefined }}
+              >
+                {user}
+              </span>
+            </button>
+          );
+        })}
+      </AnimatePresence>
     </div>
   );
 };

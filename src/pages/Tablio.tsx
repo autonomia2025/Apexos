@@ -1,4 +1,3 @@
-import React from 'react';
 import { Lock } from 'lucide-react';
 import { PageWrapper } from '../components/layout/PageWrapper';
 import { GlassCard } from '../components/ui/GlassCard';

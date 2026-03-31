@@ -1,71 +1,109 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Utensils, Dumbbell, Wallet, BookOpen, Target, Briefcase } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Home, 
+  Apple, 
+  Dumbbell, 
+  Wallet, 
+  BookOpen, 
+  Briefcase,
+  Target,
+  Settings
+} from 'lucide-react';
+import { useCouple } from '../../hooks/useCouple';
+import { UserToggle } from '../ui/UserToggle';
 
-export const DesktopSideNav = () => {
-  const personalNavItems = [
-    { to: '/', icon: Home, label: 'Home' },
-    { to: '/nutrition', icon: Utensils, label: 'Nutrition' },
-    { to: '/fitness', icon: Dumbbell, label: 'Fitness' },
-    { to: '/finance', icon: Wallet, label: 'Finance' },
-    { to: '/learn', icon: BookOpen, label: 'Learn' },
-    { to: '/goals', icon: Target, label: 'Metas' },
-  ];
+const NAV_ITEMS = [
+  { path: '/', icon: Home, label: 'Home' },
+  { path: '/nutrition', icon: Apple, label: 'Nutrition' },
+  { path: '/fitness', icon: Dumbbell, label: 'Fitness' },
+  { path: '/finance', icon: Wallet, label: 'Finance' },
+  { path: '/learn', icon: BookOpen, label: 'Learn' },
+  { path: '/goals', icon: Target, label: 'Goals' },
+];
 
-  const businessNavItems = [
-    { to: '/tablio', icon: Briefcase, label: 'Tablio' },
-  ];
-
-  const NavItem = ({ item }: { item: any }) => (
-    <NavLink
-      to={item.to}
-      className={({ isActive }) =>
-        `group relative flex items-center xl:px-4 py-3 rounded-xl transition-all duration-300 ${
-          isActive
-            ? 'bg-gold-400/10 text-gold-400 shadow-[inset_2px_0_0_var(--color-gold-400)]'
-            : 'text-gray-400 hover:bg-white/5 hover:text-white'
-        }`
-      }
-    >
-      {({ isActive }) => (
-        <>
-          <div className="flex justify-center xl:justify-start w-full gap-4 items-center">
-            <item.icon
-              className={`w-5 h-5 xl:w-6 xl:h-6 transition-transform group-hover:scale-110 ${
-                isActive ? 'drop-shadow-[0_0_8px_rgba(240,192,64,0.5)]' : ''
-              }`}
-              strokeWidth={isActive ? 2.5 : 2}
-            />
-            <span className="hidden xl:block font-bold tracking-wide text-sm">{item.label}</span>
-          </div>
-          
-          <div className="absolute left-16 px-3 py-1.5 bg-navy-800 text-white text-xs font-bold rounded-md opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 transition-all z-50 xl:hidden whitespace-nowrap shadow-xl border border-white/10">
-            {item.label}
-          </div>
-        </>
-      )}
-    </NavLink>
-  );
+/**
+ * HIGH-END DESKTOP SEGMENTED NAVIGATION
+ */
+export const DesktopSideNav: React.FC = () => {
+  const { activeUserId } = useCouple();
 
   return (
-    <nav className="fixed left-0 top-0 h-full w-20 xl:w-64 bg-navy-900 border-r border-gold-400/20 z-40 hidden md:block glass-panel">
-      <div className="flex flex-col h-full py-8">
-        <div className="px-6 mb-12 hidden xl:block">
-          <h1 className="text-2xl font-display font-bold text-gold-400 tracking-wider">APEX</h1>
-        </div>
-        <div className="flex justify-center xl:hidden mb-12">
-          <div className="w-10 h-10 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/50">
-            <span className="text-gold-400 font-display font-bold text-xl">A</span>
-          </div>
-        </div>
+    <nav className="desktop-nav-segmented flex flex-col items-center">
+      
+      {/* Brand Icon */}
+      <div className="w-12 h-12 rounded-2xl bg-gold-400/10 border border-gold-400/20 flex items-center justify-center mb-10 group cursor-pointer relative">
+         <div className="absolute inset-0 bg-gold-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+         <span className="text-xl font-display font-bold text-gold-400 relative z-10 select-none">A</span>
+      </div>
 
-        <div className="flex flex-col gap-4 px-3 xl:px-4 flex-1">
-          {personalNavItems.map((item) => <NavItem key={item.to} item={item} />)}
-          
-          <div className="my-2 border-t border-white/10 w-8 xl:w-full mx-auto" />
-          
-          {businessNavItems.map((item) => <NavItem key={item.to} item={item} />)}
+      {/* Nav List */}
+      <div className="flex flex-col gap-6 w-full px-2">
+        {NAV_ITEMS.map((item) => (
+          <NavLink 
+            key={item.path} 
+            to={item.path}
+            className={({ isActive }) => `
+              relative flex flex-col items-center justify-center p-3 rounded-2xl transition-all group
+              ${isActive ? 'text-gold-400' : 'text-gray-500 hover:text-gray-300'}
+            `}
+          >
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <motion.div 
+                    layoutId="activeSideNav"
+                    className="absolute inset-0 bg-gold-400/5 border border-gold-400/20 rounded-2xl z-0"
+                    transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+                <item.icon size={22} className="relative z-10" />
+                <span className="text-[8px] uppercase tracking-widest mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap relative z-10">
+                  {item.label}
+                </span>
+              </>
+            )}
+          </NavLink>
+        ))}
+
+        <div className="h-px bg-white/5 mx-3 my-2" />
+
+        {/* Tablio Business Link */}
+        <NavLink 
+          to="/tablio"
+          className={({ isActive }) => `
+            relative flex flex-col items-center justify-center p-3 rounded-2xl transition-all group
+            ${isActive ? 'text-gold-400' : 'text-gray-500 hover:text-gray-300'}
+          `}
+        >
+          {({ isActive }) => (
+            <>
+              {isActive && (
+                <motion.div 
+                  layoutId="activeSideNav"
+                  className="absolute inset-0 bg-gold-400/5 border border-gold-400/20 rounded-2xl z-0"
+                  transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+              <Briefcase size={22} className="relative z-10" />
+              <span className="text-[8px] uppercase tracking-widest mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap relative z-10">
+                Tablio
+              </span>
+            </>
+          )}
+        </NavLink>
+      </div>
+
+      <div className="mt-auto items-center flex flex-col gap-4">
+        {/* User Toggle Vertical Rotated or Mini version */}
+        <div className="rotate-90 origin-center absolute bottom-24 -translate-x-[0px]">
+           <UserToggle />
         </div>
+        
+        <button className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-500 transition-colors">
+          <Settings size={20} />
+        </button>
       </div>
     </nav>
   );
