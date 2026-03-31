@@ -12,15 +12,7 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
   const [duration, setDuration] = useState('');
   const [workoutType, setWorkoutType] = useState<string | null>(null);
   const [note, setNote] = useState('');
-  const [isShortScreen, setIsShortScreen] = useState(window.innerHeight < 700);
-
   const types = ['Fuerza', 'Cardio', 'Deporte', 'Movilidad', 'Otro'];
-
-  useEffect(() => {
-    const handleResize = () => setIsShortScreen(window.innerHeight < 700);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -49,47 +41,44 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
-          <motion.div
-            key="overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={onClose}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              zIndex: 100,
-              background: 'rgba(45, 26, 14, 0.55)',
-              backdropFilter: 'blur(6px)',
-              WebkitBackdropFilter: 'blur(6px)',
-            }}
-          />
+        <motion.div
+          key="dialog-wrapper"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 100,
+            background: 'rgba(45,26,14,0.5)',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+          }}
+        >
           <motion.div
             key="dialog"
-            initial={{ opacity: 0, scale: 0.94, y: 16 }}
+            initial={{ opacity: 0, scale: 0.93, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            exit={{ opacity: 0, scale: 0.96, y: 10 }}
             transition={{ type: 'spring', stiffness: 340, damping: 28 }}
             onClick={e => e.stopPropagation()}
             style={{
-              position: 'fixed',
-              top: isShortScreen ? '44%' : '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              zIndex: 101,
-              width: '92%',
-              maxWidth: '440px',
+              width: '100%',
+              maxWidth: '420px',
               maxHeight: '80vh',
-              height: 'auto',
               overflowY: 'auto',
               WebkitOverflowScrolling: 'touch',
               background: '#ffffff',
               borderRadius: '24px',
               border: '1px solid #e8d5c8',
-              boxShadow: '0 24px 60px rgba(45,26,14,0.18)',
-              padding: '28px 24px 32px',
+              boxShadow: '0 24px 60px rgba(45,26,14,0.2)',
+              padding: '28px 20px 24px',
+              position: 'relative',
             }}
           >
             <button
@@ -108,7 +97,7 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
                 justifyContent: 'center',
                 cursor: 'pointer',
                 color: '#c1603a',
-                zIndex: 1,
+
               }}
             >
               <X size={15} />
@@ -120,7 +109,7 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
               fontSize: '26px',
               color: '#2d1a0e',
               marginBottom: '4px',
-              paddingRight: '40px',
+              paddingRight: '44px',
             }}>
               Registrar entreno
             </h2>
@@ -255,7 +244,7 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
               </button>
             </div>
           </motion.div>
-        </>
+        </motion.div>
       )}
     </AnimatePresence>
   );
