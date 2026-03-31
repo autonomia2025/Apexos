@@ -9,6 +9,7 @@ import { GlassCard } from '../components/ui/GlassCard';
 import { AgentMessage } from '../components/ui/AgentMessage';
 import { FAB } from '../components/ui/FAB';
 import { AvatarRing, ProgressBar } from '../components/ui/MetricsUI';
+import { CheckInModal } from '../components/modules/home/CheckInModal';
 
 import { useCouple } from '../hooks/useCouple';
 import { UserData } from '../types';
@@ -19,23 +20,23 @@ import { UserData } from '../types';
 const UserSummaryCard: React.FC<{ user: UserData }> = ({ user }) => {
   const isJose = user.user.id === 'jose';
   return (
-    <GlassCard variant={isJose ? 'jose' : 'anto'} style={{ padding: '20px' }}>
-      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '20px' }}>
+    <GlassCard variant={isJose ? 'jose' : 'anto'} style={{ padding: '16px' }}>
+      <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '14px' }}>
         <AvatarRing 
           initials={user.user.initials} 
           color={user.user.color} 
-          size={56} 
+          size={48} 
           progress={user.metrics.compliance}
         />
         <div>
-          <h3 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '28px', lineHeight: 1, fontWeight: 700, color: '#2d1a0e', margin: 0 }}>{user.user.name}</h3>
+          <h3 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '24px', lineHeight: 1, fontWeight: 700, color: '#2d1a0e', margin: 0 }}>{user.user.name}</h3>
           <p style={{ fontSize: '11px', color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.12em', marginTop: '4px', fontWeight: 300 }}>
             {user.metrics.streak} días de racha 🔥
           </p>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
         <div className="metric-pill">
            <span className="label">Calorías</span>
            <span className="value">{user.metrics.calories.consumed}</span>
@@ -54,24 +55,24 @@ const UserSummaryCard: React.FC<{ user: UserData }> = ({ user }) => {
 export const Home: React.FC = () => {
   const { users, activeUserId } = useCouple();
   const activeUser = users[activeUserId];
-  const [, setIsCheckInOpen] = useState(false);
+  const [isCheckInOpen, setIsCheckInOpen] = useState(false);
   const today = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
 
   return (
     <PageWrapper>
       <motion.div
         className="hero-panel"
-        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px', gap: '12px' }}
+        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', gap: '12px' }}
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: 'easeOut' }}
       >
         <div style={{ minWidth: 0 }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'rgba(247,217,122,0.9)', marginBottom: '8px', fontWeight: 600 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#b08878', marginBottom: '6px', fontWeight: 600 }}>
             <Sparkles size={12} /> Panel Diario
           </span>
-          <h1 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '42px', lineHeight: 1, fontWeight: 800, color: '#c1603a', letterSpacing: '0.01em', margin: 0 }}>APEX OS</h1>
-          <p style={{ fontSize: '14px', color: '#7a4a36', marginTop: '8px', fontWeight: 400 }}>
+          <h1 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '36px', lineHeight: 1, fontWeight: 800, color: '#c1603a', letterSpacing: '0.01em', margin: 0 }}>APEX OS</h1>
+          <p style={{ fontSize: '13px', color: '#7a4a36', marginTop: '6px', fontWeight: 400 }}>
             Buenos días, {activeUser.user.name} · {today}
           </p>
         </div>
@@ -80,7 +81,7 @@ export const Home: React.FC = () => {
 
       <motion.div
         className="couple-grid"
-        style={{ marginBottom: '24px' }}
+        style={{ marginBottom: '16px' }}
         initial="hidden"
         animate="show"
         variants={{
@@ -97,7 +98,7 @@ export const Home: React.FC = () => {
       </motion.div>
 
       <motion.div
-        style={{ marginBottom: '28px' }}
+        style={{ marginBottom: '16px' }}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.12 }}
@@ -135,7 +136,7 @@ export const Home: React.FC = () => {
       </motion.div>
 
       <motion.div
-        style={{ marginBottom: '24px' }}
+        style={{ marginBottom: '16px' }}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.16 }}
@@ -143,14 +144,14 @@ export const Home: React.FC = () => {
         <Link to="/goals" style={{ textDecoration: 'none' }}>
           <GlassCard
             variant="gold"
-            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px' }}
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-               <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'rgba(193,96,58,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(193,96,58,0.25)', flexShrink: 0 }}>
+               <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(193,96,58,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(193,96,58,0.2)', flexShrink: 0 }}>
                   <Target size={22} color="#c1603a" />
                 </div>
                 <div>
-                   <h3 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '20px', fontWeight: 700, color: '#2d1a0e', margin: 0 }}>Metas compartidas</h3>
+                   <h3 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '18px', fontWeight: 700, color: '#2d1a0e', margin: 0 }}>Metas compartidas</h3>
                    <p style={{ fontSize: '12px', color: '#b08878', marginTop: '3px', fontWeight: 300 }}>
                      Visión conjunta · Q2 2025
                    </p>
@@ -161,13 +162,14 @@ export const Home: React.FC = () => {
         </Link>
       </motion.div>
 
-      <div style={{ textAlign: 'center', marginBottom: '80px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
         <Link to="/review" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 600, color: '#c1603a', textTransform: 'uppercase', letterSpacing: '0.12em', textDecoration: 'none' }}>
           Revisión Semanal Completa <ArrowRight size={12} />
         </Link>
       </div>
 
       <FAB onClick={() => setIsCheckInOpen(true)} />
+      <CheckInModal isOpen={isCheckInOpen} onClose={() => setIsCheckInOpen(false)} />
     </PageWrapper>
   );
 };

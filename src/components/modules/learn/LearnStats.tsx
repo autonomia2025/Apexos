@@ -20,13 +20,14 @@ export const LearnStats: React.FC<LearnStatsProps> = React.memo(({ user }) => {
   );
 
   return (
-    <GlassCard style={{ padding: '24px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', marginBottom: '24px', paddingBottom: '24px', borderBottom: '1px solid rgba(193,96,58,0.15)' }}>
+    <GlassCard style={{ padding: '20px' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', marginBottom: '16px', paddingBottom: '12px', borderBottom: '1px solid rgba(193,96,58,0.1)' }}>
         <div
           style={{
-            width: '40px', height: '40px', borderRadius: '999px',
+            width: '36px', height: '36px', borderRadius: '999px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontWeight: 700, fontSize: '14px',
+            fontWeight: 700, fontSize: '13px',
             border: '1px solid rgba(193,96,58,0.15)',
             backgroundColor: `${profile.color}22`,
             color: profile.color
@@ -35,47 +36,51 @@ export const LearnStats: React.FC<LearnStatsProps> = React.memo(({ user }) => {
           {profile.initials}
         </div>
         <div>
-          <h2 style={{ fontSize: '34px', lineHeight: 1, fontFamily: '"Outfit", sans-serif', fontWeight: 600, color: '#2d1a0e' }}>
+          <h2 style={{ fontSize: '22px', lineHeight: 1.1, fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#2d1a0e', margin: 0 }}>
             Progreso de Estudio
           </h2>
-          <p style={{ fontSize: '11px', color: '#b08878', fontFamily: '"Outfit", sans-serif', marginTop: '4px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+          <p style={{ fontSize: '10px', color: '#b08878', fontFamily: '"Outfit", sans-serif', marginTop: '2px', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 500 }}>
             Metas semanales
           </p>
         </div>
       </div>
 
-      <div style={{ marginBottom: '24px' }}>
+      {/* Study hours progress */}
+      <div style={{ marginBottom: '16px' }}>
         <ProgressBar
           label="Horas de Estudio"
           current={studyHours}
           max={10}
           color={profile.color}
+          unit="h"
         />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
+      {/* Metrics grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '16px' }}>
         <MetricPill
-          icon={<Flame size={16} />}
+          icon={<Flame size={15} />}
           label="Racha"
           value={`${studyStreak} días`}
           highlightColor={profile.color}
         />
         <MetricPill
-          icon={<Library size={16} />}
+          icon={<Library size={15} />}
           label="En Curso"
           value={`${inProgressCount} rec.`}
           highlightColor={profile.color}
         />
       </div>
 
-      <div style={{ background: '#ffffff', borderRadius: '12px', padding: '16px', border: '1px solid #e8d5c8' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-          <Target size={16} color="#b08878" />
-          <span style={{ fontSize: '12px', fontWeight: 500, color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+      {/* Active topics */}
+      <div style={{ background: '#fdf6f0', borderRadius: '12px', padding: '14px', border: '1px solid rgba(193,96,58,0.1)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+          <Target size={14} color="#b08878" />
+          <span style={{ fontSize: '10px', fontWeight: 600, color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             Foco Actual
           </span>
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
           {visibleTopics.map((topic, index) => (
             <span
               key={index}
@@ -84,7 +89,7 @@ export const LearnStats: React.FC<LearnStatsProps> = React.memo(({ user }) => {
                 fontSize: '10px',
                 fontWeight: 700,
                 textTransform: 'uppercase',
-                letterSpacing: '0.08em',
+                letterSpacing: '0.06em',
                 borderRadius: '6px',
                 border: '1px solid',
                 color: profile.color,

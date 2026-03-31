@@ -39,7 +39,7 @@ export const Fitness: React.FC = () => {
       />
 
       <motion.div
-        style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}
+        style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.05 }}
@@ -65,7 +65,7 @@ export const Fitness: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
-                style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}
+                style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
               >
                 <FitnessStats user={activeUserData} />
                 <ActivityGrid user={activeUserData} />
@@ -77,8 +77,8 @@ export const Fitness: React.FC = () => {
              </motion.div>
           </AnimatePresence>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', alignItems: 'start' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', alignItems: 'start' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <FitnessStats user={users.jose} />
               <ActivityGrid user={users.jose} />
               <WorkoutLogList 
@@ -87,7 +87,7 @@ export const Fitness: React.FC = () => {
                 onOpenAdd={handleOpenWorkoutModal}
               />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <FitnessStats user={users.anto} />
               <ActivityGrid user={users.anto} />
               <WorkoutLogList 

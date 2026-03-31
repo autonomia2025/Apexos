@@ -24,60 +24,64 @@ export const FinanceStats: React.FC<FinanceStatsProps> = React.memo(({ user }) =
   }, [budgetCompliance]);
 
   return (
-    <GlassCard style={{ padding: '24px' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid rgba(193,96,58,0.15)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div
-              style={{
-                width: '40px', height: '40px', borderRadius: '999px',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontWeight: 700, fontSize: '14px',
-                border: '1px solid rgba(193,96,58,0.15)',
-                backgroundColor: `${profile.color}22`,
-                color: profile.color
-              }}
-            >
-              {profile.initials}
-            </div>
-            <h2 style={{ fontSize: '34px', lineHeight: 1, fontFamily: '"Outfit", sans-serif', fontWeight: 600, color: '#2d1a0e' }}>
-              Presupuesto
-            </h2>
+    <GlassCard style={{ padding: '20px' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '16px', paddingBottom: '12px', borderBottom: '1px solid rgba(193,96,58,0.1)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: '36px', height: '36px', borderRadius: '999px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontWeight: 700, fontSize: '13px',
+              border: '1px solid rgba(193,96,58,0.15)',
+              backgroundColor: `${profile.color}22`,
+              color: profile.color
+            }}
+          >
+            {profile.initials}
           </div>
-          <div style={{ padding: '4px 12px', borderRadius: '999px', fontSize: '12px', fontWeight: 700, border: '1px solid', ...complianceStyle }}>
-            {budgetCompliance.toFixed(0)}% Utilizado
-          </div>
+          <h2 style={{ fontSize: '22px', lineHeight: 1.1, fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#2d1a0e', margin: 0 }}>
+            Presupuesto
+          </h2>
         </div>
+        <div style={{ padding: '3px 10px', borderRadius: '999px', fontSize: '11px', fontWeight: 700, border: '1px solid', ...complianceStyle }}>
+          {budgetCompliance.toFixed(0)}% Utilizado
+        </div>
+      </div>
 
+      {/* Donut */}
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
         <DonutChart
           value={spent}
           max={budget}
           color={profile.color}
           label="Gastado"
+          size={130}
         />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '24px', paddingTop: '24px', borderTop: '1px solid rgba(193,96,58,0.08)' }}>
-        <div style={{ background: '#ffffff', borderRadius: '12px', padding: '16px', border: '1px solid #e8d5c8', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-          <span style={{ fontSize: '12px', color: '#b08878', fontWeight: 500, letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: '4px' }}>
+      {/* Bottom stats */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', paddingTop: '12px', borderTop: '1px solid rgba(193,96,58,0.08)' }}>
+        <div style={{ background: '#fdf6f0', borderRadius: '12px', padding: '12px', border: '1px solid rgba(193,96,58,0.1)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+          <span style={{ fontSize: '10px', color: '#b08878', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
             Tasa Ahorro
           </span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '24px', fontWeight: 700, color: '#2d1a0e', fontFamily: '"Outfit", sans-serif' }}>{savingsRate}%</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '20px', fontWeight: 700, color: '#2d1a0e', fontFamily: '"Outfit", sans-serif' }}>{savingsRate}%</span>
             {savingsRate > 20
-              ? <TrendingUp size={18} color="#4a9068" />
-              : <TrendingDown size={18} color="#c94040" />
+              ? <TrendingUp size={16} color="#4a9068" />
+              : <TrendingDown size={16} color="#c94040" />
             }
           </div>
         </div>
 
-        <div style={{ background: '#ffffff', borderRadius: '12px', padding: '16px', border: '1px solid #e8d5c8', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-          <span style={{ fontSize: '12px', color: '#b08878', fontWeight: 500, letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: '4px' }}>
+        <div style={{ background: '#fdf6f0', borderRadius: '12px', padding: '12px', border: '1px solid rgba(193,96,58,0.1)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+          <span style={{ fontSize: '10px', color: '#b08878', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
             Top Gasto
           </span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '999px', background: 'rgba(193,96,58,0.08)', border: '1px solid rgba(193,96,58,0.15)', marginTop: '4px' }}>
-            <Tag size={12} color="#d4724a" />
-            <span style={{ fontSize: '10px', fontWeight: 700, color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '4px 10px', borderRadius: '999px', background: 'rgba(193,96,58,0.08)', border: '1px solid rgba(193,96,58,0.12)' }}>
+            <Tag size={11} color="#d4724a" />
+            <span style={{ fontSize: '10px', fontWeight: 700, color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               {topCategory.name} {topCategory.percentage}%
             </span>
           </div>

@@ -22,13 +22,13 @@ export const FitnessStats: React.FC<FitnessStatsProps> = React.memo(({ user }) =
   );
 
   return (
-    <GlassCard style={{ padding: '24px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', marginBottom: '24px', paddingBottom: '24px', borderBottom: '1px solid rgba(193,96,58,0.15)' }}>
+    <GlassCard style={{ padding: '20px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', marginBottom: '16px', paddingBottom: '12px', borderBottom: '1px solid rgba(193,96,58,0.1)' }}>
         <div
           style={{
-            width: '40px', height: '40px', borderRadius: '999px',
+            width: '36px', height: '36px', borderRadius: '999px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontWeight: 700, fontSize: '14px',
+            fontWeight: 700, fontSize: '13px',
             border: '1px solid rgba(193,96,58,0.15)',
             backgroundColor: `${profile.color}22`,
             color: profile.color
@@ -37,36 +37,36 @@ export const FitnessStats: React.FC<FitnessStatsProps> = React.memo(({ user }) =
           {profile.initials}
         </div>
         <div>
-          <h2 style={{ fontSize: '34px', lineHeight: 1, fontFamily: '"Outfit", sans-serif', fontWeight: 600, color: '#2d1a0e' }}>
+          <h2 style={{ fontSize: '22px', lineHeight: 1.1, fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#2d1a0e', margin: 0 }}>
             Actividad
           </h2>
-          <p style={{ fontSize: '11px', color: '#b08878', fontFamily: '"Outfit", sans-serif', marginTop: '4px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
-            Estadisticas semanales
+          <p style={{ fontSize: '10px', color: '#b08878', fontFamily: '"Outfit", sans-serif', marginTop: '2px', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 500 }}>
+            Estadísticas semanales
           </p>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
         <MetricPill
-          icon={<Trophy size={16} />}
+          icon={<Trophy size={15} />}
           label="Sesiones"
           value={`${metrics.trainingDays}/5`}
           highlightColor={profile.color}
         />
         <MetricPill
-          icon={<Footprints size={16} />}
+          icon={<Footprints size={15} />}
           label="Pasos Hoy"
           value={stepsFormatted}
           highlightColor={profile.color}
         />
         <MetricPill
-          icon={<Zap size={16} />}
+          icon={<Zap size={15} />}
           label="Racha Activa"
           value={`${metrics.streak} días`}
           highlightColor={profile.color}
         />
         <MetricPill
-          icon={<ShieldAlert size={16} />}
+          icon={<ShieldAlert size={15} />}
           label="Último"
           value={lastWorkout ? lastWorkout.type : 'Ninguno'}
           highlightColor={profile.color}

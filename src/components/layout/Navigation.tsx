@@ -26,7 +26,7 @@ export const MobileNav = () => {
             to={item.path}
             className={`nav-item ${isActive ? 'active' : ''}`}
           >
-            <item.icon size={22} color={isActive ? '#c1603a' : 'rgba(255,255,255,0.35)'} />
+            <item.icon size={22} strokeWidth={isActive ? 2.4 : 1.8} color={isActive ? '#c1603a' : '#b08878'} />
             <span>{item.label}</span>
             {isActive && <span className="nav-dot" />}
           </NavLink>
@@ -70,7 +70,7 @@ export const DesktopSideNav = () => {
             className={`nav-item ${isActive ? 'active' : ''}`}
             title={item.label}
           >
-            <item.icon size={24} color={isActive ? '#c1603a' : 'rgba(255,255,255,0.35)'} />
+            <item.icon size={24} strokeWidth={isActive ? 2.4 : 1.8} color={isActive ? '#c1603a' : '#b08878'} />
             <span className="desktop-nav-label">{item.label}</span>
           </NavLink>
         );

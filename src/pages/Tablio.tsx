@@ -70,9 +70,9 @@ export const Tablio = () => {
   return (
     <PageWrapper>
       {/* Header */}
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', background: '#fdf6f0', position: 'sticky', top: 0, zIndex: 20, padding: '8px 0' }}>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', background: '#fdf6f0', position: 'sticky', top: 0, zIndex: 20, padding: '8px 0' }}>
         <div>
-           <h1 style={{ fontSize: '30px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#c1603a', letterSpacing: '0.04em' }}>
+           <h1 style={{ fontSize: '26px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#c1603a', letterSpacing: '0.04em' }}>
              TABLIO
            </h1>
            <p style={{ fontSize: '14px', color: '#b08878', marginTop: '2px', letterSpacing: '0.02em' }}>
@@ -90,7 +90,7 @@ export const Tablio = () => {
       </header>
 
       {/* Main Content Area */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '40px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', paddingBottom: '40px' }}>
         
         {/* Agent Insight */}
         <section style={{ position: 'relative' }}>
