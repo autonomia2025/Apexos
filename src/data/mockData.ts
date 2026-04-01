@@ -7,6 +7,7 @@ export const mockData: CoupleData = {
       name: 'Jose',
       color: '#c1603a',
       initials: 'JS',
+      role: 'jose',
     },
     metrics: {
       calories: { consumed: 2100, target: 2500 },
@@ -21,8 +22,8 @@ export const mockData: CoupleData = {
       finance: {
         spent: 850,
         budget: 1000,
-        savingsRate: 15, // ↑
-        topCategory: { name: 'Comida', percentage: 34 },
+        savingsRate: 15,
+        topCategory: { name: 'Comida', amount: 340, percentage: 34 },
       },
       learning: {
         activeTopics: ['React', 'TypeScript', 'Design Systems'],
@@ -38,13 +39,12 @@ export const mockData: CoupleData = {
       { id: 'w2', type: 'Cardio', duration: 30, date: 'Ayer', notes: 'Trote suave' },
     ],
     recentExpenses: [
-      { id: 'e1', category: 'Comida', description: 'Supermercado', amount: -65.50, date: 'Hoy' },
-      { id: 'e2', category: 'Transporte', description: 'Uber al centro', amount: -15.00, date: 'Ayer' },
-      { id: 'e3', category: 'Otro', description: 'Venta de artículo usado', amount: 50.00, date: 'Hace 3 días' }
+      { id: 'e1', category: 'Comida', description: 'Supermercado', amount: 65.50, date: 'Hoy' },
+      { id: 'e2', category: 'Transporte', description: 'Uber al centro', amount: 15.00, date: 'Ayer' },
     ],
     recentLearning: [
-      { id: 'l1', topic: 'React Server Components', duration: 45, resource: 'Video', date: 'Hoy', notes: 'Conceptos básicos' },
-      { id: 'l2', topic: 'TypeScript Avanzado', duration: 60, resource: 'Curso', date: 'Ayer' },
+      { id: 'l1', topic: 'React Server Components', duration: '45min', resource: 'Video', date: 'Hoy', notes: 'Conceptos básicos' },
+      { id: 'l2', topic: 'TypeScript Avanzado', duration: '1h', resource: 'Curso', date: 'Ayer' },
     ],
     weeklyActivity: ['Fuerza', 'Cardio', 'Fuerza', 'Descanso', 'Fuerza', 'Cardio', 'Deporte'],
     aiMessages: {
@@ -61,6 +61,7 @@ export const mockData: CoupleData = {
       name: 'Anto',
       color: '#d4849e',
       initials: 'AM',
+      role: 'anto',
     },
     metrics: {
       calories: { consumed: 1600, target: 1800 },
@@ -75,8 +76,8 @@ export const mockData: CoupleData = {
       finance: {
         spent: 420,
         budget: 600,
-        savingsRate: 30, // ↑
-        topCategory: { name: 'Comida', percentage: 40 },
+        savingsRate: 30,
+        topCategory: { name: 'Comida', amount: 168, percentage: 40 },
       },
       learning: {
         activeTopics: ['Diseño UI', 'Framer Motion', 'Figma'],
@@ -91,12 +92,12 @@ export const mockData: CoupleData = {
       { id: 'w3', type: 'Movilidad', duration: 45, date: 'Ayer', notes: 'Yoga flow' },
     ],
     recentExpenses: [
-      { id: 'e4', category: 'Ropa', description: 'Zapatillas de correr', amount: -120.00, date: 'Hace 2 días' },
-      { id: 'e5', category: 'Salud', description: 'Farmacia', amount: -25.00, date: 'Hace 4 días' },
+      { id: 'e4', category: 'Ropa', description: 'Zapatillas de correr', amount: 120.00, date: 'Hace 2 días' },
+      { id: 'e5', category: 'Salud', description: 'Farmacia', amount: 25.00, date: 'Hace 4 días' },
     ],
     recentLearning: [
-      { id: 'l3', topic: 'Framer Motion Basics', duration: 90, resource: 'Curso', date: 'Hoy', notes: 'Animaciones de layouts' },
-      { id: 'l4', topic: 'Teoría del Color', duration: 30, resource: 'Libro', date: 'Ayer' },
+      { id: 'l3', topic: 'Framer Motion Basics', duration: '1.5h', resource: 'Curso', date: 'Hoy', notes: 'Animaciones de layouts' },
+      { id: 'l4', topic: 'Teoría del Color', duration: '30min', resource: 'Libro', date: 'Ayer' },
     ],
     weeklyActivity: ['Cardio', 'Movilidad', 'Descanso', 'Fuerza', 'Cardio', 'Descanso', 'Movilidad'],
     aiMessages: {

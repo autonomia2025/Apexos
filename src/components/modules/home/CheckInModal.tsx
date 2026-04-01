@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ArrowRight, ArrowLeft, Target, Droplets, CheckCircle } from 'lucide-react';
 import { useActiveUser } from '../../../hooks/useActiveUser';
+import { useCouple } from '../../../hooks/useCouple';
 import { GlassCard } from '../../ui/GlassCard';
+import { upsertCheckin } from '../../../lib/db';
 
 interface CheckInModalProps {
   isOpen: boolean;
@@ -10,6 +12,7 @@ interface CheckInModalProps {
 }
 
 export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) => {
+  const { activeUserId } = useCouple();
   const activeUserData = useActiveUser();
   const profile = activeUserData.user;
 
@@ -18,6 +21,8 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
   const [weight, setWeight] = useState<string>('');
   const [water, setWater] = useState<number>(0);
   const [goalMet, setGoalMet] = useState<boolean | null>(null);
+  const [saving, setSaving] = useState(false);
+
   const moods = [
     { value: 1, emoji: '😫' },
     { value: 2, emoji: '🙁' },
@@ -26,7 +31,28 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
     { value: 5, emoji: '🔥' },
   ];
 
-  const handleNext = () => setStep(step + 1);
+  const handleNext = async () => {
+    if (step === 2) {
+      setSaving(true);
+      try {
+        await upsertCheckin({
+          user_id: activeUserId,
+          mood_score: mood || undefined,
+          weight_kg: weight ? parseFloat(weight) : undefined,
+          water_glasses: water,
+          goal_met: goalMet === true
+        });
+        setStep(3);
+      } catch (err) {
+        console.error('Checkin failed:', err);
+      } finally {
+        setSaving(false);
+      }
+    } else {
+      setStep(step + 1);
+    }
+  };
+  
   const handleBack = () => setStep(step - 1);
 
   const handleClose = () => {
@@ -123,7 +149,6 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                 justifyContent: 'center',
                 cursor: 'pointer',
                 color: '#c1603a',
-
               }}
             >
               <X size={15} />
@@ -200,20 +225,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                       value={weight}
                       onChange={e => setWeight(e.target.value)}
                       placeholder="ej. 75.4"
-                      style={{
-                        width: '100%',
-                        padding: '12px 16px',
-                        borderRadius: '12px',
-                        border: '1.5px solid #e8d5c8',
-                        background: '#fdf6f0',
-                        fontFamily: '"Outfit", sans-serif',
-                        fontSize: '15px',
-                        fontWeight: 500,
-                        color: '#2d1a0e',
-                        outline: 'none',
-                      }}
-                      onFocus={e => e.target.style.borderColor = '#c1603a'}
-                      onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+                      style={{ width: '100%', padding: '12px 16px', borderRadius: '12px', border: '1.5px solid #e8d5c8', background: '#fdf6f0', fontFamily: '"Outfit", sans-serif', fontSize: '15px', fontWeight: 500, color: '#2d1a0e', outline: 'none' }}
                     />
                   </div>
 
@@ -222,15 +234,9 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                       <Droplets size={14} color="#c1603a" /> Agua (vasos)
                     </label>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fdf6f0', borderRadius: '12px', border: '1.5px solid #e8d5c8', padding: '4px' }}>
-                      <button
-                        onClick={() => setWater(Math.max(0, water - 1))}
-                        style={{ padding: '12px 20px', background: 'rgba(193,96,58,0.08)', color: '#2d1a0e', fontSize: '20px', border: 'none', cursor: 'pointer', borderRadius: '10px' }}
-                      >-</button>
+                      <button onClick={() => setWater(Math.max(0, water - 1))} style={{ padding: '12px 20px', background: 'rgba(193,96,58,0.08)', color: '#2d1a0e', fontSize: '20px', border: 'none', cursor: 'pointer', borderRadius: '10px' }}>-</button>
                       <span style={{ fontFamily: '"Outfit", sans-serif', fontSize: '24px', fontWeight: 700, color: '#2d1a0e' }}>{water}</span>
-                      <button
-                        onClick={() => setWater(water + 1)}
-                        style={{ padding: '12px 20px', background: 'rgba(193,96,58,0.08)', color: '#2d1a0e', fontSize: '20px', border: 'none', cursor: 'pointer', borderRadius: '10px' }}
-                      >+</button>
+                      <button onClick={() => setWater(water + 1)} style={{ padding: '12px 20px', background: 'rgba(193,96,58,0.08)', color: '#2d1a0e', fontSize: '20px', border: 'none', cursor: 'pointer', borderRadius: '10px' }}>+</button>
                     </div>
                   </div>
 
@@ -239,74 +245,14 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                       <Target size={14} color="#c1603a" /> ¿Cumpliste tu objetivo?
                     </label>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                      <button
-                        onClick={() => setGoalMet(true)}
-                        style={{
-                          padding: '12px 0',
-                          borderRadius: '12px',
-                          border: `1.5px solid ${goalMet === true ? '#c1603a' : '#e8d5c8'}`,
-                          fontWeight: 700,
-                          transition: 'all 0.2s ease',
-                          background: goalMet === true ? 'rgba(193,96,58,0.08)' : '#ffffff',
-                          color: goalMet === true ? '#c1603a' : '#7a4a36',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        Sí
-                      </button>
-                      <button
-                        onClick={() => setGoalMet(false)}
-                        style={{
-                          padding: '12px 0',
-                          borderRadius: '12px',
-                          border: `1.5px solid ${goalMet === false ? '#c94040' : '#e8d5c8'}`,
-                          fontWeight: 700,
-                          transition: 'all 0.2s ease',
-                          background: goalMet === false ? 'rgba(201,64,64,0.08)' : '#ffffff',
-                          color: goalMet === false ? '#c94040' : '#7a4a36',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        No
-                      </button>
+                      <button onClick={() => setGoalMet(true)} style={{ padding: '12px 0', borderRadius: '12px', border: `1.5px solid ${goalMet === true ? '#c1603a' : '#e8d5c8'}`, fontWeight: 700, transition: 'all 0.2s ease', background: goalMet === true ? 'rgba(193,96,58,0.08)' : '#ffffff', color: goalMet === true ? '#c1603a' : '#7a4a36', cursor: 'pointer' }}>Sí</button>
+                      <button onClick={() => setGoalMet(false)} style={{ padding: '12px 0', borderRadius: '12px', border: `1.5px solid ${goalMet === false ? '#c94040' : '#e8d5c8'}`, fontWeight: 700, transition: 'all 0.2s ease', background: goalMet === false ? 'rgba(201,64,64,0.08)' : '#ffffff', color: goalMet === false ? '#c94040' : '#7a4a36', cursor: 'pointer' }}>No</button>
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}>
-                    <button
-                      onClick={handleBack}
-                      style={{
-                        padding: '12px 20px',
-                        borderRadius: '12px',
-                        fontWeight: 700,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        color: '#b08878',
-                        background: 'transparent',
-                        border: '1.5px solid #e8d5c8',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      <ArrowLeft size={16} /> Atrás
-                    </button>
-                    <button
-                      onClick={handleNext}
-                      style={{
-                        padding: '12px 20px',
-                        borderRadius: '12px',
-                        fontWeight: 700,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        background: '#c1603a',
-                        color: '#ffffff',
-                        border: 'none',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      Siguiente <ArrowRight size={16} />
-                    </button>
+                    <button onClick={handleBack} style={{ padding: '12px 20px', borderRadius: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', color: '#b08878', background: 'transparent', border: '1.5px solid #e8d5c8', cursor: 'pointer' }}><ArrowLeft size={16} /> Atrás</button>
+                    <button onClick={handleNext} disabled={saving} style={{ padding: '12px 20px', borderRadius: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', background: '#c1603a', color: '#ffffff', border: 'none', cursor: 'pointer', opacity: saving ? 0.7 : 1 }}>{saving ? 'Guardando...' : 'Siguiente'} <ArrowRight size={16} /></button>
                   </div>
                 </motion.div>
               )}
@@ -318,52 +264,15 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                   animate={{ opacity: 1, scale: 1 }}
                   style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px', textAlign: 'center' }}
                 >
-                  <motion.div
-                    initial={{ scale: 0, rotate: -45 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: 'spring', damping: 15 }}
-                    style={{
-                      width: '72px',
-                      height: '72px',
-                      borderRadius: '999px',
-                      background: 'rgba(193,96,58,0.1)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      border: '2px solid #c1603a',
-                      boxShadow: '0 0 24px rgba(193,96,58,0.2)',
-                    }}
-                  >
-                    <CheckCircle size={36} color="#c1603a" />
-                  </motion.div>
-
+                  <motion.div initial={{ scale: 0, rotate: -45 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', damping: 15 }} style={{ width: '72px', height: '72px', borderRadius: '999px', background: 'rgba(193,96,58,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #c1603a', boxShadow: '0 0 24px rgba(193,96,58,0.2)' }}><CheckCircle size={36} color="#c1603a" /></motion.div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <h3 style={{ fontSize: '24px', fontFamily: '"Outfit", sans-serif', fontWeight: 800, color: '#2d1a0e', margin: 0 }}>
-                      ¡Check-in Completo!
-                    </h3>
+                    <h3 style={{ fontSize: '24px', fontFamily: '"Outfit", sans-serif', fontWeight: 800, color: '#2d1a0e', margin: 0 }}>¡Check-in Completo!</h3>
                     <GlassCard style={{ padding: '16px', background: '#fff8f4', borderColor: 'rgba(193,96,58,0.3)', textAlign: 'left' }}>
-                      <p style={{ color: '#7a4a36', fontSize: '14px', lineHeight: 1.6, margin: 0 }}>
-                        "{getAiMessage()}"
-                      </p>
+                      <p style={{ color: '#7a4a36', fontSize: '14px', lineHeight: 1.6, margin: 0 }}>"{getAiMessage()}"</p>
                     </GlassCard>
                   </div>
-
-                  <div style={{
-                    position: 'sticky',
-                    bottom: 0,
-                    background: '#ffffff',
-                    paddingTop: '12px',
-                    paddingBottom: '4px',
-                    marginTop: '8px',
-                    width: '100%',
-                  }}>
-                    <button
-                      onClick={handleClose}
-                      className="btn-gold"
-                      style={{ width: '100%' }}
-                    >
-                      Cerrar
-                    </button>
+                  <div style={{ position: 'sticky', bottom: 0, background: '#ffffff', paddingTop: '12px', paddingBottom: '4px', marginTop: '8px', width: '100%' }}>
+                    <button onClick={handleClose} className="btn-gold" style={{ width: '100%' }}>Cerrar</button>
                   </div>
                 </motion.div>
               )}

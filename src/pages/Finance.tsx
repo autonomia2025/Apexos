@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wallet } from 'lucide-react';
 import { PageWrapper } from '../components/layout/PageWrapper';
@@ -10,16 +10,68 @@ import { ExpenseModal } from '../components/modules/finance/ExpenseModal';
 import { useCouple } from '../hooks/useCouple';
 import { useActiveUser } from '../hooks/useActiveUser';
 import { FinanceContext } from '../services/agentService';
+import { getFinanceLogs } from '../lib/db';
 
 export const Finance: React.FC = () => {
   const { isMobile, users } = useCouple();
   const activeUserData = useActiveUser();
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+  const [joseData, setJoseData] = useState<any>(null);
+  const [antoData, setAntoData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchLogs = async () => {
+    if (!users.jose || !users.anto) return;
+    
+    const [joseLogs, antoLogs] = await Promise.all([
+      getFinanceLogs(users.jose.user.id),
+      getFinanceLogs(users.anto.user.id)
+    ]);
+
+    const calculateMetrics = (logs: any[]) => {
+      const spent = logs.reduce((sum, l) => sum + (l.type === 'gasto' ? Number(l.amount) : 0), 0);
+      return {
+        finance: {
+          spent,
+          budget: 1000,
+          savingsRate: 0,
+          topCategory: { name: 'Comida', amount: 0 }
+        }
+      };
+    };
+
+    setJoseData({
+      ...users.jose,
+      metrics: { ...users.jose.metrics, ...calculateMetrics(joseLogs) },
+      recentExpenses: joseLogs.slice(0, 10)
+    });
+
+    setAntoData({
+      ...users.anto,
+      metrics: { ...users.anto.metrics, ...calculateMetrics(antoLogs) },
+      recentExpenses: antoLogs.slice(0, 10)
+    });
+    
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchLogs();
+  }, [users]);
 
   const handleOpenExpenseModal = () => setIsExpenseModalOpen(true);
-  const handleCloseExpenseModal = () => setIsExpenseModalOpen(false);
+  const handleCloseExpenseModal = () => {
+    setIsExpenseModalOpen(false);
+    fetchLogs();
+  };
 
-  const getFinanceContext = (userData: typeof activeUserData): FinanceContext => ({
+  if (loading || !joseData || !antoData) {
+    return <PageWrapper><div style={{ padding: '40px', textAlign: 'center', color: '#b08878' }}>Cargando finanzas...</div></PageWrapper>;
+  }
+
+  const currentDisplayData = activeUserData.user.role === 'jose' ? joseData : antoData;
+
+  const getFinanceContext = (userData: any): FinanceContext => ({
     userName: userData.user.name,
     gastosMes: userData.metrics.finance.spent,
     presupuestoMes: userData.metrics.finance.budget,
@@ -50,26 +102,26 @@ export const Finance: React.FC = () => {
         >
           <AgentMessage 
             agentType="finance"
-            userName={activeUserData.user.name}
-            color={activeUserData.user.color} 
-            contextData={getFinanceContext(activeUserData)}
+            userName={currentDisplayData.user.name}
+            color={currentDisplayData.user.color} 
+            contextData={getFinanceContext(currentDisplayData)}
           />
         </motion.section>
 
         {isMobile ? (
           <AnimatePresence mode="wait">
              <motion.div
-                key={activeUserData.user.id}
+                key={currentDisplayData.user.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
                 style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
               >
-                <FinanceStats user={activeUserData} />
+                <FinanceStats user={currentDisplayData} />
                 <ExpenseLogList 
-                  logs={activeUserData.recentExpenses} 
-                  color={activeUserData.user.color} 
+                  logs={currentDisplayData.recentExpenses} 
+                  color={currentDisplayData.user.color} 
                   onOpenAdd={handleOpenExpenseModal} 
                 />
              </motion.div>
@@ -77,18 +129,18 @@ export const Finance: React.FC = () => {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', alignItems: 'start' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <FinanceStats user={users.jose} />
+              <FinanceStats user={joseData} />
               <ExpenseLogList 
-                logs={users.jose.recentExpenses} 
-                color={users.jose.user.color} 
+                logs={joseData.recentExpenses} 
+                color={joseData.user.color} 
                 onOpenAdd={handleOpenExpenseModal} 
               />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <FinanceStats user={users.anto} />
+              <FinanceStats user={antoData} />
               <ExpenseLogList 
-                logs={users.anto.recentExpenses} 
-                color={users.anto.user.color} 
+                logs={antoData.recentExpenses} 
+                color={antoData.user.color} 
                 onOpenAdd={handleOpenExpenseModal} 
               />
             </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Target, ArrowRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -12,26 +12,23 @@ import { AvatarRing, ProgressBar } from '../components/ui/MetricsUI';
 import { CheckInModal } from '../components/modules/home/CheckInModal';
 
 import { useCouple } from '../hooks/useCouple';
-import { UserData } from '../types';
+import { getUserSummary } from '../lib/db';
 
-/**
- * PURE CSS COUPLE OVERVIEW CARD
- */
-const UserSummaryCard: React.FC<{ user: UserData }> = ({ user }) => {
-  const isJose = user.user.id === 'jose';
+const UserSummaryCard: React.FC<{ user: any; metrics: any }> = ({ user, metrics }) => {
+  const isJose = user.name === 'Jose';
   return (
     <GlassCard variant={isJose ? 'jose' : 'anto'} style={{ padding: '16px' }}>
       <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '14px' }}>
         <AvatarRing 
-          initials={user.user.initials} 
-          color={user.user.color} 
+          initials={user.initials} 
+          color={user.color} 
           size={48} 
-          progress={user.metrics.compliance}
+          progress={metrics.compliance}
         />
         <div>
-          <h3 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '24px', lineHeight: 1, fontWeight: 700, color: '#2d1a0e', margin: 0 }}>{user.user.name}</h3>
+          <h3 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '24px', lineHeight: 1, fontWeight: 700, color: '#2d1a0e', margin: 0 }}>{user.name}</h3>
           <p style={{ fontSize: '11px', color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.12em', marginTop: '4px', fontWeight: 300 }}>
-            {user.metrics.streak} días de racha 🔥
+            {metrics.streak} días de racha 🔥
           </p>
         </div>
       </div>
@@ -39,13 +36,13 @@ const UserSummaryCard: React.FC<{ user: UserData }> = ({ user }) => {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
         <div className="metric-pill">
            <span className="label">Calorías</span>
-           <span className="value">{user.metrics.calories.consumed}</span>
-           <ProgressBar value={(user.metrics.calories.consumed / user.metrics.calories.target) * 100} color={user.user.color} />
+           <span className="value">{metrics.calories}</span>
+           <ProgressBar value={(metrics.calories / 2000) * 100} color={user.color} />
         </div>
         <div className="metric-pill">
            <span className="label">Entrenos</span>
-           <span className="value">{user.metrics.trainingDays}/5</span>
-           <ProgressBar value={(user.metrics.trainingDays / 5) * 100} color={user.user.color} />
+           <span className="value">{metrics.trainingDays}/5</span>
+           <ProgressBar value={(metrics.trainingDays / 5) * 100} color={user.color} />
         </div>
       </div>
     </GlassCard>
@@ -54,9 +51,42 @@ const UserSummaryCard: React.FC<{ user: UserData }> = ({ user }) => {
 
 export const Home: React.FC = () => {
   const { users, activeUserId } = useCouple();
-  const activeUser = users[activeUserId];
+  const [summaries, setSummaries] = useState<Record<string, any>>({});
+  const [loading, setLoading] = useState(true);
   const [isCheckInOpen, setIsCheckInOpen] = useState(false);
+  
   const today = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
+  const activeUserRole = Object.keys(users).find(role => users[role].user.id === activeUserId) || 'jose';
+  const activeUser = users[activeUserRole];
+
+  useEffect(() => {
+    const loadSummaries = async () => {
+      if (Object.keys(users).length === 0) return;
+      
+      const [joseSum, antoSum] = await Promise.all([
+        getUserSummary(users.jose.user.id),
+        getUserSummary(users.anto.user.id)
+      ]);
+      
+      setSummaries({
+        jose: joseSum,
+        anto: antoSum
+      });
+      setLoading(false);
+    };
+    
+    loadSummaries();
+  }, [users]);
+
+  if (loading || !activeUser) {
+    return (
+      <PageWrapper>
+        <div style={{ padding: '40px', textAlign: 'center', color: '#b08878' }}>Cargando panel...</div>
+      </PageWrapper>
+    );
+  }
+
+  const activeMetrics = activeUserRole === 'jose' ? summaries.jose : summaries.anto;
 
   return (
     <PageWrapper>
@@ -90,10 +120,10 @@ export const Home: React.FC = () => {
         }}
       >
         <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
-          <UserSummaryCard user={users.jose} />
+          <UserSummaryCard user={users.jose.user} metrics={summaries.jose} />
         </motion.div>
         <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
-          <UserSummaryCard user={users.anto} />
+          <UserSummaryCard user={users.anto.user} metrics={summaries.anto} />
         </motion.div>
       </motion.div>
 
@@ -109,28 +139,28 @@ export const Home: React.FC = () => {
           color={activeUser.user.color} 
           contextData={{
              userName: activeUser.user.name,
-             caloriasHoy: activeUser.metrics.calories.consumed,
-             caloriasMeta: activeUser.metrics.calories.target,
-             proteinaHoy: activeUser.metrics.macros.protein,
+             caloriasHoy: activeMetrics.calories,
+             caloriasMeta: 2000,
+             proteinaHoy: activeMetrics.macros.protein,
              proteinaMeta: 180,
-             pesoActual: 75,
+             pesoActual: activeMetrics.checkin?.weight_kg || 75,
              pesoMeta: 70,
              tendenciaPeso: 'estable',
-             cumplimientoSemana: activeUser.metrics.compliance,
-             entrenosSemana: activeUser.metrics.trainingDays,
+             cumplimientoSemana: activeMetrics.compliance,
+             entrenosSemana: activeMetrics.trainingDays,
              metaEntrenosSemana: 5,
-             ultimoEntreno: 'Fuerza',
-             rachaActual: activeUser.metrics.streak,
-             pasosHoy: activeUser.metrics.steps,
-             gastosMes: activeUser.metrics.finance.spent,
-             presupuestoMes: activeUser.metrics.finance.budget,
-             tasaAhorro: activeUser.metrics.finance.savingsRate,
-             categoriaTopGasto: activeUser.metrics.finance.topCategory.name,
-             cumplimientoPresupuesto: Math.round((activeUser.metrics.finance.spent / activeUser.metrics.finance.budget) * 100),
-             horasEstaSemana: activeUser.metrics.studyHours,
+             ultimoEntreno: 'Carga',
+             rachaActual: activeMetrics.streak,
+             pasosHoy: 0,
+             gastosMes: activeMetrics.financeSpent,
+             presupuestoMes: 1000,
+             tasaAhorro: 0,
+             categoriaTopGasto: 'Comida',
+             cumplimientoPresupuesto: Math.round((activeMetrics.financeSpent / 1000) * 100),
+             horasEstaSemana: activeMetrics.studyHours,
              metaHorasSemana: 10,
-             temaActivo: activeUser.metrics.learning.activeTopics[0] || 'Ninguno',
-             recursoTipo: 'Video'
+             temaActivo: 'Supabase',
+             recursoTipo: 'Documentación'
           }}
         />
       </motion.div>
@@ -169,7 +199,7 @@ export const Home: React.FC = () => {
       </div>
 
       <FAB onClick={() => setIsCheckInOpen(true)} />
-      <CheckInModal isOpen={isCheckInOpen} onClose={() => setIsCheckInOpen(false)} />
+      {isCheckInOpen && <CheckInModal isOpen={isCheckInOpen} onClose={() => setIsCheckInOpen(false)} />}
     </PageWrapper>
   );
 };

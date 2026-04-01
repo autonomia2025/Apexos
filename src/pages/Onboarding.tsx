@@ -1,21 +1,28 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useCouple } from '../hooks/useCouple';
+import { signIn } from '../lib/auth';
 
-/**
- * PURE CSS ONBOARDING
- * Uses high-end semantic classes and 100% inline layouts.
- */
 export const Onboarding: React.FC = () => {
-  const { setActiveUserId } = useCouple();
   const [step, setStep] = useState(0);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [finished, setFinished] = useState(false);
-  const [hoveredCard, setHoveredCard] = useState<'jose' | 'anto' | null>(null);
 
-  const startApp = (userId: 'jose' | 'anto') => {
-    setActiveUserId(userId);
-    localStorage.setItem('lifeos_onboarded', 'true');
-    setFinished(true);
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      await signIn(email, password);
+      localStorage.setItem('lifeos_onboarded', 'true');
+      setFinished(true);
+    } catch (err: any) {
+      setError(err.message || 'Email o contraseña incorrectos');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (finished) return <Navigate to="/" replace />;
@@ -44,72 +51,77 @@ export const Onboarding: React.FC = () => {
         </div>
       ) : (
         <div style={{ width: '100%', maxWidth: '420px' }}>
-          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-            <h2 style={{ margin: 0, fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '36px', color: '#2d1a0e', textAlign: 'center', lineHeight: 1.1 }}>
-              ¿quién sos hoy?
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <h2 style={{ margin: 0, fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '32px', color: '#2d1a0e', lineHeight: 1.1 }}>
+              Iniciar sesión
             </h2>
-            <p style={{ marginTop: '8px', marginBottom: 0, fontSize: '13px', color: '#b08878', textAlign: 'center' }}>
-              podés cambiar en cualquier momento
+            <p style={{ marginTop: '8px', marginBottom: 0, fontSize: '13px', color: '#b08878' }}>
+              Ingresá tus credenciales para continuar
             </p>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <button
-              onClick={() => startApp('jose')}
-              onMouseEnter={() => setHoveredCard('jose')}
-              onMouseLeave={() => setHoveredCard(null)}
-              style={{
-                background: '#ffffff',
-                border: `1.5px solid ${hoveredCard === 'jose' ? '#c1603a' : '#e8d5c8'}`,
-                borderRadius: '20px',
-                padding: '24px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '20px',
-                cursor: 'pointer',
-                width: '100%',
-                maxWidth: '360px',
-                margin: '0 auto',
-                transition: 'all 0.2s',
-                marginBottom: '12px',
-                boxShadow: hoveredCard === 'jose' ? '0 8px 24px rgba(193,96,58,0.12)' : 'none',
-              }}
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Email</label>
+              <input 
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="tu@email.com"
+                style={{
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  border: '1px solid #e8d5c8',
+                  background: '#ffffff',
+                  fontSize: '15px',
+                  outline: 'none'
+                }}
+              />
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Contraseña</label>
+              <input 
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+                style={{
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  border: '1px solid #e8d5c8',
+                  background: '#ffffff',
+                  fontSize: '15px',
+                  outline: 'none'
+                }}
+              />
+            </div>
+
+            {error && (
+              <p style={{ color: '#c1603a', fontSize: '13px', textAlign: 'center', margin: 0 }}>
+                {error}
+              </p>
+            )}
+
+            <button 
+              type="submit"
+              className="btn-gold" 
+              disabled={loading}
+              style={{ marginTop: '12px', width: '100%', opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
             >
-              <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: '#c1603a', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '24px' }}>J</div>
-              <div style={{ textAlign: 'left' }}>
-                <h3 style={{ margin: 0, fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '28px', lineHeight: 1, color: '#2d1a0e' }}>Jose</h3>
-                <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Usuario principal</p>
-              </div>
+              {loading ? 'Entrando...' : 'Entrar →'}
             </button>
 
-            <button
-              onClick={() => startApp('anto')}
-              onMouseEnter={() => setHoveredCard('anto')}
-              onMouseLeave={() => setHoveredCard(null)}
-              style={{
-                background: '#ffffff',
-                border: `1.5px solid ${hoveredCard === 'anto' ? '#d4849e' : '#e8d5c8'}`,
-                borderRadius: '20px',
-                padding: '24px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '20px',
-                cursor: 'pointer',
-                width: '100%',
-                maxWidth: '360px',
-                margin: '0 auto',
-                transition: 'all 0.2s',
-                marginBottom: '12px',
-                boxShadow: hoveredCard === 'anto' ? '0 8px 24px rgba(193,96,58,0.12)' : 'none',
-              }}
+            <button 
+              type="button"
+              onClick={() => setStep(0)}
+              style={{ background: 'none', border: 'none', color: '#b08878', fontSize: '13px', cursor: 'pointer', marginTop: '8px' }}
             >
-              <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: '#d4849e', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '24px' }}>A</div>
-              <div style={{ textAlign: 'left' }}>
-                <h3 style={{ margin: 0, fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '28px', lineHeight: 1, color: '#2d1a0e' }}>Anto</h3>
-                <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Usuaria principal</p>
-              </div>
+              ← Volver
             </button>
-          </div>
+          </form>
         </div>
       )}
     </div>

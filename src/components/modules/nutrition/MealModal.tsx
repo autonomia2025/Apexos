@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
+import { useCouple } from '../../../hooks/useCouple';
+import { addNutritionLog } from '../../../lib/db';
 
 interface MealModalProps {
   isOpen: boolean;
@@ -9,9 +11,13 @@ interface MealModalProps {
 }
 
 export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _color }) => {
+  const { activeUserId } = useCouple();
   const [mealName, setMealName] = useState('');
   const [calories, setCalories] = useState('');
   const [mealType, setMealType] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
   const mealTypes = ['Desayuno', 'Almuerzo', 'Cena', 'Snack'];
 
   useEffect(() => {
@@ -31,11 +37,29 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
     };
   }, [isOpen]);
 
-  const handleClose = () => {
-    setMealName('');
-    setCalories('');
-    setMealType(null);
-    onClose();
+  const handleSave = async () => {
+    if (!mealName || !mealType || !activeUserId) return;
+    
+    setSaving(true);
+    setError('');
+    try {
+      await addNutritionLog({
+        user_id: activeUserId,
+        meal_name: mealName,
+        calories: parseInt(calories) || 0,
+        meal_type: mealType as any
+      });
+      
+      setMealName('');
+      setCalories('');
+      setMealType(null);
+      onClose();
+    } catch (err: any) {
+      setError('No se pudo guardar la comida');
+      console.error(err);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -97,7 +121,6 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
                 justifyContent: 'center',
                 cursor: 'pointer',
                 color: '#c1603a',
-
               }}
             >
               <X size={15} />
@@ -151,8 +174,6 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
                     color: '#2d1a0e',
                     outline: 'none',
                   }}
-                  onFocus={e => e.target.style.borderColor = '#c1603a'}
-                  onBlur={e => e.target.style.borderColor = '#e8d5c8'}
                 />
               </div>
 
@@ -184,8 +205,6 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
                     color: '#2d1a0e',
                     outline: 'none',
                   }}
-                  onFocus={e => e.target.style.borderColor = '#c1603a'}
-                  onBlur={e => e.target.style.borderColor = '#e8d5c8'}
                 />
               </div>
 
@@ -225,6 +244,12 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
               </div>
             </div>
 
+            {error && (
+              <p style={{ color: '#c1603a', fontSize: '13px', textAlign: 'center', marginTop: '16px', marginBottom: 0 }}>
+                {error}
+              </p>
+            )}
+
             <div style={{
               position: 'sticky',
               bottom: 0,
@@ -235,11 +260,11 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
             }}>
               <button
                 className="btn-gold"
-                onClick={handleClose}
-                disabled={!mealName || !mealType}
-                style={{ opacity: !mealName || !mealType ? 0.45 : 1, cursor: !mealName || !mealType ? 'not-allowed' : 'pointer' }}
+                onClick={handleSave}
+                disabled={!mealName || !mealType || saving}
+                style={{ opacity: !mealName || !mealType || saving ? 0.45 : 1, cursor: !mealName || !mealType || saving ? 'not-allowed' : 'pointer', width: '100%' }}
               >
-                Guardar
+                {saving ? 'Guardando...' : 'Guardar'}
               </button>
             </div>
           </motion.div>

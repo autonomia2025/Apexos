@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
+import { useCouple } from '../../../hooks/useCouple';
+import { addFitnessLog } from '../../../lib/db';
 
 interface WorkoutModalProps {
   isOpen: boolean;
@@ -9,9 +11,13 @@ interface WorkoutModalProps {
 }
 
 export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, color: _color }) => {
+  const { activeUserId } = useCouple();
   const [duration, setDuration] = useState('');
   const [workoutType, setWorkoutType] = useState<string | null>(null);
   const [note, setNote] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
   const types = ['Fuerza', 'Cardio', 'Deporte', 'Movilidad', 'Otro'];
 
   useEffect(() => {
@@ -31,11 +37,29 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
     };
   }, [isOpen]);
 
-  const handleClose = () => {
-    setDuration('');
-    setWorkoutType(null);
-    setNote('');
-    onClose();
+  const handleSave = async () => {
+    if (!duration || !workoutType || !activeUserId) return;
+    
+    setSaving(true);
+    setError('');
+    try {
+      await addFitnessLog({
+        user_id: activeUserId,
+        workout_type: workoutType,
+        duration_min: parseInt(duration) || 0,
+        notes: note
+      });
+      
+      setDuration('');
+      setWorkoutType(null);
+      setNote('');
+      onClose();
+    } catch (err: any) {
+      setError('No se pudo guardar el entrenamiento');
+      console.error(err);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -97,7 +121,6 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
                 justifyContent: 'center',
                 cursor: 'pointer',
                 color: '#c1603a',
-
               }}
             >
               <X size={15} />
@@ -124,14 +147,7 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
-                <p style={{
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  color: '#b08878',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
-                  marginBottom: '8px',
-                }}>
+                <p style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
                   Tipo
                 </p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -159,14 +175,7 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
               </div>
 
               <div>
-                <p style={{
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  color: '#b08878',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
-                  marginBottom: '8px',
-                }}>
+                <p style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
                   Minutos
                 </p>
                 <input
@@ -186,20 +195,11 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
                     color: '#2d1a0e',
                     outline: 'none',
                   }}
-                  onFocus={e => e.target.style.borderColor = '#c1603a'}
-                  onBlur={e => e.target.style.borderColor = '#e8d5c8'}
                 />
               </div>
 
               <div>
-                <p style={{
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  color: '#b08878',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
-                  marginBottom: '8px',
-                }}>
+                <p style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
                   Notas (opcional)
                 </p>
                 <textarea
@@ -220,11 +220,15 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
                     outline: 'none',
                     resize: 'none',
                   }}
-                  onFocus={e => e.target.style.borderColor = '#c1603a'}
-                  onBlur={e => e.target.style.borderColor = '#e8d5c8'}
                 />
               </div>
             </div>
+
+            {error && (
+              <p style={{ color: '#c1603a', fontSize: '13px', textAlign: 'center', marginTop: '16px', marginBottom: 0 }}>
+                {error}
+              </p>
+            )}
 
             <div style={{
               position: 'sticky',
@@ -236,11 +240,11 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
             }}>
               <button
                 className="btn-gold"
-                onClick={handleClose}
-                disabled={!duration || !workoutType}
-                style={{ opacity: !duration || !workoutType ? 0.45 : 1, cursor: !duration || !workoutType ? 'not-allowed' : 'pointer' }}
+                onClick={handleSave}
+                disabled={!duration || !workoutType || saving}
+                style={{ opacity: !duration || !workoutType || saving ? 0.45 : 1, cursor: !duration || !workoutType || saving ? 'not-allowed' : 'pointer', width: '100%' }}
               >
-                Guardar
+                {saving ? 'Guardando...' : 'Guardar'}
               </button>
             </div>
           </motion.div>

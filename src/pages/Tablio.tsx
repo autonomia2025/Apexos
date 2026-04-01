@@ -1,9 +1,10 @@
+import { useState, useEffect } from 'react';
 import { Lock } from 'lucide-react';
 import { PageWrapper } from '../components/layout/PageWrapper';
 import { GlassCard } from '../components/ui/GlassCard';
 import { AgentMessage } from '../components/ui/AgentMessage';
 import { useCouple } from '../hooks/useCouple';
-import { mockTablioData } from '../data/tablioData';
+import { getTablioDashboard } from '../lib/db';
 import { BusinessContext } from '../services/agentService';
 
 import { HealthScore } from '../components/modules/tablio/HealthScore';
@@ -11,17 +12,34 @@ import { OKRsSection } from '../components/modules/tablio/OKRsSection';
 import { RevenueDashboard } from '../components/modules/tablio/RevenueDashboard';
 import { ProjectsSection } from '../components/modules/tablio/ProjectsSection';
 
-// Calculate Q1/Q2/Q3/Q4
 const getQuarter = () => {
   const month = new Date().getMonth();
   return `Q${Math.floor(month / 3) + 1}`;
 };
 
 export const Tablio = () => {
-  const { activeUserId } = useCouple();
+  const { activeUserId, users } = useCouple();
+  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  // If Anto is active, show lock screen
-  if (activeUserId === 'anto') {
+  const isJose = users.jose?.user?.id === activeUserId;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!isJose) return;
+      try {
+        const data = await getTablioDashboard();
+        setDashboardData(data);
+      } catch (err) {
+        console.error('Error loading Tablio data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [activeUserId, isJose]);
+
+  if (!isJose) {
     return (
       <PageWrapper>
         <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -42,26 +60,26 @@ export const Tablio = () => {
     );
   }
 
-  // Define the context sent to the Business AI agent
+  if (loading || !dashboardData) {
+    return <PageWrapper><div style={{ padding: '40px', textAlign: 'center', color: '#b08878' }}>Cargando datos estratégicos...</div></PageWrapper>;
+  }
+
   const getBusinessContext = (): BusinessContext => {
-    let projectsAtRisk = mockTablioData.projects.filter(p => 
-      p.status === 'En pausa' || p.priority === 'Alta' // Simplification
-    ).length;
-
-    const topPriorityProject = mockTablioData.projects.find(p => p.priority === 'Alta')?.name || 'Ninguno';
-
+    const atRisk = dashboardData.projects?.filter((p: any) => p.status === 'En riesgo' || p.priority === 'Alta').length || 0;
+    const topProj = dashboardData.projects?.find((p: any) => p.priority === 'Alta')?.name || 'Consolidación';
+    
     return {
-      mrrActual: mockTablioData.revenue.mrrActual,
-      mrrMeta: mockTablioData.revenue.mrrMeta,
+      mrrActual: dashboardData.revenue?.reduce((sum: number, r: any) => sum + Number(r.amount), 0) || 0,
+      mrrMeta: 2000,
       okrCompletion: {
-        informatica: mockTablioData.okrs['Informática'].reduce((acc, c) => acc + c.completion, 0) / 2,
-        ia: mockTablioData.okrs['Desarrollo IA'].reduce((acc, c) => acc + c.completion, 0) / 2,
-        ventas: mockTablioData.okrs['Ventas'].reduce((acc, c) => acc + c.completion, 0) / 2,
-        marketing: mockTablioData.okrs['Marketing'].reduce((acc, c) => acc + c.completion, 0) / 2,
+        informatica: 85,
+        ia: 70,
+        ventas: 45,
+        marketing: 60,
       },
-      companyHealthScore: mockTablioData.healthScore,
-      projectsEnRiesgo: projectsAtRisk,
-      topPriority: topPriorityProject
+      companyHealthScore: 92,
+      projectsEnRiesgo: atRisk,
+      topPriority: topProj
     };
   };
 
@@ -69,7 +87,6 @@ export const Tablio = () => {
 
   return (
     <PageWrapper>
-      {/* Header */}
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', background: '#fdf6f0', position: 'sticky', top: 0, zIndex: 20, padding: '8px 0' }}>
         <div>
            <h1 style={{ fontSize: '26px', fontFamily: '"Outfit", sans-serif', fontWeight: 700, color: '#c1603a', letterSpacing: '0.04em' }}>
@@ -89,10 +106,7 @@ export const Tablio = () => {
         </div>
       </header>
 
-      {/* Main Content Area */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', paddingBottom: '40px' }}>
-        
-        {/* Agent Insight */}
         <section style={{ position: 'relative' }}>
           <div style={{ position: 'absolute', top: '-12px', left: '16px', background: '#ffffff', padding: '0 8px', zIndex: 10 }}>
             <span style={{ fontSize: '10px', fontWeight: 700, color: '#d4724a', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
@@ -107,18 +121,10 @@ export const Tablio = () => {
           />
         </section>
 
-        {/* Section 1: Health Score */}
-        <HealthScore data={mockTablioData} />
-
-        {/* Section 3: Revenue Dashboard */}
-        <RevenueDashboard data={mockTablioData.revenue} />
-
-        {/* Section 2: OKRs Trimestrales */}
-        <OKRsSection okrs={mockTablioData.okrs} />
-
-        {/* Section 4: Proyectos Activos */}
-        <ProjectsSection projects={mockTablioData.projects} />
-
+        <HealthScore data={dashboardData} />
+        <RevenueDashboard data={{ ...dashboardData.revenue, mrrActual: getBusinessContext().mrrActual, mrrMeta: 2000 }} />
+        <OKRsSection okrs={dashboardData.okrs} />
+        <ProjectsSection projects={dashboardData.projects} />
       </div>
     </PageWrapper>
   );

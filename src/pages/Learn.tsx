@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen } from 'lucide-react';
 import { PageWrapper } from '../components/layout/PageWrapper';
@@ -10,19 +10,82 @@ import { LearningSessionModal } from '../components/modules/learn/LearningSessio
 import { useCouple } from '../hooks/useCouple';
 import { useActiveUser } from '../hooks/useActiveUser';
 import { LearningContext } from '../services/agentService';
+import { getLearningLogs } from '../lib/db';
 
 export const Learn: React.FC = () => {
   const { isMobile, users } = useCouple();
   const activeUserData = useActiveUser();
   const [isLearnModalOpen, setIsLearnModalOpen] = useState(false);
+  const [joseData, setJoseData] = useState<any>(null);
+  const [antoData, setAntoData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchLogs = async () => {
+    if (!users.jose || !users.anto) return;
+    
+    const [joseLogs, antoLogs] = await Promise.all([
+      getLearningLogs(users.jose.user.id),
+      getLearningLogs(users.anto.user.id)
+    ]);
+
+    const calculateMetrics = (logs: any[]) => {
+      const totalMin = logs.reduce((sum, l) => sum + l.duration_min, 0);
+      return {
+        studyHours: totalMin / 60,
+        studyStreak: 0,
+        learning: {
+          activeTopics: Array.from(new Set(logs.map(l => l.topic))).slice(0, 3)
+        }
+      };
+    };
+
+    setJoseData({
+      ...users.jose,
+      metrics: { ...users.jose.metrics, ...calculateMetrics(joseLogs) },
+      recentLearning: joseLogs.slice(0, 10).map(l => ({
+        id: l.id,
+        topic: l.topic,
+        duration: l.duration_min >= 60 ? `${(l.duration_min / 60).toFixed(1)}h` : `${l.duration_min}min`,
+        resource: l.resource_type,
+        date: l.logged_at.split('T')[0]
+      }))
+    });
+
+    setAntoData({
+      ...users.anto,
+      metrics: { ...users.anto.metrics, ...calculateMetrics(antoLogs) },
+      recentLearning: antoLogs.slice(0, 10).map(l => ({
+        id: l.id,
+        topic: l.topic,
+        duration: l.duration_min >= 60 ? `${(l.duration_min / 60).toFixed(1)}h` : `${l.duration_min}min`,
+        resource: l.resource_type,
+        date: l.logged_at.split('T')[0]
+      }))
+    });
+    
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchLogs();
+  }, [users]);
 
   const handleOpenLearnModal = () => setIsLearnModalOpen(true);
-  const handleCloseLearnModal = () => setIsLearnModalOpen(false);
+  const handleCloseLearnModal = () => {
+    setIsLearnModalOpen(false);
+    fetchLogs();
+  };
 
-  const getLearningContext = (userData: typeof activeUserData): LearningContext => ({
+  if (loading || !joseData || !antoData) {
+    return <PageWrapper><div style={{ padding: '40px', textAlign: 'center', color: '#b08878' }}>Cargando aprendizaje...</div></PageWrapper>;
+  }
+
+  const currentDisplayData = activeUserData.user.role === 'jose' ? joseData : antoData;
+
+  const getLearningContext = (userData: any): LearningContext => ({
     userName: userData.user.name,
     horasEstaSemana: userData.metrics.studyHours,
-    metaHorasSemana: 10, // Mock
+    metaHorasSemana: 10,
     rachaActual: userData.metrics.studyStreak,
     temaActivo: userData.metrics.learning.activeTopics[0] || 'Ninguno',
     recursoTipo: userData.recentLearning.length > 0 ? userData.recentLearning[0].resource : 'Ninguno'
@@ -50,26 +113,26 @@ export const Learn: React.FC = () => {
         >
           <AgentMessage 
             agentType="learning"
-            userName={activeUserData.user.name}
-            color={activeUserData.user.color} 
-            contextData={getLearningContext(activeUserData)}
+            userName={currentDisplayData.user.name}
+            color={currentDisplayData.user.color} 
+            contextData={getLearningContext(currentDisplayData)}
           />
         </motion.section>
 
         {isMobile ? (
           <AnimatePresence mode="wait">
              <motion.div
-                key={activeUserData.user.id}
+                key={currentDisplayData.user.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
                 style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
               >
-                <LearnStats user={activeUserData} />
+                <LearnStats user={currentDisplayData} />
                 <LearningLogList 
-                  logs={activeUserData.recentLearning} 
-                  color={activeUserData.user.color} 
+                  logs={currentDisplayData.recentLearning} 
+                  color={currentDisplayData.user.color} 
                   onOpenAdd={handleOpenLearnModal} 
                 />
              </motion.div>
@@ -77,18 +140,18 @@ export const Learn: React.FC = () => {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', alignItems: 'start' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <LearnStats user={users.jose} />
+              <LearnStats user={joseData} />
               <LearningLogList 
-                logs={users.jose.recentLearning} 
-                color={users.jose.user.color} 
+                logs={joseData.recentLearning} 
+                color={joseData.user.color} 
                 onOpenAdd={handleOpenLearnModal} 
               />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <LearnStats user={users.anto} />
+              <LearnStats user={antoData} />
               <LearningLogList 
-                logs={users.anto.recentLearning} 
-                color={users.anto.user.color} 
+                logs={antoData.recentLearning} 
+                color={antoData.user.color} 
                 onOpenAdd={handleOpenLearnModal} 
               />
             </div>

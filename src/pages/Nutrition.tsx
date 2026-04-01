@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Apple } from 'lucide-react';
 import { PageWrapper } from '../components/layout/PageWrapper';
@@ -10,24 +10,81 @@ import { MealModal } from '../components/modules/nutrition/MealModal';
 import { useCouple } from '../hooks/useCouple';
 import { useActiveUser } from '../hooks/useActiveUser';
 import { NutritionContext } from '../services/agentService';
+import { getNutritionLogs } from '../lib/db';
 
 export const Nutrition: React.FC = () => {
   const { isMobile, users } = useCouple();
   const activeUserData = useActiveUser();
   const [isMealModalOpen, setIsMealModalOpen] = useState(false);
+  const [joseData, setJoseData] = useState<any>(null);
+  const [antoData, setAntoData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchLogs = async () => {
+    if (!users.jose || !users.anto) return;
+    
+    const [joseLogs, antoLogs] = await Promise.all([
+      getNutritionLogs(users.jose.user.id),
+      getNutritionLogs(users.anto.user.id)
+    ]);
+
+    const calculateMetrics = (logs: any[]) => {
+      const today = new Date().toISOString().split('T')[0];
+      const todayLogs = logs.filter(l => l.logged_at.split('T')[0] === today);
+      return {
+        calories: {
+          consumed: todayLogs.reduce((sum, l) => sum + l.calories, 0),
+          target: 2000
+        },
+        macros: {
+          protein: todayLogs.reduce((sum, l) => sum + (Number(l.protein_g) || 0), 0),
+          carbs: todayLogs.reduce((sum, l) => sum + (Number(l.carbs_g) || 0), 0),
+          fat: todayLogs.reduce((sum, l) => sum + (Number(l.fat_g) || 0), 0),
+        },
+        compliance: 0 // Placeholder
+      };
+    };
+
+    setJoseData({
+      ...users.jose,
+      metrics: calculateMetrics(joseLogs),
+      recentMeals: joseLogs.slice(0, 5)
+    });
+
+    setAntoData({
+      ...users.anto,
+      metrics: calculateMetrics(antoLogs),
+      recentMeals: antoLogs.slice(0, 5)
+    });
+    
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchLogs();
+  }, [users]);
 
   const handleOpenMealModal = () => setIsMealModalOpen(true);
-  const handleCloseMealModal = () => setIsMealModalOpen(false);
+  const handleCloseMealModal = () => {
+    setIsMealModalOpen(false);
+    fetchLogs(); // Refresh after adding
+  };
 
-  const getNutritionContext = (userData: typeof activeUserData): NutritionContext => ({
+  if (loading || !joseData || !antoData) {
+    return <PageWrapper><div style={{ padding: '40px', textAlign: 'center', color: '#b08878' }}>Cargando nutrición...</div></PageWrapper>;
+  }
+
+  const currentDisplayData = activeUserData.user.role === 'jose' ? joseData : antoData;
+
+  const getNutritionContext = (userData: any): NutritionContext => ({
     userName: userData.user.name,
     caloriasHoy: userData.metrics.calories.consumed,
     caloriasMeta: userData.metrics.calories.target,
     proteinaHoy: userData.metrics.macros.protein,
-    proteinaMeta: Math.round(userData.metrics.calories.target * 0.3 / 4), // Example dynamic target
-    pesoActual: 75, // Placeholder
-    pesoMeta: 70, // Placeholder
-    tendenciaPeso: 'bajando',
+    proteinaMeta: 180,
+    pesoActual: 75,
+    pesoMeta: 70,
+    tendenciaPeso: 'estable',
     cumplimientoSemana: userData.metrics.compliance
   });
 
@@ -53,26 +110,26 @@ export const Nutrition: React.FC = () => {
         >
           <AgentMessage 
             agentType="nutrition"
-            userName={activeUserData.user.name}
-            color={activeUserData.user.color} 
-            contextData={getNutritionContext(activeUserData)}
+            userName={currentDisplayData.user.name}
+            color={currentDisplayData.user.color} 
+            contextData={getNutritionContext(currentDisplayData)}
           />
         </motion.section>
 
         {isMobile ? (
           <AnimatePresence mode="wait">
              <motion.div
-                key={activeUserData.user.id}
+                key={currentDisplayData.user.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
                 style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
               >
-                <NutritionStats user={activeUserData} />
+                <NutritionStats user={currentDisplayData} />
                 <MealLogList 
-                  logs={activeUserData.recentMeals} 
-                  color={activeUserData.user.color} 
+                  logs={currentDisplayData.recentMeals} 
+                  color={currentDisplayData.user.color} 
                   onOpenAdd={handleOpenMealModal}
                 />
              </motion.div>
@@ -80,18 +137,18 @@ export const Nutrition: React.FC = () => {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', alignItems: 'start' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <NutritionStats user={users.jose} />
+              <NutritionStats user={joseData} />
               <MealLogList 
-                logs={users.jose.recentMeals} 
-                color={users.jose.user.color} 
+                logs={joseData.recentMeals} 
+                color={joseData.user.color} 
                 onOpenAdd={handleOpenMealModal}
               />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <NutritionStats user={users.anto} />
+              <NutritionStats user={antoData} />
               <MealLogList 
-                logs={users.anto.recentMeals} 
-                color={users.anto.user.color} 
+                logs={antoData.recentMeals} 
+                color={antoData.user.color} 
                 onOpenAdd={handleOpenMealModal}
               />
             </div>

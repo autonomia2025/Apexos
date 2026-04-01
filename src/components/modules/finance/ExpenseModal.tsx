@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
+import { useCouple } from '../../../hooks/useCouple';
+import { addFinanceLog } from '../../../lib/db';
 import { ExpenseCategory } from '../../../types';
 
 interface ExpenseModalProps {
@@ -10,9 +12,13 @@ interface ExpenseModalProps {
 }
 
 export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, color: _color }) => {
+  const { activeUserId } = useCouple();
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState<ExpenseCategory | null>(null);
   const [note, setNote] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
   const categories: ExpenseCategory[] = ['Comida', 'Transporte', 'Salud', 'Ocio', 'Ropa', 'Otro'];
 
   useEffect(() => {
@@ -32,11 +38,30 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
     };
   }, [isOpen]);
 
-  const handleClose = () => {
-    setAmount('');
-    setCategory(null);
-    setNote('');
-    onClose();
+  const handleSave = async () => {
+    if (!amount || !category || !activeUserId) return;
+    
+    setSaving(true);
+    setError('');
+    try {
+      await addFinanceLog({
+        user_id: activeUserId,
+        amount: parseFloat(amount) || 0,
+        category: category,
+        note: note,
+        type: 'gasto'
+      });
+      
+      setAmount('');
+      setCategory(null);
+      setNote('');
+      onClose();
+    } catch (err: any) {
+      setError('No se pudo guardar el gasto');
+      console.error(err);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -98,67 +123,32 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
                 justifyContent: 'center',
                 cursor: 'pointer',
                 color: '#c1603a',
-
               }}
             >
               <X size={15} />
             </button>
 
-            <h2 style={{
-              fontFamily: '"Outfit", sans-serif',
-              fontWeight: 800,
-              fontSize: '26px',
-              color: '#2d1a0e',
-              marginBottom: '4px',
-              paddingRight: '44px',
-            }}>
+            <h2 style={{ fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '26px', color: '#2d1a0e', marginBottom: '4px', paddingRight: '44px' }}>
               Registrar gasto
             </h2>
-            <p style={{
-              fontSize: '13px',
-              color: '#b08878',
-              marginBottom: '24px',
-              fontWeight: 400,
-            }}>
+            <p style={{ fontSize: '13px', color: '#b08878', marginBottom: '24px', fontWeight: 400 }}>
               ¿En qué gastaste?
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingBottom: '16px',
-                borderBottom: '1px solid #e8d5c8',
-              }}>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: '16px', borderBottom: '1px solid #e8d5c8' }}>
                 <span style={{ fontSize: '28px', color: '#b08878', marginRight: '8px', fontWeight: 300 }}>$</span>
                 <input
                   type="number"
                   value={amount}
                   onChange={e => setAmount(e.target.value)}
                   placeholder="0"
-                  style={{
-                    background: 'transparent',
-                    fontSize: '32px',
-                    fontFamily: '"Outfit", sans-serif',
-                    textAlign: 'center',
-                    color: '#2d1a0e',
-                    outline: 'none',
-                    width: '100%',
-                    fontWeight: 800,
-                  }}
+                  style={{ background: 'transparent', fontSize: '32px', fontFamily: '"Outfit", sans-serif', textAlign: 'center', color: '#2d1a0e', outline: 'none', width: '100%', fontWeight: 800 }}
                 />
               </div>
 
               <div>
-                <p style={{
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  color: '#b08878',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
-                  marginBottom: '8px',
-                }}>
+                <p style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
                   Categoría
                 </p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -186,14 +176,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
               </div>
 
               <div>
-                <p style={{
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  color: '#b08878',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
-                  marginBottom: '8px',
-                }}>
+                <p style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
                   Nota (opcional)
                 </p>
                 <input
@@ -201,39 +184,25 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
                   value={note}
                   onChange={e => setNote(e.target.value)}
                   placeholder="ej. Almuerzo de negocios"
-                  style={{
-                    width: '100%',
-                    padding: '12px 16px',
-                    borderRadius: '12px',
-                    border: '1.5px solid #e8d5c8',
-                    background: '#fdf6f0',
-                    fontFamily: '"Outfit", sans-serif',
-                    fontSize: '15px',
-                    fontWeight: 500,
-                    color: '#2d1a0e',
-                    outline: 'none',
-                  }}
-                  onFocus={e => e.target.style.borderColor = '#c1603a'}
-                  onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+                  style={{ width: '100%', padding: '12px 16px', borderRadius: '12px', border: '1.5px solid #e8d5c8', background: '#fdf6f0', fontFamily: '"Outfit", sans-serif', fontSize: '15px', fontWeight: 500, color: '#2d1a0e', outline: 'none' }}
                 />
               </div>
             </div>
 
-            <div style={{
-              position: 'sticky',
-              bottom: 0,
-              background: '#ffffff',
-              paddingTop: '12px',
-              paddingBottom: '4px',
-              marginTop: '16px',
-            }}>
+            {error && (
+              <p style={{ color: '#c1603a', fontSize: '13px', textAlign: 'center', marginTop: '16px', marginBottom: 0 }}>
+                {error}
+              </p>
+            )}
+
+            <div style={{ position: 'sticky', bottom: 0, background: '#ffffff', paddingTop: '12px', paddingBottom: '4px', marginTop: '16px' }}>
               <button
                 className="btn-gold"
-                onClick={handleClose}
-                disabled={!amount || !category}
-                style={{ opacity: !amount || !category ? 0.45 : 1, cursor: !amount || !category ? 'not-allowed' : 'pointer' }}
+                onClick={handleSave}
+                disabled={!amount || !category || saving}
+                style={{ opacity: !amount || !category || saving ? 0.45 : 1, cursor: !amount || !category || saving ? 'not-allowed' : 'pointer', width: '100%' }}
               >
-                Guardar
+                {saving ? 'Guardando...' : 'Guardar'}
               </button>
             </div>
           </motion.div>

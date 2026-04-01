@@ -1,10 +1,11 @@
-export type UserId = 'jose' | 'anto';
+export type UserId = string;
 
 export interface User {
   id: UserId;
   name: string;
   color: string;
   initials: string;
+  role: 'jose' | 'anto';
 }
 
 export type ExpenseCategory = 'Comida' | 'Transporte' | 'Salud' | 'Ocio' | 'Ropa' | 'Otro';
@@ -13,18 +14,18 @@ export type LearningResource = 'Libro' | 'Curso' | 'Podcast' | 'Video' | 'Práct
 export interface DailyMetrics {
   calories: { consumed: number; target: number; };
   macros: { protein: number; carbs: number; fat: number; };
-  trainingDays: number; // out of 5
+  trainingDays: number;
   studyHours: number;
   studyStreak: number;
   streak: number;
-  mood: number; // 1-5
-  compliance: number; // percentage
+  mood: number;
+  compliance: number;
   steps: number;
   finance: {
     spent: number;
     budget: number;
-    savingsRate: number; // percentage
-    topCategory: { name: string; percentage: number };
+    savingsRate: number;
+    topCategory: { name: string; amount: number; percentage?: number };
   };
   learning: {
     activeTopics: string[];
@@ -33,9 +34,9 @@ export interface DailyMetrics {
 }
 
 export interface MealLog { id: string; name: string; calories: number; time: string; macros: { protein: number; carbs: number; fat: number; }; }
-export interface WorkoutLog { id: string; type: 'Fuerza' | 'Cardio' | 'Deporte' | 'Movilidad' | 'Otro'; duration: number; date: string; notes?: string; }
+export interface WorkoutLog { id: string; type: string; duration: number; date: string; notes?: string; }
 export interface ExpenseLog { id: string; category: ExpenseCategory; description: string; amount: number; date: string; }
-export interface LearningLog { id: string; topic: string; duration: number; resource: LearningResource; notes?: string; date: string; }
+export interface LearningLog { id: string; topic: string; duration: string | number; resource: string; notes?: string; date: string; }
 
 export interface UserData {
   user: User;

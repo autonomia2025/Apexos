@@ -1,6 +1,8 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React, { useState, Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { CoupleProvider } from './context/CoupleContext';
+import { supabase } from './lib/supabase';
+import { Session } from '@supabase/supabase-js';
 
 // Navigation Components
 import { MobileNav, DesktopSideNav } from './components/layout/Navigation';
@@ -57,13 +59,9 @@ const PageLoader = () => (
   </div>
 );
 
-// Protected route to check onboarding state
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const [isOnboarded] = useState<boolean>(() => {
-    return localStorage.getItem('lifeos_onboarded') === 'true';
-  });
-
-  if (!isOnboarded) return <Navigate to="/onboarding" replace />;
+// Protected route to check session state
+const ProtectedRoute = ({ children, session }: { children: React.ReactNode, session: Session | null }) => {
+  if (!session) return <Navigate to="/onboarding" replace />;
 
   return (
     <>
@@ -75,21 +73,41 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const App: React.FC = () => {
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (loading) return <PageLoader />;
+
   return (
     <Router>
       <CoupleProvider>
         <Suspense fallback={<PageLoader />}>
           <Routes>
-            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/onboarding" element={session ? <Navigate to="/" replace /> : <Onboarding />} />
 
-            <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-            <Route path="/nutrition" element={<ProtectedRoute><Nutrition /></ProtectedRoute>} />
-            <Route path="/fitness" element={<ProtectedRoute><Fitness /></ProtectedRoute>} />
-            <Route path="/finance" element={<ProtectedRoute><Finance /></ProtectedRoute>} />
-            <Route path="/learn" element={<ProtectedRoute><Learn /></ProtectedRoute>} />
-            <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
-            <Route path="/review" element={<ProtectedRoute><WeeklyReview /></ProtectedRoute>} />
-            <Route path="/tablio" element={<ProtectedRoute><Tablio /></ProtectedRoute>} />
+            <Route path="/" element={<ProtectedRoute session={session}><Home /></ProtectedRoute>} />
+            <Route path="/nutrition" element={<ProtectedRoute session={session}><Nutrition /></ProtectedRoute>} />
+            <Route path="/fitness" element={<ProtectedRoute session={session}><Fitness /></ProtectedRoute>} />
+            <Route path="/finance" element={<ProtectedRoute session={session}><Finance /></ProtectedRoute>} />
+            <Route path="/learn" element={<ProtectedRoute session={session}><Learn /></ProtectedRoute>} />
+            <Route path="/goals" element={<ProtectedRoute session={session}><Goals /></ProtectedRoute>} />
+            <Route path="/review" element={<ProtectedRoute session={session}><WeeklyReview /></ProtectedRoute>} />
+            <Route path="/tablio" element={<ProtectedRoute session={session}><Tablio /></ProtectedRoute>} />
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

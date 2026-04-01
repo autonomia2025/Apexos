@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
+import { useCouple } from '../../../hooks/useCouple';
+import { addLearningLog } from '../../../lib/db';
 import { LearningResource } from '../../../types';
 
 interface LearningSessionModalProps {
@@ -10,9 +12,13 @@ interface LearningSessionModalProps {
 }
 
 export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOpen, onClose, color: _color }) => {
+  const { activeUserId } = useCouple();
   const [topic, setTopic] = useState('');
   const [duration, setDuration] = useState<string | null>(null);
   const [resource, setResource] = useState<LearningResource | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
   const durations = ['15min', '30min', '45min', '1h', '1.5h', '2h+'];
   const resources: LearningResource[] = ['Libro', 'Curso', 'Podcast', 'Video', 'Práctica'];
 
@@ -33,11 +39,39 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
     };
   }, [isOpen]);
 
-  const handleClose = () => {
-    setTopic('');
-    setDuration(null);
-    setResource(null);
-    onClose();
+  const parseDuration = (d: string): number => {
+    if (d === '15min') return 15;
+    if (d === '30min') return 30;
+    if (d === '45min') return 45;
+    if (d === '1h') return 60;
+    if (d === '1.5h') return 90;
+    if (d === '2h+') return 120;
+    return 0;
+  };
+
+  const handleSave = async () => {
+    if (!topic || !duration || !resource || !activeUserId) return;
+    
+    setSaving(true);
+    setError('');
+    try {
+      await addLearningLog({
+        user_id: activeUserId,
+        topic,
+        duration_min: parseDuration(duration),
+        resource_type: resource
+      });
+      
+      setTopic('');
+      setDuration(null);
+      setResource(null);
+      onClose();
+    } catch (err: any) {
+      setError('No se pudo guardar la sesión');
+      console.error(err);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -99,41 +133,21 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
                 justifyContent: 'center',
                 cursor: 'pointer',
                 color: '#c1603a',
-
               }}
             >
               <X size={15} />
             </button>
 
-            <h2 style={{
-              fontFamily: '"Outfit", sans-serif',
-              fontWeight: 800,
-              fontSize: '26px',
-              color: '#2d1a0e',
-              marginBottom: '4px',
-              paddingRight: '44px',
-            }}>
+            <h2 style={{ fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '26px', color: '#2d1a0e', marginBottom: '4px', paddingRight: '44px' }}>
               Registrar sesión
             </h2>
-            <p style={{
-              fontSize: '13px',
-              color: '#b08878',
-              marginBottom: '24px',
-              fontWeight: 400,
-            }}>
+            <p style={{ fontSize: '13px', color: '#b08878', marginBottom: '24px', fontWeight: 400 }}>
               ¿Qué estudiaste?
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
-                <p style={{
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  color: '#b08878',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
-                  marginBottom: '8px',
-                }}>
+                <p style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
                   Tema
                 </p>
                 <input
@@ -141,32 +155,12 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
                   value={topic}
                   onChange={e => setTopic(e.target.value)}
                   placeholder="ej. React Componentes"
-                  style={{
-                    width: '100%',
-                    padding: '12px 16px',
-                    borderRadius: '12px',
-                    border: '1.5px solid #e8d5c8',
-                    background: '#fdf6f0',
-                    fontFamily: '"Outfit", sans-serif',
-                    fontSize: '15px',
-                    fontWeight: 500,
-                    color: '#2d1a0e',
-                    outline: 'none',
-                  }}
-                  onFocus={e => e.target.style.borderColor = '#c1603a'}
-                  onBlur={e => e.target.style.borderColor = '#e8d5c8'}
+                  style={{ width: '100%', padding: '12px 16px', borderRadius: '12px', border: '1.5px solid #e8d5c8', background: '#fdf6f0', fontFamily: '"Outfit", sans-serif', fontSize: '15px', fontWeight: 500, color: '#2d1a0e', outline: 'none' }}
                 />
               </div>
 
               <div>
-                <p style={{
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  color: '#b08878',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
-                  marginBottom: '8px',
-                }}>
+                <p style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
                   Duración
                 </p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -194,14 +188,7 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
               </div>
 
               <div>
-                <p style={{
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  color: '#b08878',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
-                  marginBottom: '8px',
-                }}>
+                <p style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
                   Tipo
                 </p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -229,21 +216,20 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
               </div>
             </div>
 
-            <div style={{
-              position: 'sticky',
-              bottom: 0,
-              background: '#ffffff',
-              paddingTop: '12px',
-              paddingBottom: '4px',
-              marginTop: '16px',
-            }}>
+            {error && (
+              <p style={{ color: '#c1603a', fontSize: '13px', textAlign: 'center', marginTop: '16px', marginBottom: 0 }}>
+                {error}
+              </p>
+            )}
+
+            <div style={{ position: 'sticky', bottom: 0, background: '#ffffff', paddingTop: '12px', paddingBottom: '4px', marginTop: '16px' }}>
               <button
                 className="btn-gold"
-                onClick={handleClose}
-                disabled={!topic || !duration || !resource}
-                style={{ opacity: !topic || !duration || !resource ? 0.45 : 1, cursor: !topic || !duration || !resource ? 'not-allowed' : 'pointer' }}
+                onClick={handleSave}
+                disabled={!topic || !duration || !resource || saving}
+                style={{ opacity: !topic || !duration || !resource || saving ? 0.45 : 1, cursor: !topic || !duration || !resource || saving ? 'not-allowed' : 'pointer', width: '100%' }}
               >
-                Guardar
+                {saving ? 'Guardando...' : 'Guardar'}
               </button>
             </div>
           </motion.div>

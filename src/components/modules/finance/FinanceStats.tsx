@@ -82,7 +82,7 @@ export const FinanceStats: React.FC<FinanceStatsProps> = React.memo(({ user }) =
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '4px 10px', borderRadius: '999px', background: 'rgba(193,96,58,0.08)', border: '1px solid rgba(193,96,58,0.12)' }}>
             <Tag size={11} color="#d4724a" />
             <span style={{ fontSize: '10px', fontWeight: 700, color: '#7a4a36', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              {topCategory.name} {topCategory.percentage}%
+              {topCategory.name} {topCategory.amount ? `$${topCategory.amount}` : `${topCategory.percentage}%`}
             </span>
           </div>
         </div>
