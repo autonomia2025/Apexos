@@ -34,6 +34,22 @@ export async function addNutritionLog(log: {
   return data;
 }
 
+export async function analyzeMeal(description: string): Promise<{
+  meal_name: string;
+  calories: number;
+  protein_g: number;
+  carbs_g: number;
+  fat_g: number;
+  breakdown: { item: string; amount: string; calories: number }[];
+}> {
+  const { data, error } = await supabase.functions.invoke(
+    'food-analyzer',
+    { body: { description } }
+  );
+  if (error) throw error;
+  return data;
+}
+
 // ── FITNESS ────────────────────────────────
 export async function getFitnessLogs(userId: string, days = 7) {
   const since = new Date();
@@ -61,6 +77,21 @@ export async function addFitnessLog(log: {
     .insert([log])
     .select()
     .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function analyzeWorkout(description: string): Promise<{
+  workout_type: string;
+  duration_min: number;
+  calories_burned: number;
+  summary: string;
+  intensity: 'baja' | 'media' | 'alta';
+}> {
+  const { data, error } = await supabase.functions.invoke(
+    'workout-analyzer',
+    { body: { description } }
+  );
   if (error) throw error;
   return data;
 }
