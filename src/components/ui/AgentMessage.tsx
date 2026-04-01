@@ -27,6 +27,12 @@ export const AgentMessage: React.FC<AgentMessageProps> = ({ agentType, userName,
   };
 
   useEffect(() => {
+    const key = import.meta.env.VITE_OPENAI_API_KEY;
+    console.log('🤖 OpenAI key present:', !!key, 
+      key ? `(${key.slice(0,8)}...)` : 'MISSING');
+  }, []);
+
+  useEffect(() => {
     // Basic caching based on a stringified context signature to avoid re-calls
     // In a broader app, we could persist this in localStorage or a global store.
     fetchInsight();

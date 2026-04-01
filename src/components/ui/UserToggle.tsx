@@ -5,19 +5,19 @@ import { useCouple } from '../../hooks/useCouple';
  * Implements the pill design via index.css and high-end inline animations.
  */
 export const UserToggle = () => {
-  const { activeUserId, setActiveUserId } = useCouple();
+  const { activeRole, setActiveRole } = useCouple();
 
   return (
     <div className="user-toggle">
       {(['jose', 'anto'] as const).map((id) => {
-        const isActive = activeUserId === id;
+        const isActive = activeRole === id;
         const activeColor = id === 'jose' ? '#c1603a' : '#d4849e';
         
         return (
           <button
             key={id}
             className="user-toggle-btn"
-            onClick={() => setActiveUserId(id)}
+            onClick={() => setActiveRole(id)}
             aria-pressed={isActive}
             style={{
               background: isActive ? activeColor : 'transparent',

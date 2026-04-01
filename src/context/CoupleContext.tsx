@@ -2,22 +2,24 @@ import React, { createContext, useState, useEffect, ReactNode, useMemo, useCallb
 import { supabase } from '../lib/supabase';
 
 interface CoupleContextType {
-  activeUserId: string;
-  setActiveUserId: (id: string) => void;
+  activeRole: 'jose' | 'anto';
+  setActiveRole: (role: 'jose' | 'anto') => void;
+  activeUserId: string; // The UUID (derived)
   users: Record<string, any>;
   isMobile: boolean;
+  isJose: boolean;
 }
 
 export const CoupleContext = createContext<CoupleContextType | undefined>(undefined);
 
 export const CoupleProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [activeUserId, setActiveUserIdState] = useState<string>('');
+  const [activeRole, setActiveRoleState] = useState<'jose' | 'anto'>('jose');
   const [profiles, setProfiles] = useState<Record<string, any>>({});
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  const setActiveUserId = useCallback((id: string) => {
-    setActiveUserIdState(id);
-    localStorage.setItem('active_user_id', id);
+  const setActiveRole = useCallback((role: 'jose' | 'anto') => {
+    setActiveRoleState(role);
+    localStorage.setItem('active_role', role);
   }, []);
 
   useEffect(() => {
@@ -27,7 +29,6 @@ export const CoupleProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   }, []);
 
   useEffect(() => {
-    // Load profiles and current session
     const init = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -54,9 +55,6 @@ export const CoupleProvider: React.FC<{ children: ReactNode }> = ({ children }) 
               trainingDays: 0,
               steps: 0,
               finance: { spent: 0, budget: 1000, savingsRate: 0, topCategory: { name: 'Comida', amount: 0 } },
-              studyHours: 0,
-              studyStreak: 0,
-              learning: { activeTopics: [], inProgressCount: 0 }
             },
             recentMeals: [],
             recentWorkouts: [],
@@ -66,35 +64,54 @@ export const CoupleProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         });
         setProfiles(pMap);
 
-        // Auto-set active user if logged in
-        if (session?.user) {
-          setActiveUserIdState(session.user.id);
-        } else {
-          // Fallback to role-based id from local storage if needed, though UUID is preferred
-          const savedActiveId = localStorage.getItem('active_user_id');
-          if (savedActiveId) setActiveUserIdState(savedActiveId);
+        // Initialization Logic:
+        // 1. Check for saved role in localStorage
+        // 2. Fallback to session user role if logged in
+        // 3. Last fallback to 'jose'
+        const savedRole = localStorage.getItem('active_role') as 'jose' | 'anto';
+        if (savedRole && (savedRole === 'jose' || savedRole === 'anto')) {
+          setActiveRoleState(savedRole);
+        } else if (session?.user) {
+          const userProfile = profileRecords.find(p => p.id === session.user.id);
+          if (userProfile) {
+            setActiveRoleState(userProfile.role as 'jose' | 'anto');
+          }
         }
       }
     };
 
     init();
 
-    // Sync on auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    // On auth state change, we might want to switch to the logged-in user's role
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
-        setActiveUserIdState(session.user.id);
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single();
+        
+        if (profile) {
+          setActiveRoleState(profile.role as 'jose' | 'anto');
+        }
       }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
+  const activeUserId = useMemo(() => {
+    return profiles[activeRole]?.user?.id || '';
+  }, [profiles, activeRole]);
+
   const value = useMemo(() => ({
+    activeRole,
+    setActiveRole,
     activeUserId,
-    setActiveUserId,
     users: profiles,
     isMobile,
-  }), [activeUserId, profiles, isMobile, setActiveUserId]);
+    isJose: activeRole === 'jose',
+  }), [activeRole, activeUserId, profiles, isMobile, setActiveRole]);
 
   return (
     <CoupleContext.Provider value={value}>
@@ -102,3 +119,4 @@ export const CoupleProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     </CoupleContext.Provider>
   );
 };
+

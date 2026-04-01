@@ -50,14 +50,13 @@ const UserSummaryCard: React.FC<{ user: any; metrics: any }> = ({ user, metrics 
 };
 
 export const Home: React.FC = () => {
-  const { users, activeUserId } = useCouple();
+  const { users, activeRole } = useCouple();
   const [summaries, setSummaries] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
   const [isCheckInOpen, setIsCheckInOpen] = useState(false);
   
   const today = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
-  const activeUserRole = Object.keys(users).find(role => users[role].user.id === activeUserId) || 'jose';
-  const activeUser = users[activeUserRole];
+  const activeUser = users[activeRole];
 
   useEffect(() => {
     const loadSummaries = async () => {
@@ -86,7 +85,7 @@ export const Home: React.FC = () => {
     );
   }
 
-  const activeMetrics = activeUserRole === 'jose' ? summaries.jose : summaries.anto;
+  const activeMetrics = summaries[activeRole];
 
   return (
     <PageWrapper>
@@ -127,43 +126,45 @@ export const Home: React.FC = () => {
         </motion.div>
       </motion.div>
 
-      <motion.div
-        style={{ marginBottom: '16px' }}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.12 }}
-      >
-        <AgentMessage 
-          agentType="planner"
-          userName={activeUser.user.name}
-          color={activeUser.user.color} 
-          contextData={{
-             userName: activeUser.user.name,
-             caloriasHoy: activeMetrics.calories,
-             caloriasMeta: 2000,
-             proteinaHoy: activeMetrics.macros.protein,
-             proteinaMeta: 180,
-             pesoActual: activeMetrics.checkin?.weight_kg || 75,
-             pesoMeta: 70,
-             tendenciaPeso: 'estable',
-             cumplimientoSemana: activeMetrics.compliance,
-             entrenosSemana: activeMetrics.trainingDays,
-             metaEntrenosSemana: 5,
-             ultimoEntreno: 'Carga',
-             rachaActual: activeMetrics.streak,
-             pasosHoy: 0,
-             gastosMes: activeMetrics.financeSpent,
-             presupuestoMes: 1000,
-             tasaAhorro: 0,
-             categoriaTopGasto: 'Comida',
-             cumplimientoPresupuesto: Math.round((activeMetrics.financeSpent / 1000) * 100),
-             horasEstaSemana: activeMetrics.studyHours,
-             metaHorasSemana: 10,
-             temaActivo: 'Supabase',
-             recursoTipo: 'Documentación'
-          }}
-        />
-      </motion.div>
+      {summaries.jose && summaries.anto && (
+        <motion.div
+          style={{ marginBottom: '16px' }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.12 }}
+        >
+          <AgentMessage 
+            agentType="planner"
+            userName={activeUser.user.name}
+            color={activeUser.user.color} 
+            contextData={{
+               userName: activeUser.user.name,
+               caloriasHoy: activeMetrics.calories,
+               caloriasMeta: 2000,
+               proteinaHoy: activeMetrics.macros.protein,
+               proteinaMeta: 180,
+               pesoActual: activeMetrics.checkin?.weight_kg || 75,
+               pesoMeta: 70,
+               tendenciaPeso: 'estable',
+               cumplimientoSemana: activeMetrics.compliance,
+               entrenosSemana: activeMetrics.trainingDays,
+               metaEntrenosSemana: 5,
+               ultimoEntreno: 'Carga',
+               rachaActual: activeMetrics.streak,
+               pasosHoy: 0,
+               gastosMes: activeMetrics.financeSpent,
+               presupuestoMes: 1000,
+               tasaAhorro: 0,
+               categoriaTopGasto: 'Comida',
+               cumplimientoPresupuesto: Math.round((activeMetrics.financeSpent / 1000) * 100),
+               horasEstaSemana: activeMetrics.studyHours,
+               metaHorasSemana: 10,
+               temaActivo: 'Supabase',
+               recursoTipo: 'Documentación'
+            }}
+          />
+        </motion.div>
+      )}
 
       <motion.div
         style={{ marginBottom: '16px' }}
