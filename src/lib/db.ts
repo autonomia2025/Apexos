@@ -35,21 +35,21 @@ export async function addNutritionLog(log: {
 }
 
 export async function analyzeMeal(description: string) {
+  const { data: { session } } = await supabase.auth.getSession();
+  
   const { data, error } = await supabase.functions.invoke(
     'food-analyzer',
     {
       body: { description },
+      headers: session ? {
+        Authorization: `Bearer ${session.access_token}`,
+      } : {},
     }
   );
 
   if (error) {
     console.error('food-analyzer error:', error);
-    throw new Error(error.message);
-  }
-
-  if (!data || !data.calories) {
-    console.error('Invalid response:', data);
-    throw new Error('Respuesta inválida del analizador');
+    throw error;
   }
 
   return data;
@@ -93,10 +93,18 @@ export async function analyzeWorkout(description: string): Promise<{
   summary: string;
   intensity: 'baja' | 'media' | 'alta';
 }> {
+  const { data: { session } } = await supabase.auth.getSession();
+
   const { data, error } = await supabase.functions.invoke(
     'workout-analyzer',
-    { body: { description } }
+    {
+      body: { description },
+      headers: session ? {
+        Authorization: `Bearer ${session.access_token}`,
+      } : {},
+    }
   );
+
   if (error) throw error;
   return data;
 }
