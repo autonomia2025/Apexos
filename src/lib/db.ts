@@ -34,19 +34,24 @@ export async function addNutritionLog(log: {
   return data;
 }
 
-export async function analyzeMeal(description: string): Promise<{
-  meal_name: string;
-  calories: number;
-  protein_g: number;
-  carbs_g: number;
-  fat_g: number;
-  breakdown: { item: string; amount: string; calories: number }[];
-}> {
+export async function analyzeMeal(description: string) {
   const { data, error } = await supabase.functions.invoke(
     'food-analyzer',
-    { body: { description } }
+    {
+      body: { description },
+    }
   );
-  if (error) throw error;
+
+  if (error) {
+    console.error('food-analyzer error:', error);
+    throw new Error(error.message);
+  }
+
+  if (!data || !data.calories) {
+    console.error('Invalid response:', data);
+    throw new Error('Respuesta inválida del analizador');
+  }
+
   return data;
 }
 

@@ -68,8 +68,12 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
       setCalories(String(nutrition.calories));
       setProtein(String(nutrition.protein_g));
     } catch (e) {
-      console.error(e);
-      setError('No se pudo analizar. Intentá de nuevo o usá el modo manual.');
+      console.error('analyzeMeal failed:', e);
+      setError(
+        e instanceof Error 
+          ? e.message 
+          : 'No se pudo analizar. Intentá de nuevo.'
+      );
     } finally {
       setAnalyzing(false);
     }
