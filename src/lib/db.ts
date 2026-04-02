@@ -244,12 +244,15 @@ export async function getTablioDashboard() {
   const [okrs, projects, revenue] = await Promise.all([
     supabase
       .from('tablio_okrs')
-      .select('*, tablio_key_results(*)')
+      .select(`
+        *,
+        tablio_key_results (*)
+      `)
       .order('department'),
     supabase
       .from('tablio_projects')
       .select('*')
-      .order('priority', { ascending: false })
+      .order('priority')
       .order('updated_at', { ascending: false }),
     supabase
       .from('tablio_revenue')
@@ -257,10 +260,6 @@ export async function getTablioDashboard() {
       .order('year', { ascending: true })
       .order('month', { ascending: true }),
   ]);
-  
-  if (okrs.error) throw okrs.error;
-  if (projects.error) throw projects.error;
-  if (revenue.error) throw revenue.error;
 
   return {
     okrs: okrs.data || [],

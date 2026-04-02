@@ -137,25 +137,43 @@ export const Tablio = () => {
 
   const transformOKRs = (): Record<Department, Objective[]> => {
     const okrsArray = dashboardData?.okrs || [];
-    const grouped: Record<string, Objective[]> = {
+    
+    const deptMap: Record<string, Department> = {
+      'informatica': 'Informática',
+      'ia': 'Desarrollo IA',
+      'ventas': 'Ventas',
+      'marketing': 'Marketing',
+    };
+
+    const grouped: Record<Department, Objective[]> = {
       'Informática': [],
       'Desarrollo IA': [],
       'Ventas': [],
-      'Marketing': []
+      'Marketing': [],
     };
 
     okrsArray.forEach((o: any) => {
-      if (grouped[o.department]) {
-        grouped[o.department].push({
+      const displayDept = deptMap[o.department];
+      if (displayDept && grouped[displayDept]) {
+        grouped[displayDept].push({
           id: o.id,
-          title: o.title,
+          title: o.objective,  // DB column is 'objective' not 'title'
           completion: o.completion || 0,
-          keyResults: o.tablio_key_results || []
+          keyResults: (o.tablio_key_results || []).map((kr: any) => ({
+            id: kr.id,
+            description: kr.description,
+            currentValue: kr.current_value,
+            targetValue: kr.target_value,
+            unit: kr.unit || '',
+            status: kr.status === 'en_curso' ? 'En curso'
+              : kr.status === 'completado' ? 'Completado'
+              : 'En riesgo',
+          })),
         });
       }
     });
 
-    return grouped as Record<Department, Objective[]>;
+    return grouped;
   };
 
   const todayStr = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
