@@ -8,7 +8,7 @@ interface ActivityGridProps {
 }
 
 export const ActivityGrid: React.FC<ActivityGridProps> = ({ user }) => {
-  const { weeklyActivity, user: profile } = user;
+  const { weeklyActivity = [], user: profile } = user;
   const days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 
   const getIconForType = (type: string, color: string) => {

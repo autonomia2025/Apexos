@@ -59,7 +59,8 @@ export const CoupleProvider: React.FC<{ children: ReactNode }> = ({ children }) 
             recentMeals: [],
             recentWorkouts: [],
             recentExpenses: [],
-            recentLearning: []
+            recentLearning: [],
+            weeklyActivity: []
           };
         });
         setProfiles(pMap);

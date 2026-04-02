@@ -11,6 +11,7 @@ import { HealthScore } from '../components/modules/tablio/HealthScore';
 import { OKRsSection } from '../components/modules/tablio/OKRsSection';
 import { RevenueDashboard } from '../components/modules/tablio/RevenueDashboard';
 import { ProjectsSection } from '../components/modules/tablio/ProjectsSection';
+import { RevenueData, Department, Objective } from '../types/tablio';
 
 const getQuarter = () => {
   const month = new Date().getMonth();
@@ -78,7 +79,7 @@ export const Tablio = () => {
 
   const getBusinessContext = (): BusinessContext => {
     const projects = dashboardData?.projects || [];
-    const revenue = dashboardData?.revenue || [];
+    const revenueArray = dashboardData?.revenue || [];
     
     const atRisk = projects.filter((p: any) => 
       p.status === 'En riesgo' || p.priority === 'Alta'
@@ -88,15 +89,73 @@ export const Tablio = () => {
       p.priority === 'Alta'
     )?.name || 'Consolidación';
     
+    const mrrActual = revenueArray.reduce((sum: number, r: any) => 
+        sum + Number(r.amount), 0) || 0;
+
     return {
-      mrrActual: revenue.reduce((sum: number, r: any) => 
-        sum + Number(r.amount), 0) || 0,
+      mrrActual,
       mrrMeta: 2000,
       okrCompletion: { informatica: 85, ia: 70, ventas: 45, marketing: 60 },
       companyHealthScore: 92,
       projectsEnRiesgo: atRisk,
       topPriority: topProj,
     };
+  };
+
+  const transformRevenueData = (): RevenueData => {
+    const revenueArray = dashboardData?.revenue || [];
+    
+    // History (last 6 unique months)
+    const historyMap: Record<string, number> = {};
+    revenueArray.forEach((r: any) => {
+      const key = `${r.month} ${r.year}`;
+      historyMap[key] = (historyMap[key] || 0) + Number(r.amount);
+    });
+    
+    const history = Object.entries(historyMap).map(([month, value]) => ({ month, value })).slice(-6);
+
+    // By Venture
+    const ventureMap: Record<string, number> = {};
+    revenueArray.forEach((r: any) => {
+      ventureMap[r.venture] = (ventureMap[r.venture] || 0) + Number(r.amount);
+    });
+    
+    const mrrActual = getBusinessContext().mrrActual;
+    const byVenture = Object.entries(ventureMap).map(([venture, amount]) => ({
+      venture,
+      amount,
+      percentage: mrrActual > 0 ? Math.round((amount / mrrActual) * 100) : 0
+    }));
+
+    return {
+      mrrActual,
+      mrrMeta: 2000,
+      history,
+      byVenture
+    };
+  };
+
+  const transformOKRs = (): Record<Department, Objective[]> => {
+    const okrsArray = dashboardData?.okrs || [];
+    const grouped: Record<string, Objective[]> = {
+      'Informática': [],
+      'Desarrollo IA': [],
+      'Ventas': [],
+      'Marketing': []
+    };
+
+    okrsArray.forEach((o: any) => {
+      if (grouped[o.department]) {
+        grouped[o.department].push({
+          id: o.id,
+          title: o.title,
+          completion: o.completion || 0,
+          keyResults: o.tablio_key_results || []
+        });
+      }
+    });
+
+    return grouped as Record<Department, Objective[]>;
   };
 
   const todayStr = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
@@ -138,9 +197,9 @@ export const Tablio = () => {
         </section>
 
         <HealthScore data={dashboardData} />
-        <RevenueDashboard data={{ ...dashboardData.revenue, mrrActual: getBusinessContext().mrrActual, mrrMeta: 2000 }} />
-        <OKRsSection okrs={dashboardData.okrs} />
-        <ProjectsSection projects={dashboardData.projects} />
+        <RevenueDashboard data={transformRevenueData()} />
+        <OKRsSection okrs={transformOKRs()} />
+        <ProjectsSection projects={dashboardData.projects || []} />
       </div>
     </PageWrapper>
   );
