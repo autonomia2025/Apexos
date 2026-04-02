@@ -9,10 +9,11 @@ interface FitnessStatsProps {
 }
 
 export const FitnessStats: React.FC<FitnessStatsProps> = React.memo(({ user }) => {
+  if (!user || !user.metrics || !user.user) return null;
   const { metrics, user: profile, recentWorkouts } = user;
 
   const lastWorkout = useMemo(
-    () => recentWorkouts.length > 0 ? recentWorkouts[0] : null,
+    () => (recentWorkouts && recentWorkouts.length > 0) ? recentWorkouts[0] : null,
     [recentWorkouts]
   );
 

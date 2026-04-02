@@ -22,11 +22,13 @@ export const Tablio = () => {
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const isJose = users.jose?.user?.id === activeUserId;
+  const isJose = activeUserId 
+    && users.jose?.user?.id 
+    && users.jose.user.id === activeUserId;
 
   useEffect(() => {
+    if (!isJose || !activeUserId) return;
     const fetchData = async () => {
-      if (!isJose) return;
       try {
         const data = await getTablioDashboard();
         setDashboardData(data);
@@ -38,6 +40,16 @@ export const Tablio = () => {
     };
     fetchData();
   }, [activeUserId, isJose]);
+
+  if (!activeUserId || !users.jose?.user?.id) {
+    return (
+      <PageWrapper>
+        <div style={{ padding: '40px', textAlign: 'center', color: '#b08878' }}>
+          Cargando...
+        </div>
+      </PageWrapper>
+    );
+  }
 
   if (!isJose) {
     return (
@@ -65,21 +77,25 @@ export const Tablio = () => {
   }
 
   const getBusinessContext = (): BusinessContext => {
-    const atRisk = dashboardData.projects?.filter((p: any) => p.status === 'En riesgo' || p.priority === 'Alta').length || 0;
-    const topProj = dashboardData.projects?.find((p: any) => p.priority === 'Alta')?.name || 'Consolidación';
+    const projects = dashboardData?.projects || [];
+    const revenue = dashboardData?.revenue || [];
+    
+    const atRisk = projects.filter((p: any) => 
+      p.status === 'En riesgo' || p.priority === 'Alta'
+    ).length || 0;
+    
+    const topProj = projects.find((p: any) => 
+      p.priority === 'Alta'
+    )?.name || 'Consolidación';
     
     return {
-      mrrActual: dashboardData.revenue?.reduce((sum: number, r: any) => sum + Number(r.amount), 0) || 0,
+      mrrActual: revenue.reduce((sum: number, r: any) => 
+        sum + Number(r.amount), 0) || 0,
       mrrMeta: 2000,
-      okrCompletion: {
-        informatica: 85,
-        ia: 70,
-        ventas: 45,
-        marketing: 60,
-      },
+      okrCompletion: { informatica: 85, ia: 70, ventas: 45, marketing: 60 },
       companyHealthScore: 92,
       projectsEnRiesgo: atRisk,
-      topPriority: topProj
+      topPriority: topProj,
     };
   };
 

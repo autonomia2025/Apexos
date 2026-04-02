@@ -295,58 +295,59 @@ export async function updateProjectProgress(id: string, progress: number) {
 }
 
 export async function getUserSummary(userId: string) {
+  if (!userId) return defaultSummary();
+  
   const today = new Date().toISOString().split('T')[0];
-  const startOfWeek = new Date();
-  startOfWeek.setDate(startOfWeek.getDate() - 7);
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+  const weekAgoISO = weekAgo.toISOString();
 
-  const [nutrition, fitness, finance, learning, checkin] = await Promise.all([
+  // Use select with only needed columns to reduce payload
+  const [nutrition, fitness, checkin] = await Promise.all([
     supabase
       .from('nutrition_logs')
-      .select('*')
+      .select('calories, protein_g')  // only needed cols
       .eq('user_id', userId)
-      .gte('logged_at', today),
+      .gte('logged_at', today + 'T00:00:00'),
     supabase
       .from('fitness_logs')
-      .select('*')
+      .select('logged_at')  // only need dates for count
       .eq('user_id', userId)
-      .gte('logged_at', startOfWeek.toISOString()),
-    supabase
-      .from('finance_logs')
-      .select('*')
-      .eq('user_id', userId)
-      .gte('logged_at', today),
-    supabase
-      .from('learning_logs')
-      .select('*')
-      .eq('user_id', userId)
-      .gte('logged_at', startOfWeek.toISOString()),
+      .gte('logged_at', weekAgoISO),
     supabase
       .from('daily_checkins')
-      .select('*')
+      .select('mood_score, goal_met, weight_kg')
       .eq('user_id', userId)
       .eq('checkin_date', today)
       .maybeSingle(),
   ]);
 
-  const calories = (nutrition.data || []).reduce((sum, item) => sum + item.calories, 0);
-  const coreMacros = (nutrition.data || []).reduce((acc, item) => ({
-    protein: acc.protein + (Number(item.protein_g) || 0),
-    carbs: acc.carbs + (Number(item.carbs_g) || 0),
-    fat: acc.fat + (Number(item.fat_g) || 0),
-  }), { protein: 0, carbs: 0, fat: 0 });
+  const calories = (nutrition.data || [])
+    .reduce((sum, item) => sum + (item.calories || 0), 0);
+  
+  const protein = (nutrition.data || [])
+    .reduce((sum, item) => sum + (Number(item.protein_g) || 0), 0);
 
-  const trainingDays = new Set((fitness.data || []).map(f => new Date(f.logged_at).toISOString().split('T')[0])).size;
-  const financeSpent = (finance.data || []).reduce((sum, item) => sum + (item.type === 'gasto' ? Number(item.amount) : 0), 0);
-  const studyHours = (learning.data || []).reduce((sum, item) => sum + (item.duration_min / 60), 0);
+  const trainingDays = new Set(
+    (fitness.data || []).map(l => l.logged_at.split('T')[0])
+  ).size;
 
   return {
     calories,
-    macros: coreMacros,
+    protein: Math.round(protein),
     trainingDays,
-    financeSpent,
-    studyHours,
-    checkin: checkin.data,
-    compliance: checkin.data?.goal_met ? 100 : 0,
-    streak: 0, 
+    streak: 0,
+    compliance: Math.min(Math.round((calories / 2000) * 100), 100),
+    mood: checkin.data?.mood_score || 0,
+    goalMet: checkin.data?.goal_met || false,
+    weight: checkin.data?.weight_kg || null,
+  };
+}
+
+function defaultSummary() {
+  return {
+    calories: 0, protein: 0, trainingDays: 0,
+    streak: 0, compliance: 0, mood: 0,
+    goalMet: false, weight: null,
   };
 }

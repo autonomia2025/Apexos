@@ -1,41 +1,46 @@
-import React from 'react';
 
-interface SkeletonProps {
-  lines?: number;
-  className?: string;
-}
 
-export const SkeletonCard: React.FC<SkeletonProps> = ({ lines = 3, className = '' }) => {
-  return (
-    <div className={className} style={{ padding: '20px', borderRadius: '16px', background: '#ffffff', border: '1px solid #e8d5c8', position: 'relative', overflow: 'hidden' }}>
-      {/* Background container for shimmer */}
-      <div style={{ position: 'absolute', insetInline: 0, top: 0, height: '100%', width: '100%', pointerEvents: 'none' }}>
-        <div 
-           style={{
-             height: '100%',
-             width: '100%',
-             background: 'linear-gradient(90deg, rgba(193,96,58,0) 0%, rgba(193,96,58,0.05) 50%, rgba(193,96,58,0) 100%)',
-             backgroundSize: '200% 100%',
-           }}
-        />
-      </div>
-      
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px', position: 'relative', zIndex: 10, width: '100%' }}>
-        <div style={{ width: '40px', height: '40px', borderRadius: '999px', background: 'rgba(193,96,58,0.08)', flexShrink: 0 }} />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', maxWidth: '200px' }}>
-          <div style={{ height: '12px', background: 'rgba(193,96,58,0.08)', borderRadius: '999px', width: '100%' }} />
-          <div style={{ height: '8px', background: 'rgba(193,96,58,0.08)', borderRadius: '999px', width: '66%' }} />
-        </div>
-      </div>
-      
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', position: 'relative', zIndex: 10 }}>
-        {Array.from({ length: lines }).map((_, i) => (
-          <div 
-             key={i} 
-             style={{ height: '8px', background: 'rgba(193,96,58,0.08)', borderRadius: '999px', width: `${100 - (i * 15)}%`, opacity: 1 - (i * 0.2) }}
-           />
-        ))}
+export const SkeletonCard = () => (
+  <div style={{
+    background: '#ffffff',
+    border: '1px solid #e8d5c8',
+    borderRadius: '20px',
+    padding: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+  }}>
+    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+      <div style={{
+        width: '48px', height: '48px', borderRadius: '50%',
+        background: 'linear-gradient(90deg, #f0e4da 25%, #fdf6f0 50%, #f0e4da 75%)',
+        backgroundSize: '200% 100%',
+        animation: 'shimmer 1.5s infinite',
+      }}/>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        <div style={{
+          height: '18px', borderRadius: '6px', width: '60%',
+          background: 'linear-gradient(90deg, #f0e4da 25%, #fdf6f0 50%, #f0e4da 75%)',
+          backgroundSize: '200% 100%',
+          animation: 'shimmer 1.5s infinite',
+        }}/>
+        <div style={{
+          height: '12px', borderRadius: '4px', width: '40%',
+          background: 'linear-gradient(90deg, #f0e4da 25%, #fdf6f0 50%, #f0e4da 75%)',
+          backgroundSize: '200% 100%',
+          animation: 'shimmer 1.5s infinite 0.2s',
+        }}/>
       </div>
     </div>
-  );
-};
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+      {[0,1].map(i => (
+        <div key={i} style={{
+          height: '64px', borderRadius: '14px',
+          background: 'linear-gradient(90deg, #f0e4da 25%, #fdf6f0 50%, #f0e4da 75%)',
+          backgroundSize: '200% 100%',
+          animation: `shimmer 1.5s infinite ${i * 0.1}s`,
+        }}/>
+      ))}
+    </div>
+  </div>
+);

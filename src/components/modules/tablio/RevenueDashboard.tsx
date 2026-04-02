@@ -8,6 +8,7 @@ interface RevenueDashboardProps {
 }
 
 export const RevenueDashboard: React.FC<RevenueDashboardProps> = ({ data }) => {
+  if (!data || !data.history) return null;
   const progress = Math.min((data.mrrActual / data.mrrMeta) * 100, 100);
   const maxRevenue = Math.max(...data.history.map(d => d.value));
 

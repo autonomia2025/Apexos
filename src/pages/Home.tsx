@@ -13,6 +13,7 @@ import { CheckInModal } from '../components/modules/home/CheckInModal';
 
 import { useCouple } from '../hooks/useCouple';
 import { getUserSummary } from '../lib/db';
+import { SkeletonCard } from '../components/ui/SkeletonCard';
 
 const UserSummaryCard: React.FC<{ user: any; metrics: any }> = ({ user, metrics }) => {
   const isJose = user.name === 'Jose';
@@ -58,13 +59,16 @@ export const Home: React.FC = () => {
   const today = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
   const activeUser = users[activeRole];
 
+  const joseId = users.jose?.user?.id;
+  const antoId = users.anto?.user?.id;
+
   useEffect(() => {
+    if (!joseId || !antoId) return;
+
     const loadSummaries = async () => {
-      if (Object.keys(users).length === 0) return;
-      
       const [joseSum, antoSum] = await Promise.all([
-        getUserSummary(users.jose.user.id),
-        getUserSummary(users.anto.user.id)
+        getUserSummary(joseId),
+        getUserSummary(antoId)
       ]);
       
       setSummaries({
@@ -75,15 +79,7 @@ export const Home: React.FC = () => {
     };
     
     loadSummaries();
-  }, [users]);
-
-  if (loading || !activeUser) {
-    return (
-      <PageWrapper>
-        <div style={{ padding: '40px', textAlign: 'center', color: '#b08878' }}>Cargando panel...</div>
-      </PageWrapper>
-    );
-  }
+  }, [joseId, antoId]);
 
   const activeMetrics = summaries[activeRole];
 
@@ -102,7 +98,10 @@ export const Home: React.FC = () => {
           </span>
           <h1 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '36px', lineHeight: 1, fontWeight: 800, color: '#c1603a', letterSpacing: '0.01em', margin: 0 }}>APEX OS</h1>
           <p style={{ fontSize: '13px', color: '#7a4a36', marginTop: '6px', fontWeight: 400 }}>
-            Buenos días, {activeUser.user.name} · {today}
+            {activeUser 
+              ? `Buenos días, ${activeUser.user.name} · ${today}`
+              : `Cargando · ${today}`
+            }
           </p>
         </div>
         <UserToggle />
@@ -118,15 +117,28 @@ export const Home: React.FC = () => {
           show: { opacity: 1, transition: { staggerChildren: 0.08 } },
         }}
       >
-        <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
-          <UserSummaryCard user={users.jose.user} metrics={summaries.jose} />
-        </motion.div>
-        <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
-          <UserSummaryCard user={users.anto.user} metrics={summaries.anto} />
-        </motion.div>
+        {loading ? (
+          <>
+            <SkeletonCard />
+            <SkeletonCard />
+          </>
+        ) : (
+          <>
+            {users.jose && summaries.jose && (
+              <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
+                <UserSummaryCard user={users.jose.user} metrics={summaries.jose} />
+              </motion.div>
+            )}
+            {users.anto && summaries.anto && (
+              <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
+                <UserSummaryCard user={users.anto.user} metrics={summaries.anto} />
+              </motion.div>
+            )}
+          </>
+        )}
       </motion.div>
 
-      {summaries.jose && summaries.anto && (
+      {!loading && activeUser && summaries[activeRole] && (
         <motion.div
           style={{ marginBottom: '16px' }}
           initial={{ opacity: 0, y: 10 }}
@@ -141,9 +153,9 @@ export const Home: React.FC = () => {
                userName: activeUser.user.name,
                caloriasHoy: activeMetrics.calories,
                caloriasMeta: 2000,
-               proteinaHoy: activeMetrics.macros.protein,
+               proteinaHoy: activeMetrics.protein,
                proteinaMeta: 180,
-               pesoActual: activeMetrics.checkin?.weight_kg || 75,
+               pesoActual: activeMetrics.weight || 75,
                pesoMeta: 70,
                tendenciaPeso: 'estable',
                cumplimientoSemana: activeMetrics.compliance,
@@ -152,12 +164,12 @@ export const Home: React.FC = () => {
                ultimoEntreno: 'Carga',
                rachaActual: activeMetrics.streak,
                pasosHoy: 0,
-               gastosMes: activeMetrics.financeSpent,
+               gastosMes: 0,
                presupuestoMes: 1000,
                tasaAhorro: 0,
                categoriaTopGasto: 'Comida',
-               cumplimientoPresupuesto: Math.round((activeMetrics.financeSpent / 1000) * 100),
-               horasEstaSemana: activeMetrics.studyHours,
+               cumplimientoPresupuesto: 0,
+               horasEstaSemana: 0,
                metaHorasSemana: 10,
                temaActivo: 'Supabase',
                recursoTipo: 'Documentación'

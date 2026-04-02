@@ -11,6 +11,7 @@ interface ProjectsSectionProps {
 }
 
 export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) => {
+  if (!projects || !Array.isArray(projects)) return null;
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getPriorityColor = (p: Project['priority']) => {

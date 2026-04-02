@@ -55,9 +55,13 @@ export const Finance: React.FC = () => {
     setLoading(false);
   };
 
+  const joseId = users.jose?.user?.id;
+  const antoId = users.anto?.user?.id;
+
   useEffect(() => {
+    if (!joseId || !antoId) return;
     fetchLogs();
-  }, [users]);
+  }, [joseId, antoId]);
 
   const handleOpenExpenseModal = () => setIsExpenseModalOpen(true);
   const handleCloseExpenseModal = () => {

@@ -65,6 +65,11 @@ p, span, label { font-family: "Outfit", sans-serif; font-weight: 400; }
   50% { opacity: 1; transform: scale(1); }
 }
 
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 @media (min-width: 768px) {
   .page {
     margin-left: 80px;

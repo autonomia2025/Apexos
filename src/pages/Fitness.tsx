@@ -22,40 +22,49 @@ export const Fitness: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchLogs = async () => {
-    if (!users.jose || !users.anto) return;
+    if (!users.jose?.user?.id || !users.anto?.user?.id) return;
     
-    const [joseLogs, antoLogs] = await Promise.all([
-      getFitnessLogs(users.jose.user.id),
-      getFitnessLogs(users.anto.user.id)
-    ]);
+    try {
+      const [joseLogs, antoLogs] = await Promise.all([
+        getFitnessLogs(users.jose.user.id),
+        getFitnessLogs(users.anto.user.id)
+      ]);
 
-    const calculateMetrics = (logs: any[]) => {
-      const trainingDays = new Set(logs.map(l => l.logged_at.split('T')[0])).size;
-      return {
-        trainingDays,
-        streak: 0,
-        steps: 0
+      const calculateMetrics = (logs: any[]) => {
+        const trainingDays = new Set(logs.map(l => l.logged_at.split('T')[0])).size;
+        return {
+          trainingDays,
+          streak: 0,
+          steps: 0
+        };
       };
-    };
 
-    setJoseData({
-      ...users.jose,
-      metrics: { ...users.jose.metrics, ...calculateMetrics(joseLogs) },
-      recentWorkouts: joseLogs.slice(0, 5)
-    });
+      setJoseData({
+        ...users.jose,
+        metrics: { ...users.jose.metrics, ...calculateMetrics(joseLogs) },
+        recentWorkouts: joseLogs.slice(0, 5)
+      });
 
-    setAntoData({
-      ...users.anto,
-      metrics: { ...users.anto.metrics, ...calculateMetrics(antoLogs) },
-      recentWorkouts: antoLogs.slice(0, 5)
-    });
-    
-    setLoading(false);
+      setAntoData({
+        ...users.anto,
+        metrics: { ...users.anto.metrics, ...calculateMetrics(antoLogs) },
+        recentWorkouts: antoLogs.slice(0, 5)
+      });
+      
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching fitness logs:', err);
+      setLoading(false);
+    }
   };
 
+  const joseId = users.jose?.user?.id;
+  const antoId = users.anto?.user?.id;
+
   useEffect(() => {
+    if (!joseId || !antoId) return;
     fetchLogs();
-  }, [users]);
+  }, [joseId, antoId]);
 
   const handleOpenWorkoutModal = () => setIsWorkoutModalOpen(true);
   const handleCloseWorkoutModal = () => {

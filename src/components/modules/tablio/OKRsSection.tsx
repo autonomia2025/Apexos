@@ -8,6 +8,7 @@ interface OKRsSectionProps {
 }
 
 export const OKRsSection: React.FC<OKRsSectionProps> = ({ okrs }) => {
+  if (!okrs) return null;
   const departments: Department[] = ['Informática', 'Desarrollo IA', 'Ventas', 'Marketing'];
   const [activeTab, setActiveTab] = useState<Department>('Ventas');
 
