@@ -18,6 +18,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState<ExpenseCategory | null>(null);
   const [note, setNote] = useState('');
+  const [type, setType] = useState<'gasto' | 'ingreso'>('gasto');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -41,7 +42,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
   }, [isOpen]);
 
   const handleSave = async () => {
-    if (!amount || !category || !activeUserId) return;
+    if (!amount || (type === 'gasto' && !category) || !activeUserId) return;
     
     setSaving(true);
     setError('');
@@ -49,9 +50,9 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
       await addFinanceLog({
         user_id: activeUserId,
         amount: parseFloat(amount) || 0,
-        category: category,
+        category: type === 'ingreso' ? 'Otro' : (category || 'Otro'),
         note: note,
-        type: 'gasto'
+        type: type
       });
       
       const logs = await getFinanceLogs(activeUserId, 30);
@@ -61,9 +62,10 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
       setAmount('');
       setCategory(null);
       setNote('');
+      setType('gasto');
       onClose();
     } catch (err: any) {
-      setError('No se pudo guardar el gasto');
+      setError('No se pudo guardar el movimiento');
       console.error(err);
     } finally {
       setSaving(false);
@@ -135,11 +137,40 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
             </button>
 
             <h2 style={{ fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '26px', color: '#2d1a0e', marginBottom: '4px', paddingRight: '44px' }}>
-              Registrar gasto
+              Registrar {type === 'gasto' ? 'gasto' : 'ingreso'}
             </h2>
             <p style={{ fontSize: '13px', color: '#b08878', marginBottom: '24px', fontWeight: 400 }}>
-              ¿En qué gastaste?
+              {type === 'gasto' ? '¿En qué gastaste?' : '¿De dónde viene este monto?'}
             </p>
+
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
+              {(['gasto', 'ingreso'] as const).map(t => (
+                <button
+                  key={t}
+                  onClick={() => setType(t)}
+                  style={{
+                    flex: 1, padding: '10px', borderRadius: '12px',
+                    border: `1.5px solid ${type === t 
+                      ? (t === 'gasto' ? '#c94040' : '#4a9068') 
+                      : '#e8d5c8'}`,
+                    background: type === t
+                      ? (t === 'gasto' 
+                        ? 'rgba(201,64,64,0.08)' 
+                        : 'rgba(74,144,104,0.08)')
+                      : '#ffffff',
+                    color: type === t
+                      ? (t === 'gasto' ? '#c94040' : '#4a9068')
+                      : '#b08878',
+                    fontFamily: '"Outfit", sans-serif',
+                    fontSize: '14px', fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  {t === 'gasto' ? '↑ Gasto' : '↓ Ingreso'}
+                </button>
+              ))}
+            </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div style={{ marginBottom: '20px' }}>
@@ -169,7 +200,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
                       fontSize: '32px', fontWeight: 800, color: '#2d1a0e',
                       outline: 'none', textAlign: 'right',
                     }}
-                    onFocus={e => (e.target.style.borderColor = '#c1603a')}
+                    onFocus={e => (e.target.style.borderColor = type === 'gasto' ? '#c94040' : '#4a9068')}
                     onBlur={e => (e.target.style.borderColor = '#e8d5c8')}
                   />
                 </div>
@@ -181,33 +212,35 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
                 )}
               </div>
 
-              <div>
-                <p style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
-                  Categoría
-                </p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {categories.map(opt => (
-                    <button
-                      key={opt}
-                      onClick={() => setCategory(opt)}
-                      style={{
-                        padding: '8px 16px',
-                        borderRadius: '100px',
-                        border: `1.5px solid ${category === opt ? '#c1603a' : '#e8d5c8'}`,
-                        background: category === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
-                        color: category === opt ? '#c1603a' : '#7a4a36',
-                        fontFamily: '"Outfit", sans-serif',
-                        fontSize: '13px',
-                        fontWeight: category === opt ? 700 : 400,
-                        cursor: 'pointer',
-                        transition: 'all 0.15s',
-                      }}
-                    >
-                      {opt}
-                    </button>
-                  ))}
+              {type === 'gasto' && (
+                <div>
+                  <p style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
+                    Categoría
+                  </p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {categories.map(opt => (
+                      <button
+                        key={opt}
+                        onClick={() => setCategory(opt)}
+                        style={{
+                          padding: '8px 16px',
+                          borderRadius: '100px',
+                          border: `1.5px solid ${category === opt ? '#c1603a' : '#e8d5c8'}`,
+                          background: category === opt ? 'rgba(193,96,58,0.08)' : '#ffffff',
+                          color: category === opt ? '#c1603a' : '#7a4a36',
+                          fontFamily: '"Outfit", sans-serif',
+                          fontSize: '13px',
+                          fontWeight: category === opt ? 700 : 400,
+                          cursor: 'pointer',
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div>
                 <p style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
@@ -217,7 +250,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
                   type="text"
                   value={note}
                   onChange={e => setNote(e.target.value)}
-                  placeholder="ej. Almuerzo de negocios"
+                  placeholder={type === 'gasto' ? 'ej. Almuerzo de negocios' : 'ej. Reembolso o sueldo'}
                   style={{ width: '100%', padding: '12px 16px', borderRadius: '12px', border: '1.5px solid #e8d5c8', background: '#fdf6f0', fontFamily: '"Outfit", sans-serif', fontSize: '15px', fontWeight: 500, color: '#2d1a0e', outline: 'none' }}
                 />
               </div>
@@ -233,8 +266,14 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
               <button
                 className="btn-gold"
                 onClick={handleSave}
-                disabled={!amount || !category || saving}
-                style={{ opacity: !amount || !category || saving ? 0.45 : 1, cursor: !amount || !category || saving ? 'not-allowed' : 'pointer', width: '100%' }}
+                disabled={!amount || (type === 'gasto' && !category) || saving}
+                style={{ 
+                  opacity: !amount || (type === 'gasto' && !category) || saving ? 0.45 : 1, 
+                  cursor: !amount || (type === 'gasto' && !category) || saving ? 'not-allowed' : 'pointer', 
+                  width: '100%',
+                  background: type === 'gasto' ? '' : '#4a9068',
+                  borderColor: type === 'gasto' ? '' : '#4a9068'
+                }}
               >
                 {saving ? 'Guardando...' : 'Guardar'}
               </button>

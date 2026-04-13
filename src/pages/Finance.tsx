@@ -10,7 +10,81 @@ import { ExpenseModal } from '../components/modules/finance/ExpenseModal';
 import { useCouple } from '../hooks/useCouple';
 import { useActiveUser } from '../hooks/useActiveUser';
 import { FinanceContext } from '../services/agentService';
-import { getFinanceLogs } from '../lib/db';
+import { getFinanceLogs, deleteFinanceLog } from '../lib/db';
+import { formatCLP } from '../lib/utils';
+
+const SavingsCard = ({ metrics }: { metrics: any }) => {
+  const income = metrics?.finance?.income || 0;
+  const savings = metrics?.finance?.savings || 0;
+  const savingsRate = metrics?.finance?.savingsRate || 0;
+  const isPositive = savings >= 0;
+
+  return (
+    <div style={{
+      background: '#ffffff',
+      border: `1.5px solid ${isPositive
+        ? 'rgba(74,144,104,0.3)'
+        : 'rgba(201,64,64,0.3)'}`,
+      borderRadius: '20px',
+      padding: '20px',
+    }}>
+      <div style={{ display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: '16px' }}>
+        <div>
+          <p style={{ fontSize: '11px', color: '#b08878',
+            fontWeight: 700, textTransform: 'uppercase',
+            letterSpacing: '0.08em', margin: '0 0 4px' }}>
+            Ahorro del mes
+          </p>
+          <p style={{ fontSize: '32px', fontWeight: 800,
+            color: isPositive ? '#4a9068' : '#c94040',
+            margin: 0, fontFamily: '"Outfit", sans-serif' }}>
+            {isPositive ? '+' : ''}{formatCLP(savings)}
+          </p>
+        </div>
+        <div style={{
+          padding: '6px 14px',
+          borderRadius: '100px',
+          background: isPositive
+            ? 'rgba(74,144,104,0.1)'
+            : 'rgba(201,64,64,0.1)',
+          color: isPositive ? '#4a9068' : '#c94040',
+          fontSize: '14px', fontWeight: 800,
+          fontFamily: '"Outfit", sans-serif',
+        }}>
+          {savingsRate}%
+        </div>
+      </div>
+
+      {income > 0 && (
+        <div style={{ display: 'flex',
+          justifyContent: 'space-between',
+          padding: '12px',
+          background: 'rgba(193,96,58,0.04)',
+          borderRadius: '12px' }}>
+          <span style={{ fontSize: '13px',
+            color: '#7a4a36' }}>
+            Ingresos del mes
+          </span>
+          <span style={{ fontSize: '14px',
+            fontWeight: 700, color: '#2d1a0e',
+            fontFamily: '"Outfit", sans-serif' }}>
+            {formatCLP(income)}
+          </span>
+        </div>
+      )}
+
+      {income === 0 && (
+        <p style={{ fontSize: '12px', color: '#b08878',
+          margin: 0, textAlign: 'center' }}>
+          Registrá un ingreso para ver tu tasa de ahorro
+        </p>
+      )}
+    </div>
+  );
+};
 
 export const Finance: React.FC = () => {
   const { isMobile, users } = useCouple();
@@ -19,6 +93,7 @@ export const Finance: React.FC = () => {
   const [joseData, setJoseData] = useState<any>(null);
   const [antoData, setAntoData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchLogs = async () => {
     if (!users.jose || !users.anto) return;
@@ -36,8 +111,9 @@ export const Finance: React.FC = () => {
       const ingresos = logs
         .filter(l => l.type === 'ingreso')
         .reduce((sum, l) => sum + Number(l.amount), 0);
+      const ahorro = ingresos - gastos;
       const savingsRate = ingresos > 0
-        ? Math.round(((ingresos - gastos) / ingresos) * 100)
+        ? Math.round((ahorro / ingresos) * 100)
         : 0;
 
       // Top spending category
@@ -50,6 +126,8 @@ export const Finance: React.FC = () => {
       return {
         finance: {
           spent: Math.round(gastos),
+          income: Math.round(ingresos),
+          savings: Math.round(ahorro),
           budget,
           savingsRate,
           compliance: Math.round((gastos / budget) * 100),
@@ -79,12 +157,21 @@ export const Finance: React.FC = () => {
   useEffect(() => {
     if (!joseId || !antoId) return;
     fetchLogs();
-  }, [joseId, antoId]);
+  }, [joseId, antoId, refreshKey]);
 
   const handleOpenExpenseModal = () => setIsExpenseModalOpen(true);
   const handleCloseExpenseModal = () => {
     setIsExpenseModalOpen(false);
-    fetchLogs();
+    setRefreshKey(k => k + 1);
+  };
+
+  const handleDeleteExpense = async (id: string) => {
+    try {
+      await deleteFinanceLog(id);
+      setRefreshKey(k => k + 1);
+    } catch (e) {
+      console.error('Delete failed:', e);
+    }
   };
 
   if (loading || !joseData || !antoData) {
@@ -141,10 +228,12 @@ export const Finance: React.FC = () => {
                 style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
               >
                 <FinanceStats user={currentDisplayData} />
+                <SavingsCard metrics={currentDisplayData.metrics} />
                 <ExpenseLogList 
                   logs={currentDisplayData.recentExpenses} 
                   color={currentDisplayData.user.color} 
-                  onOpenAdd={handleOpenExpenseModal} 
+                  onOpenAdd={handleOpenExpenseModal}
+                  onDelete={handleDeleteExpense}
                 />
              </motion.div>
           </AnimatePresence>
@@ -152,18 +241,22 @@ export const Finance: React.FC = () => {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', alignItems: 'start' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <FinanceStats user={joseData} />
+              <SavingsCard metrics={joseData.metrics} />
               <ExpenseLogList 
                 logs={joseData.recentExpenses} 
                 color={joseData.user.color} 
-                onOpenAdd={handleOpenExpenseModal} 
+                onOpenAdd={handleOpenExpenseModal}
+                onDelete={handleDeleteExpense}
               />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <FinanceStats user={antoData} />
+              <SavingsCard metrics={antoData.metrics} />
               <ExpenseLogList 
                 logs={antoData.recentExpenses} 
                 color={antoData.user.color} 
-                onOpenAdd={handleOpenExpenseModal} 
+                onOpenAdd={handleOpenExpenseModal}
+                onDelete={handleDeleteExpense}
               />
             </div>
           </div>

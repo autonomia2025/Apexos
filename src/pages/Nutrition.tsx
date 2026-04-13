@@ -39,6 +39,16 @@ const calculateMetrics = (rawLogs: any[], userProfile: any) => {
   const totalCarbs = todayRaw.reduce((s, l) => s + (Number(l.carbs_g) || 0), 0);
   const totalFat = todayRaw.reduce((s, l) => s + (Number(l.fat_g) || 0), 0);
 
+  // Weekly compliance: days with at least 1 log in last 7 days
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+  const weekLogs = rawLogs.filter(l =>
+    new Date(l.logged_at) >= weekAgo
+  );
+  const daysWithLogs = new Set(
+    weekLogs.map(l => l.logged_at.split('T')[0])
+  ).size;
+
   return {
     calories: { consumed: totalCal, target: calorieTarget },
     macros: {
@@ -47,7 +57,7 @@ const calculateMetrics = (rawLogs: any[], userProfile: any) => {
       fat: Math.round(totalFat),
       proteinTarget,
     },
-    compliance: Math.round((totalCal / calorieTarget) * 100),
+    compliance: Math.round((daysWithLogs / 7) * 100),
   };
 };
 
