@@ -34,7 +34,7 @@ export const CoupleProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       
       const { data: profileRecords } = await supabase
         .from('profiles')
-        .select('*');
+        .select('*, monthly_budget_clp, calorie_target, protein_target_g');
 
       if (profileRecords) {
         const pMap: Record<string, any> = {};
@@ -46,6 +46,9 @@ export const CoupleProvider: React.FC<{ children: ReactNode }> = ({ children }) 
               initials: p.initials,
               color: p.color,
               role: p.role,
+              monthlyBudgetCLP: p.monthly_budget_clp || 500000,
+              calorieTarget: p.calorie_target || 2000,
+              proteinTarget: p.protein_target_g || 150,
             },
             metrics: {
               compliance: 0,

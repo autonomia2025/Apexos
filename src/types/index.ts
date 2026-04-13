@@ -6,6 +6,9 @@ export interface User {
   color: string;
   initials: string;
   role: 'jose' | 'anto';
+  monthlyBudgetCLP: number;
+  calorieTarget: number;
+  proteinTarget: number;
 }
 
 export type ExpenseCategory = 'Comida' | 'Transporte' | 'Salud' | 'Ocio' | 'Ropa' | 'Otro';
@@ -13,7 +16,7 @@ export type LearningResource = 'Libro' | 'Curso' | 'Podcast' | 'Video' | 'Práct
 
 export interface DailyMetrics {
   calories: { consumed: number; target: number; };
-  macros: { protein: number; carbs: number; fat: number; };
+  macros: { protein: number; carbs: number; fat: number; proteinTarget?: number; };
   trainingDays: number;
   studyHours: number;
   studyStreak: number;
@@ -26,6 +29,7 @@ export interface DailyMetrics {
     budget: number;
     savingsRate: number;
     topCategory: { name: string; amount: number; percentage?: number };
+    compliance?: number;
   };
   learning: {
     activeTopics: string[];

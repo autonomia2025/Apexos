@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Home, Utensils, Dumbbell, Wallet, Briefcase,
-         BookOpen, Target, X, MoreHorizontal } from 'lucide-react';
+         BookOpen, Target, X, MoreHorizontal, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const TERRA = '#c1603a';
@@ -18,6 +18,7 @@ const mainItems = [
 const moreItems = [
   { to: '/learn', icon: BookOpen, label: 'Aprender' },
   { to: '/goals', icon: Target, label: 'Metas' },
+  { to: '/settings', icon: Settings, label: 'Config' },
 ];
 
 const activeNavStyle: React.CSSProperties = {

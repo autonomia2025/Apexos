@@ -33,6 +33,9 @@ const WeeklyReview = lazy(() =>
 const Tablio = lazy(() =>
   import('./pages/Tablio').then(m => ({ default: m.Tablio }))
 );
+const SettingsPage = lazy(() =>
+  import('./pages/Settings').then(m => ({ default: m.SettingsPage }))
+);
 
 const PageLoader = () => (
   <div style={{
@@ -108,6 +111,7 @@ const App: React.FC = () => {
             <Route path="/goals" element={<ProtectedRoute session={session}><Goals /></ProtectedRoute>} />
             <Route path="/review" element={<ProtectedRoute session={session}><WeeklyReview /></ProtectedRoute>} />
             <Route path="/tablio" element={<ProtectedRoute session={session}><Tablio /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute session={session}><SettingsPage /></ProtectedRoute>} />
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

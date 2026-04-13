@@ -29,9 +29,18 @@ export const Finance: React.FC = () => {
     ]);
 
     const calculateMetrics = (logs: any[], profile: any) => {
-      const spent = logs.reduce((sum, l) => sum + (l.type === 'gasto' ? Number(l.amount) : 0), 0);
-      
-      // Calculate real top category
+      const budget = profile?.monthlyBudgetCLP || 500000;
+      const gastos = logs
+        .filter(l => l.type === 'gasto')
+        .reduce((sum, l) => sum + Number(l.amount), 0);
+      const ingresos = logs
+        .filter(l => l.type === 'ingreso')
+        .reduce((sum, l) => sum + Number(l.amount), 0);
+      const savingsRate = ingresos > 0
+        ? Math.round(((ingresos - gastos) / ingresos) * 100)
+        : 0;
+
+      // Top spending category
       const categories: Record<string, number> = {};
       logs.forEach(l => {
         if (l.type === 'gasto') categories[l.category] = (categories[l.category] || 0) + Number(l.amount);
@@ -40,10 +49,11 @@ export const Finance: React.FC = () => {
 
       return {
         finance: {
-          spent,
-          budget: profile?.monthly_budget_clp || 500000,
-          savingsRate: 0,
-          topCategory: topCat ? { name: topCat[0], amount: topCat[1] } : null
+          spent: Math.round(gastos),
+          budget,
+          savingsRate,
+          compliance: Math.round((gastos / budget) * 100),
+          topCategory: topCat ? { name: topCat[0], amount: Math.round(topCat[1]) } : { name: 'Sin datos', amount: 0 }
         }
       };
     };

@@ -27,7 +27,9 @@ const mapMealLog = (log: any) => ({
   }
 });
 
-const calculateMetrics = (rawLogs: any[]) => {
+const calculateMetrics = (rawLogs: any[], userProfile: any) => {
+  const calorieTarget = userProfile?.calorieTarget || 2000;
+  const proteinTarget = userProfile?.proteinTarget || 150;
   const today = new Date().toISOString().split('T')[0];
   const todayRaw = rawLogs.filter(l =>
     l.logged_at.split('T')[0] === today
@@ -37,25 +39,15 @@ const calculateMetrics = (rawLogs: any[]) => {
   const totalCarbs = todayRaw.reduce((s, l) => s + (Number(l.carbs_g) || 0), 0);
   const totalFat = todayRaw.reduce((s, l) => s + (Number(l.fat_g) || 0), 0);
 
-  // Weekly compliance: days with at least 1 log in last 7 days
-  const weekAgo = new Date();
-  weekAgo.setDate(weekAgo.getDate() - 7);
-  const weekLogs = rawLogs.filter(l =>
-    new Date(l.logged_at) >= weekAgo
-  );
-  const daysWithLogs = new Set(
-    weekLogs.map(l => l.logged_at.split('T')[0])
-  ).size;
-  const compliance = Math.round((daysWithLogs / 7) * 100);
-
   return {
-    calories: { consumed: totalCal, target: 2000 },
+    calories: { consumed: totalCal, target: calorieTarget },
     macros: {
       protein: Math.round(totalProtein),
       carbs: Math.round(totalCarbs),
       fat: Math.round(totalFat),
+      proteinTarget,
     },
-    compliance,
+    compliance: Math.round((totalCal / calorieTarget) * 100),
   };
 };
 
@@ -80,7 +72,7 @@ export const Nutrition: React.FC = () => {
       ...users.jose,
       metrics: {
         ...users.jose?.metrics,
-        ...calculateMetrics(joseLogs),
+        ...calculateMetrics(joseLogs, users.jose?.user),
       },
       recentMeals: joseLogs.map(mapMealLog),
     });
@@ -89,7 +81,7 @@ export const Nutrition: React.FC = () => {
       ...users.anto,
       metrics: {
         ...users.anto?.metrics,
-        ...calculateMetrics(antoLogs),
+        ...calculateMetrics(antoLogs, users.anto?.user),
       },
       recentMeals: antoLogs.map(mapMealLog),
     });

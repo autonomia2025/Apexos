@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Home, 
@@ -98,9 +98,9 @@ export const DesktopSideNav: React.FC = () => {
            <UserToggle />
         </div>
         
-        <button className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-500 transition-colors">
+        <Link to="/settings" className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-500 transition-colors">
           <Settings size={20} />
-        </button>
+        </Link>
       </div>
     </nav>
   );

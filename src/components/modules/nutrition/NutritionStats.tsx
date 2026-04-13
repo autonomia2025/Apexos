@@ -62,7 +62,7 @@ export const NutritionStats: React.FC<NutritionStatsProps> = React.memo(({ user 
         <ProgressBar
           label="Proteína"
           current={metrics?.macros?.protein ?? 0}
-          max={180}
+          max={metrics?.macros?.proteinTarget ?? 150}
           color={profile.color}
           unit="g"
         />

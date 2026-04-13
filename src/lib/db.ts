@@ -402,6 +402,21 @@ export async function updateProjectProgress(id: string, progress: number) {
   if (error) throw error;
 }
 
+export async function updateProfileSettings(
+  userId: string,
+  settings: {
+    monthly_budget_clp?: number;
+    calorie_target?: number;
+    protein_target_g?: number;
+  }
+) {
+  const { error } = await supabase
+    .from('profiles')
+    .update(settings)
+    .eq('id', userId);
+  if (error) throw error;
+}
+
 export async function getUserSummary(userId: string) {
   if (!userId) return defaultSummary();
   

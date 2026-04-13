@@ -8,7 +8,8 @@ interface FinanceStatsProps {
 
 export const FinanceStats: React.FC<FinanceStatsProps> = React.memo(({ user }) => {
   const { metrics, user: profile } = user;
-  const { spent, budget, topCategory } = metrics.finance;
+  const budget = profile?.monthlyBudgetCLP || metrics.finance.budget || 500000;
+  const { spent, topCategory } = metrics.finance;
 
   return (
     <GlassCard style={{ padding: '20px' }}>

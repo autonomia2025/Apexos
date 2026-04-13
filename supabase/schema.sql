@@ -5,6 +5,9 @@ create table profiles (
   role text check (role in ('jose', 'anto')) unique not null,
   color text not null,
   initials text not null,
+  monthly_budget_clp int default 500000,
+  calorie_target int default 2000,
+  protein_target_g int default 150,
   created_at timestamptz default now()
 );
 

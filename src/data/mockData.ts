@@ -8,6 +8,9 @@ export const mockData: CoupleData = {
       color: '#c1603a',
       initials: 'JS',
       role: 'jose',
+      monthlyBudgetCLP: 800000,
+      calorieTarget: 2200,
+      proteinTarget: 160,
     },
     metrics: {
       calories: { consumed: 2100, target: 2500 },
@@ -62,6 +65,9 @@ export const mockData: CoupleData = {
       color: '#d4849e',
       initials: 'AM',
       role: 'anto',
+      monthlyBudgetCLP: 600000,
+      calorieTarget: 1800,
+      proteinTarget: 120,
     },
     metrics: {
       calories: { consumed: 1600, target: 1800 },
