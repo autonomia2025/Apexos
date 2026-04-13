@@ -54,7 +54,17 @@ export const CoupleProvider: React.FC<{ children: ReactNode }> = ({ children }) 
               macros: { protein: 0, carbs: 0, fat: 0 },
               trainingDays: 0,
               steps: 0,
-              finance: { spent: 0, budget: 1000, savingsRate: 0, topCategory: { name: 'Comida', amount: 0 } },
+              studyHours: 0,
+              finance: { 
+                spent: 0, 
+                budget: 500000, 
+                savingsRate: 0, 
+                topCategory: { name: 'Comida', amount: 0 } 
+              },
+              learning: {
+                activeTopics: [],
+                streak: 0,
+              },
             },
             recentMeals: [],
             recentWorkouts: [],

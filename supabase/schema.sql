@@ -70,6 +70,7 @@ create table daily_checkins (
   water_glasses int default 0,
   goal_met boolean default false,
   notes text,
+  steps int default 0,
   checkin_date date default current_date,
   unique(user_id, checkin_date)
 );

@@ -24,12 +24,12 @@ const UserSummaryCard: React.FC<{ user: any; metrics: any }> = ({ user, metrics 
           initials={user.initials} 
           color={user.color} 
           size={48} 
-          progress={metrics.compliance}
+          progress={metrics?.compliance ?? 0}
         />
         <div>
           <h3 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '24px', lineHeight: 1, fontWeight: 700, color: '#2d1a0e', margin: 0 }}>{user.name}</h3>
           <p style={{ fontSize: '11px', color: '#b08878', textTransform: 'uppercase', letterSpacing: '0.12em', marginTop: '4px', fontWeight: 300 }}>
-            {metrics.streak} días de racha 🔥
+            {metrics?.streak ?? 0} días de racha 🔥
           </p>
         </div>
       </div>
@@ -37,13 +37,13 @@ const UserSummaryCard: React.FC<{ user: any; metrics: any }> = ({ user, metrics 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
         <div className="metric-pill">
            <span className="label">Calorías</span>
-           <span className="value">{metrics.calories}</span>
-           <ProgressBar value={(metrics.calories / 2000) * 100} color={user.color} />
+           <span className="value">{metrics?.calories ?? 0}</span>
+           <ProgressBar value={((metrics?.calories ?? 0) / 2000) * 100} color={user.color} />
         </div>
         <div className="metric-pill">
            <span className="label">Entrenos</span>
-           <span className="value">{metrics.trainingDays}/5</span>
-           <ProgressBar value={(metrics.trainingDays / 5) * 100} color={user.color} />
+           <span className="value">{metrics?.trainingDays ?? 0}/5</span>
+           <ProgressBar value={((metrics?.trainingDays ?? 0) / 5) * 100} color={user.color} />
         </div>
       </div>
     </GlassCard>
@@ -151,18 +151,18 @@ export const Home: React.FC = () => {
             color={activeUser.user.color} 
             contextData={{
                userName: activeUser.user.name,
-               caloriasHoy: activeMetrics.calories,
+               caloriasHoy: activeMetrics?.calories ?? 0,
                caloriasMeta: 2000,
-               proteinaHoy: activeMetrics.protein,
+               proteinaHoy: activeMetrics?.protein ?? 0,
                proteinaMeta: 180,
-               pesoActual: activeMetrics.weight || 75,
+               pesoActual: activeMetrics?.weight || 75,
                pesoMeta: 70,
                tendenciaPeso: 'estable',
-               cumplimientoSemana: activeMetrics.compliance,
-               entrenosSemana: activeMetrics.trainingDays,
+               cumplimientoSemana: activeMetrics?.compliance ?? 0,
+               entrenosSemana: activeMetrics?.trainingDays ?? 0,
                metaEntrenosSemana: 5,
                ultimoEntreno: 'Carga',
-               rachaActual: activeMetrics.streak,
+               rachaActual: activeMetrics?.streak ?? 0,
                pasosHoy: 0,
                gastosMes: 0,
                presupuestoMes: 1000,

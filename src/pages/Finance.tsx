@@ -28,27 +28,35 @@ export const Finance: React.FC = () => {
       getFinanceLogs(users.anto.user.id)
     ]);
 
-    const calculateMetrics = (logs: any[]) => {
+    const calculateMetrics = (logs: any[], profile: any) => {
       const spent = logs.reduce((sum, l) => sum + (l.type === 'gasto' ? Number(l.amount) : 0), 0);
+      
+      // Calculate real top category
+      const categories: Record<string, number> = {};
+      logs.forEach(l => {
+        if (l.type === 'gasto') categories[l.category] = (categories[l.category] || 0) + Number(l.amount);
+      });
+      const topCat = Object.entries(categories).sort((a,b) => b[1] - a[1])[0];
+
       return {
         finance: {
           spent,
-          budget: 1000,
+          budget: profile?.monthly_budget_clp || 500000,
           savingsRate: 0,
-          topCategory: { name: 'Comida', amount: 0 }
+          topCategory: topCat ? { name: topCat[0], amount: topCat[1] } : null
         }
       };
     };
 
     setJoseData({
       ...users.jose,
-      metrics: { ...users.jose.metrics, ...calculateMetrics(joseLogs) },
+      metrics: { ...users.jose.metrics, ...calculateMetrics(joseLogs, users.jose?.user) },
       recentExpenses: joseLogs.slice(0, 10)
     });
 
     setAntoData({
       ...users.anto,
-      metrics: { ...users.anto.metrics, ...calculateMetrics(antoLogs) },
+      metrics: { ...users.anto.metrics, ...calculateMetrics(antoLogs, users.anto?.user) },
       recentExpenses: antoLogs.slice(0, 10)
     });
     

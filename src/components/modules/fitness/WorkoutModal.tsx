@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useCouple } from '../../../hooks/useCouple';
-import { addFitnessLog, analyzeWorkout } from '../../../lib/db';
+import { addFitnessLog, analyzeWorkout, getFitnessLogs, autoUpdateGoals } from '../../../lib/db';
 
 interface WorkoutModalProps {
   isOpen: boolean;
@@ -19,7 +19,8 @@ interface WorkoutResult {
 }
 
 export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, color: _color }) => {
-  const { activeUserId } = useCouple();
+  const { activeUserId, users } = useCouple();
+  const activeRole = activeUserId === users.jose?.user?.id ? 'jose' : 'anto';
   const [mode, setMode] = useState<'ai' | 'manual'>('ai');
   const [description, setDescription] = useState('');
   const [analyzing, setAnalyzing] = useState(false);
@@ -87,6 +88,16 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
         duration_min: parseInt(duration) || result?.duration_min || 0,
         notes: note || result?.summary || description
       });
+
+      const dataLogs = await getFitnessLogs(activeUserId, 7);
+      const weeklyCount = new Set(dataLogs.logs.map((l: any) => l.logged_at.split('T')[0])).size;
+      await autoUpdateGoals(activeUserId, activeRole, 'fitness', weeklyCount);
+
+      setWorkoutType(null);
+      setDuration('');
+      setNote('');
+      setResult(null);
+      setDescription('');
       onClose();
     } catch (err: any) {
       setError('No se pudo guardar el entrenamiento');

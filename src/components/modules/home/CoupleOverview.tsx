@@ -78,7 +78,7 @@ export const CoupleOverview: React.FC<CoupleOverviewProps> = ({ user }) => {
           <AvatarRing 
             initials={profile.initials} 
             color={profile.color} 
-            progress={metrics.compliance} 
+            progress={metrics?.compliance ?? 0} 
             size={100}
           />
           <div style={{ textAlign: 'center' }}>
@@ -88,13 +88,13 @@ export const CoupleOverview: React.FC<CoupleOverviewProps> = ({ user }) => {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '4px', background: 'rgba(193,96,58,0.08)', padding: '4px 12px', borderRadius: '999px', border: '1px solid rgba(193,96,58,0.15)' }}>
               <Flame size={14} color="#f97316" />
               <span style={{ fontSize: '12px', fontWeight: 500, color: '#7a4a36' }}>
-                Día {metrics.streak} de racha
+                Día {metrics?.streak ?? 0} de racha
               </span>
             </div>
           </div>
 
           <div style={{ display: 'flex', gap: '8px', marginTop: '8px', background: 'rgba(255,255,255,1)', padding: '8px 16px', borderRadius: '16px', border: '1px solid rgba(193,96,58,0.08)', boxShadow: 'inset 0 2px 8px rgba(180, 100, 60, 0.08)' }}>
-            {getMoodEmojis(metrics.mood)}
+            {getMoodEmojis(metrics?.mood ?? 3)}
           </div>
         </motion.div>
 
@@ -104,7 +104,7 @@ export const CoupleOverview: React.FC<CoupleOverviewProps> = ({ user }) => {
             <MetricPill
               icon={<FlameKindling size={16} />}
               label="Kcal / Meta"
-              value={`${metrics.calories.consumed} / ${metrics.calories.target}`}
+              value={`${metrics?.calories?.consumed ?? 0} / ${metrics?.calories?.target ?? 2000}`}
               highlightColor={profile.color}
             />
           </motion.div>
@@ -112,7 +112,7 @@ export const CoupleOverview: React.FC<CoupleOverviewProps> = ({ user }) => {
             <MetricPill
               icon={<Activity size={16} />}
               label="Proteína"
-              value={`${metrics.macros.protein}g`}
+              value={`${metrics?.macros?.protein ?? 0}g`}
               highlightColor={profile.color}
             />
           </motion.div>
@@ -120,7 +120,7 @@ export const CoupleOverview: React.FC<CoupleOverviewProps> = ({ user }) => {
             <MetricPill
               icon={<Trophy size={16} />}
               label="Entrenos"
-              value={`${metrics.trainingDays}/5`}
+              value={`${metrics?.trainingDays ?? 0}/5`}
               highlightColor={profile.color}
             />
           </motion.div>
@@ -128,7 +128,7 @@ export const CoupleOverview: React.FC<CoupleOverviewProps> = ({ user }) => {
             <MetricPill
               icon={<Brain size={16} />}
               label="Hrs Estudio"
-              value={`${metrics.studyHours}h`}
+              value={`${metrics?.studyHours ?? 0}h`}
               highlightColor={profile.color}
             />
           </motion.div>

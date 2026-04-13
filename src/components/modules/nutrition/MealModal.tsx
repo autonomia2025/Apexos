@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useCouple } from '../../../hooks/useCouple';
-import { addNutritionLog, analyzeMeal } from '../../../lib/db';
+import { addNutritionLog, analyzeMeal, getNutritionLogs, autoUpdateGoals } from '../../../lib/db';
 
 interface MealModalProps {
   isOpen: boolean;
@@ -20,12 +20,18 @@ interface NutritionResult {
 }
 
 export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _color }) => {
-  const { activeUserId } = useCouple();
-  const [mode, setMode] = useState<'ai' | 'manual'>('ai');
+  const { activeUserId, users } = useCouple();
+  const activeRole = activeUserId === users.jose?.user?.id ? 'jose' : 'anto';
+  const [mode, setMode] = useState<'ai' | 'barcode' | 'manual'>('ai');
   const [description, setDescription] = useState('');
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<NutritionResult | null>(null);
   
+  // Barcode fields
+  const [barcode, setBarcode] = useState('');
+  const [scanning, setScanning] = useState(false);
+  const [barcodeError, setBarcodeError] = useState('');
+
   // Form fields
   const [mealName, setMealName] = useState('');
   const [calories, setCalories] = useState('');
@@ -36,17 +42,24 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
 
   const mealTypes = ['Desayuno', 'Almuerzo', 'Cena', 'Snack'];
 
+  const resetForm = () => {
+    setMode('ai');
+    setDescription('');
+    setResult(null);
+    setMealName('');
+    setCalories('');
+    setProtein('');
+    setMealType('Almuerzo');
+    setError('');
+    setBarcode('');
+    setBarcodeError('');
+  };
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
       // Reset states
-      setMode('ai');
-      setDescription('');
-      setResult(null);
-      setMealName('');
-      setCalories('');
-      setProtein('');
-      setError('');
+      resetForm();
     } else {
       document.body.style.overflow = '';
     }
@@ -54,6 +67,59 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
       document.body.style.overflow = '';
     };
   }, [isOpen]);
+
+  const handleBarcodeSearch = async () => {
+    if (!barcode.trim()) return;
+    setScanning(true);
+    setBarcodeError('');
+    setResult(null);
+    
+    try {
+      const res = await fetch(
+        `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`
+      );
+      const data = await res.json();
+      
+      if (data.status === 0 || !data.product) {
+        setBarcodeError('Producto no encontrado. Intentá con IA o manual.');
+        return;
+      }
+      
+      const product = data.product;
+      const nutriments = product.nutriments || {};
+      
+      // Extract per 100g values, estimate for serving
+      const calories100g = nutriments['energy-kcal_100g'] || 
+        (nutriments['energy_100g'] ? nutriments['energy_100g'] / 4.184 : 0);
+      const protein100g = nutriments['proteins_100g'] || 0;
+      const carbs100g = nutriments['carbohydrates_100g'] || 0;
+      const fat100g = nutriments['fat_100g'] || 0;
+      const servingG = product.serving_quantity || 100;
+      
+      const factor = servingG / 100;
+      
+      setResult({
+        meal_name: product.product_name || 'Producto escaneado',
+        calories: Math.round(calories100g * factor),
+        protein_g: Math.round(protein100g * factor * 10) / 10,
+        carbs_g: Math.round(carbs100g * factor * 10) / 10,
+        fat_g: Math.round(fat100g * factor * 10) / 10,
+        breakdown: [{
+          item: product.product_name || 'Porción',
+          amount: `${servingG}g`,
+          calories: Math.round(calories100g * factor),
+        }]
+      });
+      setMealName(product.product_name || '');
+      setCalories(String(Math.round(calories100g * factor)));
+      setProtein(String(Math.round(protein100g * factor * 10) / 10));
+      
+    } catch (e) {
+      setBarcodeError('Error al buscar. Verificá tu conexión.');
+    } finally {
+      setScanning(false);
+    }
+  };
 
   const handleAnalyze = async () => {
     if (!description.trim()) return;
@@ -96,6 +162,12 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
         fat_g: result?.fat_g || 0,
         meal_type: mealType,
       });
+
+      const logs = await getNutritionLogs(activeUserId, 1);
+      const totalCalories = logs.reduce((sum, l) => sum + l.calories, 0);
+      await autoUpdateGoals(activeUserId, activeRole, 'nutrition', totalCalories);
+
+      resetForm();
       onClose();
     } catch (e) {
       console.error(e);
@@ -112,7 +184,7 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={onClose}
+          onClick={() => { resetForm(); onClose(); }}
           style={{
             position: 'fixed', inset: 0, zIndex: 100,
             background: 'rgba(45,26,14,0.5)',
@@ -136,7 +208,7 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
             }}
           >
             <button
-              onClick={onClose}
+              onClick={() => { resetForm(); onClose(); }}
               style={{
                 position: 'absolute', top: '16px', right: '16px',
                 width: '32px', height: '32px', borderRadius: '50%',
@@ -163,7 +235,7 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
               display: 'flex', background: 'rgba(193,96,58,0.08)',
               borderRadius: '100px', padding: '3px', marginBottom: '20px', gap: '2px',
             }}>
-              {(['ai', 'manual'] as const).map(m => (
+              {(['ai', 'barcode', 'manual'] as const).map(m => (
                 <button
                   key={m}
                   onClick={() => { setMode(m); }}
@@ -176,7 +248,7 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
                     transition: 'all 0.2s',
                   }}
                 >
-                  {m === 'ai' ? '✦ Describir con IA' : 'Ingreso manual'}
+                  {m === 'ai' ? '✦ Describir con IA' : m === 'barcode' ? '⊡ Código de barras' : 'Manual'}
                 </button>
               ))}
             </div>
@@ -214,7 +286,93 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
                   {analyzing ? 'Analizando...' : '✦ Analizar con IA'}
                 </button>
 
-                {result && (
+              </div>
+            ) : mode === 'barcode' ? (
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <p style={{ fontSize: '13px', color: '#b08878', marginBottom: '12px', lineHeight: 1.5 }}>
+                  Ingresá el código de barras del producto
+                </p>
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+                  <input
+                    type="number"
+                    value={barcode}
+                    onChange={e => setBarcode(e.target.value)}
+                    placeholder="ej: 7802810101234"
+                    style={{
+                      flex: 1, padding: '12px 16px', borderRadius: '12px',
+                      border: '1.5px solid #e8d5c8', background: '#fdf6f0',
+                      fontFamily: '"Outfit", sans-serif', fontSize: '14px',
+                      color: '#2d1a0e', outline: 'none',
+                    }}
+                    onKeyDown={e => e.key === 'Enter' && handleBarcodeSearch()}
+                  />
+                  <button
+                    onClick={handleBarcodeSearch}
+                    disabled={!barcode || scanning}
+                    style={{
+                      padding: '12px 16px', borderRadius: '12px',
+                      background: '#c1603a', color: '#fff', border: 'none',
+                      fontWeight: 700, fontSize: '14px', cursor: 'pointer',
+                      fontFamily: '"Outfit", sans-serif',
+                      opacity: barcode && !scanning ? 1 : 0.5,
+                    }}
+                  >
+                    {scanning ? '...' : 'Buscar'}
+                  </button>
+                </div>
+                {barcodeError && (
+                  <p style={{ color: '#c94040', fontSize: '13px', margin: '0 0 12px' }}>
+                    {barcodeError}
+                  </p>
+                )}
+                <p style={{ fontSize: '11px', color: '#b08878', textAlign: 'center', margin: '0 0 16px' }}>
+                  Base de datos: Open Food Facts · Productos globales
+                </p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Nombre del alimento</label>
+                  <input
+                    type="text" value={mealName} onChange={e => setMealName(e.target.value)}
+                    placeholder="ej. Pollo con ensalada"
+                    style={{
+                      width: '100%', padding: '12px 16px', borderRadius: '12px',
+                      border: '1.5px solid #e8d5c8', background: '#fdf6f0',
+                      fontFamily: '"Outfit", sans-serif', fontSize: '14px', outline: 'none',
+                    }}
+                  />
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div>
+                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Calorías</label>
+                    <input
+                      type="number" value={calories} onChange={e => setCalories(e.target.value)}
+                      placeholder="kcal"
+                      style={{
+                        width: '100%', padding: '12px 16px', borderRadius: '12px',
+                        border: '1.5px solid #e8d5c8', background: '#fdf6f0',
+                        fontFamily: '"Outfit", sans-serif', fontSize: '14px', outline: 'none',
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Proteína (g)</label>
+                    <input
+                      type="number" value={protein} onChange={e => setProtein(e.target.value)}
+                      placeholder="g"
+                      style={{
+                        width: '100%', padding: '12px 16px', borderRadius: '12px',
+                        border: '1.5px solid #e8d5c8', background: '#fdf6f0',
+                        fontFamily: '"Outfit", sans-serif', fontSize: '14px', outline: 'none',
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {(mode === 'ai' || mode === 'barcode') && result && (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -271,49 +429,6 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
                     </button>
                   </motion.div>
                 )}
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <div>
-                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Nombre del alimento</label>
-                  <input
-                    type="text" value={mealName} onChange={e => setMealName(e.target.value)}
-                    placeholder="ej. Pollo con ensalada"
-                    style={{
-                      width: '100%', padding: '12px 16px', borderRadius: '12px',
-                      border: '1.5px solid #e8d5c8', background: '#fdf6f0',
-                      fontFamily: '"Outfit", sans-serif', fontSize: '14px', outline: 'none',
-                    }}
-                  />
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <div>
-                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Calorías</label>
-                    <input
-                      type="number" value={calories} onChange={e => setCalories(e.target.value)}
-                      placeholder="kcal"
-                      style={{
-                        width: '100%', padding: '12px 16px', borderRadius: '12px',
-                        border: '1.5px solid #e8d5c8', background: '#fdf6f0',
-                        fontFamily: '"Outfit", sans-serif', fontSize: '14px', outline: 'none',
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Proteína (g)</label>
-                    <input
-                      type="number" value={protein} onChange={e => setProtein(e.target.value)}
-                      placeholder="g"
-                      style={{
-                        width: '100%', padding: '12px 16px', borderRadius: '12px',
-                        border: '1.5px solid #e8d5c8', background: '#fdf6f0',
-                        fontFamily: '"Outfit", sans-serif', fontSize: '14px', outline: 'none',
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
 
             <div style={{ marginTop: '20px' }}>
               <label style={{ fontSize: '11px', fontWeight: 700, color: '#b08878', textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>Tipo de comida</label>

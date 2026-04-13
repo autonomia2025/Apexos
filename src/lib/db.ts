@@ -60,15 +60,25 @@ export async function getFitnessLogs(userId: string, days = 7) {
   const since = new Date();
   since.setDate(since.getDate() - days);
   
-  const { data, error } = await supabase
-    .from('fitness_logs')
-    .select('*')
-    .eq('user_id', userId)
-    .gte('logged_at', since.toISOString())
-    .order('logged_at', { ascending: false });
+  const today = new Date().toISOString().split('T')[0];
+  
+  const [{ data: logs, error: logsError }, { data: checkin }] = await Promise.all([
+    supabase
+      .from('fitness_logs')
+      .select('*')
+      .eq('user_id', userId)
+      .gte('logged_at', since.toISOString())
+      .order('logged_at', { ascending: false }),
+    supabase
+      .from('daily_checkins')
+      .select('steps')
+      .eq('user_id', userId)
+      .eq('checkin_date', today)
+      .maybeSingle()
+  ]);
     
-  if (error) throw error;
-  return data || [];
+  if (logsError) throw logsError;
+  return { logs: logs || [], todaySteps: checkin?.steps || 0 };
 }
 
 export async function addFitnessLog(log: {
@@ -239,6 +249,52 @@ export async function addGoal(goal: {
   return data;
 }
 
+export async function updateGoalProgress(
+  goalId: string,
+  _userId: string,
+  newValue: number,
+  role: 'jose' | 'anto'
+) {
+  const column = role === 'jose' 
+    ? 'current_value_jose' 
+    : 'current_value_anto';
+    
+  const { error } = await supabase
+    .from('goals')
+    .update({ [column]: newValue })
+    .eq('id', goalId);
+    
+  if (error) throw error;
+}
+
+export async function getActiveGoalsForModule(
+  userId: string,
+  module: string
+) {
+  const { data } = await supabase
+    .from('goals')
+    .select('*')
+    .eq('status', 'active')
+    .eq('module', module)
+    .or(`user_id.eq.${userId},couple_goal.eq.true`);
+  return data || [];
+}
+
+export async function autoUpdateGoals(
+  userId: string,
+  role: 'jose' | 'anto',
+  module: string,
+  value: number
+) {
+  const goals = await getActiveGoalsForModule(userId, module);
+  
+  await Promise.all(
+    goals
+      .filter(g => g.auto_track)
+      .map(g => updateGoalProgress(g.id, userId, value, role))
+  );
+}
+
 // ── TABLIO ─────────────────────────────────
 export async function getTablioDashboard() {
   const [okrs, projects, revenue] = await Promise.all([
@@ -266,6 +322,51 @@ export async function getTablioDashboard() {
     projects: projects.data || [],
     revenue: revenue.data || [],
   };
+}
+
+export async function getTablioclients() {
+  const { data, error } = await supabase
+    .from('tablio_clients')
+    .select('*, tablio_payments(*)')
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function addTablioClient(client: {
+  name: string;
+  venture: string;
+  mrr_usd: number;
+  mrr_clp: number;
+  status: string;
+  notes?: string;
+}) {
+  const { data, error } = await supabase
+    .from('tablio_clients')
+    .insert(client)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function addTablioPayment(payment: {
+  client_id: string;
+  amount_usd: number;
+  amount_clp: number;
+  payment_date: string;
+  month: string;
+  year: number;
+  status: string;
+  notes?: string;
+}) {
+  const { data, error } = await supabase
+    .from('tablio_payments')
+    .insert(payment)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
 }
 
 export async function addProject(project: {

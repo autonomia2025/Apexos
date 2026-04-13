@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useCouple } from '../../../hooks/useCouple';
-import { addFinanceLog } from '../../../lib/db';
+import { addFinanceLog, getFinanceLogs, autoUpdateGoals } from '../../../lib/db';
 import { ExpenseCategory } from '../../../types';
+import { formatCLP } from '../../../lib/utils';
 
 interface ExpenseModalProps {
   isOpen: boolean;
@@ -12,7 +13,8 @@ interface ExpenseModalProps {
 }
 
 export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, color: _color }) => {
-  const { activeUserId } = useCouple();
+  const { activeUserId, users } = useCouple();
+  const activeRole = activeUserId === users.jose?.user?.id ? 'jose' : 'anto';
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState<ExpenseCategory | null>(null);
   const [note, setNote] = useState('');
@@ -52,6 +54,10 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
         type: 'gasto'
       });
       
+      const logs = await getFinanceLogs(activeUserId, 30);
+      const totalSpent = logs.filter((l: any) => l.type === 'gasto').reduce((sum: number, l: any) => sum + l.amount, 0);
+      await autoUpdateGoals(activeUserId, activeRole, 'finance', totalSpent);
+
       setAmount('');
       setCategory(null);
       setNote('');
@@ -136,15 +142,43 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: '16px', borderBottom: '1px solid #e8d5c8' }}>
-                <span style={{ fontSize: '28px', color: '#b08878', marginRight: '8px', fontWeight: 300 }}>$</span>
-                <input
-                  type="number"
-                  value={amount}
-                  onChange={e => setAmount(e.target.value)}
-                  placeholder="0"
-                  style={{ background: 'transparent', fontSize: '32px', fontFamily: '"Outfit", sans-serif', textAlign: 'center', color: '#2d1a0e', outline: 'none', width: '100%', fontWeight: 800 }}
-                />
+              <div style={{ marginBottom: '20px' }}>
+                <p style={{ fontSize: '11px', fontWeight: 700, 
+                  color: '#b08878', textTransform: 'uppercase',
+                  letterSpacing: '0.1em', marginBottom: '8px' }}>
+                  Monto en CLP
+                </p>
+                <div style={{ position: 'relative' }}>
+                  <span style={{
+                    position: 'absolute', left: '16px', top: '50%',
+                    transform: 'translateY(-50%)',
+                    fontSize: '24px', fontWeight: 800, color: '#b08878',
+                    fontFamily: '"Outfit", sans-serif',
+                  }}>
+                    $
+                  </span>
+                  <input
+                    type="number"
+                    value={amount}
+                    onChange={e => setAmount(e.target.value)}
+                    placeholder="0"
+                    style={{
+                      width: '100%', padding: '16px 16px 16px 40px',
+                      borderRadius: '14px', border: '1.5px solid #e8d5c8',
+                      background: '#fdf6f0', fontFamily: '"Outfit", sans-serif',
+                      fontSize: '32px', fontWeight: 800, color: '#2d1a0e',
+                      outline: 'none', textAlign: 'right',
+                    }}
+                    onFocus={e => (e.target.style.borderColor = '#c1603a')}
+                    onBlur={e => (e.target.style.borderColor = '#e8d5c8')}
+                  />
+                </div>
+                {amount && (
+                  <p style={{ fontSize: '13px', color: '#b08878', 
+                    marginTop: '6px', textAlign: 'right' }}>
+                    {formatCLP(parseFloat(amount) || 0)}
+                  </p>
+                )}
               </div>
 
               <div>

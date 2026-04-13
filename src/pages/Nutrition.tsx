@@ -19,6 +19,7 @@ export const Nutrition: React.FC = () => {
   const [joseData, setJoseData] = useState<any>(null);
   const [antoData, setAntoData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchLogs = async () => {
     if (!users.jose || !users.anto) return;
@@ -47,13 +48,19 @@ export const Nutrition: React.FC = () => {
 
     setJoseData({
       ...users.jose,
-      metrics: calculateMetrics(joseLogs),
+      metrics: {
+        ...users.jose?.metrics,
+        ...calculateMetrics(joseLogs)
+      },
       recentMeals: joseLogs.slice(0, 5)
     });
 
     setAntoData({
       ...users.anto,
-      metrics: calculateMetrics(antoLogs),
+      metrics: {
+        ...users.anto?.metrics,
+        ...calculateMetrics(antoLogs)
+      },
       recentMeals: antoLogs.slice(0, 5)
     });
     
@@ -66,12 +73,12 @@ export const Nutrition: React.FC = () => {
   useEffect(() => {
     if (!joseId || !antoId) return;
     fetchLogs();
-  }, [joseId, antoId]);
+  }, [joseId, antoId, refreshKey]);
 
   const handleOpenMealModal = () => setIsMealModalOpen(true);
   const handleCloseMealModal = () => {
     setIsMealModalOpen(false);
-    fetchLogs(); // Refresh after adding
+    setRefreshKey(k => k + 1);
   };
 
   if (loading || !joseData || !antoData) {
@@ -82,14 +89,14 @@ export const Nutrition: React.FC = () => {
 
   const getNutritionContext = (userData: any): NutritionContext => ({
     userName: userData.user.name,
-    caloriasHoy: userData.metrics.calories.consumed,
-    caloriasMeta: userData.metrics.calories.target,
-    proteinaHoy: userData.metrics.macros.protein,
+    caloriasHoy: userData.metrics?.calories?.consumed ?? 0,
+    caloriasMeta: userData.metrics?.calories?.target ?? 2000,
+    proteinaHoy: userData.metrics?.macros?.protein ?? 0,
     proteinaMeta: 180,
     pesoActual: 75,
     pesoMeta: 70,
     tendenciaPeso: 'estable',
-    cumplimientoSemana: userData.metrics.compliance
+    cumplimientoSemana: userData.metrics?.compliance ?? 0
   });
 
   return (

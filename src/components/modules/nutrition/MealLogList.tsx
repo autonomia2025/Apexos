@@ -57,13 +57,13 @@ export const MealLogList: React.FC<MealLogListProps> = ({ logs, color, onOpenAdd
                          {log.calories} KCAL
                        </span>
                         <span style={{ fontSize: '11px', color: '#b08878', fontWeight: 600 }}>
-                          P: <span style={{ color: '#7a4a36' }}>{log.macros.protein}g</span>
+                          P: <span style={{ color: '#7a4a36' }}>{log.macros?.protein ?? 0}g</span>
                         </span>
                         <span style={{ fontSize: '11px', color: '#b08878', fontWeight: 600 }}>
-                          C: <span style={{ color: '#7a4a36' }}>{log.macros.carbs}g</span>
+                          C: <span style={{ color: '#7a4a36' }}>{log.macros?.carbs ?? 0}g</span>
                         </span>
                         <span style={{ fontSize: '11px', color: '#b08878', fontWeight: 600 }}>
-                          G: <span style={{ color: '#7a4a36' }}>{log.macros.fat}g</span>
+                          G: <span style={{ color: '#7a4a36' }}>{log.macros?.fat ?? 0}g</span>
                         </span>
                     </div>
                   </div>

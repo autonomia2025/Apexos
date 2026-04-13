@@ -9,11 +9,12 @@ interface NutritionStatsProps {
 }
 
 export const NutritionStats: React.FC<NutritionStatsProps> = React.memo(({ user }) => {
+  if (!user || !user.metrics || !user.metrics.macros) return null;
   const { metrics, user: profile } = user;
 
   const compliance = useMemo(
-    () => Math.round(metrics.compliance),
-    [metrics.compliance]
+    () => Math.round(metrics?.compliance ?? 0),
+    [metrics?.compliance]
   );
 
   return (
@@ -45,8 +46,8 @@ export const NutritionStats: React.FC<NutritionStatsProps> = React.memo(({ user 
       {/* Donut Chart */}
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
         <DonutChart
-          value={metrics.calories.consumed}
-          max={metrics.calories.target}
+          value={metrics?.calories?.consumed ?? 0}
+          max={metrics?.calories?.target ?? 2000}
           color={profile.color}
           label="Kcal"
           size={130}
@@ -60,21 +61,21 @@ export const NutritionStats: React.FC<NutritionStatsProps> = React.memo(({ user 
         </h3>
         <ProgressBar
           label="Proteína"
-          current={metrics.macros.protein}
+          current={metrics?.macros?.protein ?? 0}
           max={180}
           color={profile.color}
           unit="g"
         />
         <ProgressBar
           label="Carbos"
-          current={metrics.macros.carbs}
+          current={metrics?.macros?.carbs ?? 0}
           max={300}
           color={profile.color}
           unit="g"
         />
         <ProgressBar
           label="Grasas"
-          current={metrics.macros.fat}
+          current={metrics?.macros?.fat ?? 0}
           max={100}
           color={profile.color}
           unit="g"

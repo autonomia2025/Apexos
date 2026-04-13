@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useCouple } from '../../../hooks/useCouple';
-import { addLearningLog } from '../../../lib/db';
+import { addLearningLog, getLearningLogs, autoUpdateGoals } from '../../../lib/db';
 import { LearningResource } from '../../../types';
 
 interface LearningSessionModalProps {
@@ -12,7 +12,8 @@ interface LearningSessionModalProps {
 }
 
 export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOpen, onClose, color: _color }) => {
-  const { activeUserId } = useCouple();
+  const { activeUserId, users } = useCouple();
+  const activeRole = activeUserId === users.jose?.user?.id ? 'jose' : 'anto';
   const [topic, setTopic] = useState('');
   const [duration, setDuration] = useState<string | null>(null);
   const [resource, setResource] = useState<LearningResource | null>(null);
@@ -62,6 +63,11 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
         resource_type: resource
       });
       
+      const logs = await getLearningLogs(activeUserId, 7);
+      const totalMinutes = logs.reduce((sum: number, l: any) => sum + l.duration_min, 0);
+      const totalHours = Math.round(totalMinutes / 60 * 10) / 10;
+      await autoUpdateGoals(activeUserId, activeRole, 'learning', totalHours);
+
       setTopic('');
       setDuration(null);
       setResource(null);

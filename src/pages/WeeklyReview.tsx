@@ -16,12 +16,15 @@ export const WeeklyReview: React.FC = () => {
   const [isLoadingAi, setIsLoadingAi] = useState(true);
 
   // Compute scores for a user
-  const computeScores = (user: UserData) => {
-    const nut = user.metrics.compliance;
-    const fit = (user.metrics.trainingDays / 5) * 100;
-    const learn = (user.metrics.studyHours / 10) * 100;
-    const fin = Math.round((user.metrics.finance.spent / user.metrics.finance.budget) * 100);
-    const finScore = fin <= 100 ? 100 : Math.max(0, 100 - (fin - 100)); // Simple normalization
+  const computeScores = (user: UserData | undefined) => {
+    if (!user?.metrics) return { nut: 0, fit: 0, learn: 0, fin: 100, total: 0 };
+    const nut = user.metrics?.compliance ?? 0;
+    const fit = ((user.metrics?.trainingDays ?? 0) / 5) * 100;
+    const learn = ((user.metrics?.studyHours ?? 0) / 10) * 100;
+    const budget = user.metrics?.finance?.budget || 1;
+    const spent = user.metrics?.finance?.spent ?? 0;
+    const fin = Math.round((spent / budget) * 100);
+    const finScore = fin <= 100 ? 100 : Math.max(0, 100 - (fin - 100));
 
     const total = Math.round((nut + fit + learn + finScore) / 4);
 
@@ -37,30 +40,30 @@ export const WeeklyReview: React.FC = () => {
     return { color: '#c94040', background: 'rgba(248,113,113,0.1)', borderColor: 'rgba(248,113,113,0.3)' };
   };
 
-  const getCombinedContext = (userData: UserData): AgentContext => ({
-    userName: userData.user.name,
-    caloriasHoy: userData.metrics.calories.consumed,
-    caloriasMeta: userData.metrics.calories.target,
-    proteinaHoy: userData.metrics.macros.protein,
-    proteinaMeta: Math.round(userData.metrics.calories.target * 0.3 / 4),
+  const getCombinedContext = (userData: UserData | undefined): AgentContext => ({
+    userName: userData?.user?.name ?? '',
+    caloriasHoy: userData?.metrics?.calories?.consumed ?? 0,
+    caloriasMeta: userData?.metrics?.calories?.target ?? 2000,
+    proteinaHoy: userData?.metrics?.macros?.protein ?? 0,
+    proteinaMeta: Math.round((userData?.metrics?.calories?.target ?? 2000) * 0.3 / 4),
     pesoActual: 75,
     pesoMeta: 70,
     tendenciaPeso: 'bajando',
-    cumplimientoSemana: userData.metrics.compliance,
-    entrenosSemana: userData.metrics.trainingDays,
+    cumplimientoSemana: userData?.metrics?.compliance ?? 0,
+    entrenosSemana: userData?.metrics?.trainingDays ?? 0,
     metaEntrenosSemana: 5,
-    ultimoEntreno: userData.recentWorkouts.length > 0 ? userData.recentWorkouts[0].type : 'Ninguno',
-    rachaActual: userData.metrics.streak,
-    pasosHoy: userData.metrics.steps,
-    gastosMes: userData.metrics.finance.spent,
-    presupuestoMes: userData.metrics.finance.budget,
-    tasaAhorro: userData.metrics.finance.savingsRate,
-    categoriaTopGasto: userData.metrics.finance.topCategory.name,
-    cumplimientoPresupuesto: Math.round((userData.metrics.finance.spent / userData.metrics.finance.budget) * 100),
-    horasEstaSemana: userData.metrics.studyHours,
+    ultimoEntreno: userData?.recentWorkouts?.length ? userData.recentWorkouts[0].type : 'Ninguno',
+    rachaActual: userData?.metrics?.streak ?? 0,
+    pasosHoy: userData?.metrics?.steps ?? 0,
+    gastosMes: userData?.metrics?.finance?.spent ?? 0,
+    presupuestoMes: userData?.metrics?.finance?.budget ?? 500000,
+    tasaAhorro: userData?.metrics?.finance?.savingsRate ?? 0,
+    categoriaTopGasto: userData?.metrics?.finance?.topCategory?.name ?? 'Comida',
+    cumplimientoPresupuesto: Math.round(((userData?.metrics?.finance?.spent ?? 0) / (userData?.metrics?.finance?.budget || 1)) * 100),
+    horasEstaSemana: userData?.metrics?.studyHours ?? 0,
     metaHorasSemana: 10,
-    temaActivo: userData.metrics.learning.activeTopics[0] || 'Ninguno',
-    recursoTipo: userData.recentLearning.length > 0 ? userData.recentLearning[0].resource : 'Ninguno'
+    temaActivo: userData?.metrics?.learning?.activeTopics?.[0] || 'Ninguno',
+    recursoTipo: userData?.recentLearning?.length ? userData.recentLearning[0].resource : 'Ninguno'
   });
 
   useEffect(() => {
@@ -85,16 +88,16 @@ export const WeeklyReview: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getHighlights = (user: UserData, scores: ReturnType<typeof computeScores>) => {
+  const getHighlights = (user: UserData | undefined, scores: ReturnType<typeof computeScores>) => {
     const highlights = [];
-    if (scores.fit >= 80) highlights.push({ type: 'good', text: `Racha de ${user.metrics.streak} días activa` });
-    else highlights.push({ type: 'alert', text: `Entrenaste ${user.metrics.trainingDays} días de 5` });
+    if (scores.fit >= 80) highlights.push({ type: 'good', text: `Racha de ${user?.metrics?.streak ?? 0} días activa` });
+    else highlights.push({ type: 'alert', text: `Entrenaste ${user?.metrics?.trainingDays ?? 0} días de 5` });
 
     if (scores.nut >= 85) highlights.push({ type: 'good', text: 'Excelente adherencia calórica' });
     else highlights.push({ type: 'alert', text: 'Proteína por debajo de la meta' });
 
-    if (scores.fin >= 80) highlights.push({ type: 'good', text: `Ahorro mensual del ${user.metrics.finance.savingsRate}%` });
-    else highlights.push({ type: 'alert', text: `Gasto alto en ${user.metrics.finance.topCategory.name}` });
+    if (scores.fin >= 80) highlights.push({ type: 'good', text: `Ahorro mensual del ${user?.metrics?.finance?.savingsRate ?? 0}%` });
+    else highlights.push({ type: 'alert', text: `Gasto alto en ${user?.metrics?.finance?.topCategory?.name ?? 'Comida'}` });
 
     return highlights;
   };

@@ -4,6 +4,7 @@ import { GlassCard } from '../../ui/GlassCard';
 import { EmptyState } from '../../ui/EmptyState';
 import { ExpenseLog } from '../../../types';
 import { Plus, Coffee, Bus, HeartPulse, Gamepad2, Shirt, MoreHorizontal, Wallet } from 'lucide-react';
+import { formatCLP } from '../../../lib/utils';
 
 interface ExpenseLogListProps {
   logs: ExpenseLog[];
@@ -67,7 +68,7 @@ export const ExpenseLogList: React.FC<ExpenseLogListProps> = ({ logs, color, onO
                    
                    <div style={{ textAlign: 'right' }}>
                      <span style={{ fontFamily: '"Outfit", sans-serif', fontWeight: 700, fontSize: '14px', padding: '4px 8px', borderRadius: '6px', border: '1px solid', color: log.amount < 0 ? '#c94040' : '#4a9068', borderColor: log.amount < 0 ? 'rgba(248,113,113,0.3)' : 'rgba(52,211,153,0.3)', background: log.amount < 0 ? 'rgba(248,113,113,0.1)' : 'rgba(52,211,153,0.1)' }}>
-                       {log.amount < 0 ? '-' : '+'}${Math.abs(log.amount).toFixed(2)}
+                       {log.amount < 0 ? '-' : '+'}{formatCLP(Math.abs(log.amount))}
                      </span>
                    </div>
                 </GlassCard>
