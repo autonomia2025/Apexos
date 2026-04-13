@@ -459,3 +459,36 @@ function defaultSummary() {
     goalMet: false, weight: null,
   };
 }
+
+// ── DELETE FUNCTIONS ───────────────────────────
+export async function deleteNutritionLog(id: string) {
+  const { error } = await supabase
+    .from('nutrition_logs')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+}
+
+export async function deleteFitnessLog(id: string) {
+  const { error } = await supabase
+    .from('fitness_logs')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+}
+
+export async function deleteFinanceLog(id: string) {
+  const { error } = await supabase
+    .from('finance_logs')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+}
+
+export async function deleteLearningLog(id: string) {
+  const { error } = await supabase
+    .from('learning_logs')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+}

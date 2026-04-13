@@ -12,12 +12,41 @@ import { WeeklyChart } from '../components/modules/fitness/WeeklyChart';
 import { useCouple } from '../hooks/useCouple';
 import { useActiveUser } from '../hooks/useActiveUser';
 import { FitnessContext } from '../services/agentService';
-import { getFitnessLogs } from '../lib/db';
+import { getFitnessLogs, deleteFitnessLog } from '../lib/db';
 import { supabase } from '../lib/supabase';
 
-const StepsCard = ({ user, onUpdate }: { 
-  user: any; 
-  onUpdate: () => void; 
+const mapWorkoutLog = (log: any) => ({
+  id: log.id,
+  type: log.workout_type,
+  duration: log.duration_min || 0,
+  date: new Date(log.logged_at).toLocaleDateString('es-CL', {
+    day: 'numeric', month: 'short'
+  }),
+  time: new Date(log.logged_at).toLocaleTimeString('es-CL', {
+    hour: '2-digit', minute: '2-digit'
+  }),
+  notes: log.notes || '',
+  logged_at: log.logged_at,
+});
+
+const calculateFitnessMetrics = (rawLogs: any[], steps: number) => {
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+  const weekLogs = rawLogs.filter(l =>
+    new Date(l.logged_at) >= weekAgo
+  );
+  // Only count real workouts (not step logs)
+  const realWorkouts = weekLogs.filter(l => !(l.notes || '').startsWith('pasos:'));
+  const trainingDays = new Set(
+    realWorkouts.map(l => l.logged_at.split('T')[0])
+  ).size;
+
+  return { trainingDays, streak: 0, steps };
+};
+
+const StepsCard = ({ user, onUpdate }: {
+  user: any;
+  onUpdate: () => void;
 }) => {
   const [steps, setSteps] = useState('');
   const [saving, setSaving] = useState(false);
@@ -34,7 +63,7 @@ const StepsCard = ({ user, onUpdate }: {
           checkin_date: new Date().toISOString().split('T')[0],
           steps: parseInt(steps) || 0
         }, { onConflict: 'user_id,checkin_date' });
-      
+
       await supabase.from('fitness_logs').insert({
         user_id: user.user.id,
         workout_type: 'Cardio',
@@ -68,7 +97,7 @@ const StepsCard = ({ user, onUpdate }: {
         <Footprints size={20} color={user.user.color} />
       </div>
       <div style={{ flex: 1 }}>
-        <p style={{ fontSize: '11px', color: '#b08878', 
+        <p style={{ fontSize: '11px', color: '#b08878',
           fontWeight: 700, textTransform: 'uppercase',
           letterSpacing: '0.08em', margin: '0 0 2px' }}>
           Pasos hoy
@@ -121,34 +150,31 @@ export const Fitness: React.FC = () => {
 
   const fetchLogs = async () => {
     if (!users.jose?.user?.id || !users.anto?.user?.id) return;
-    
+
     try {
       const [joseFitness, antoFitness] = await Promise.all([
         getFitnessLogs(users.jose.user.id),
         getFitnessLogs(users.anto.user.id)
       ]);
 
-      const calculateMetrics = (logs: any[], steps: number) => {
-        const trainingDays = new Set(logs.map(l => l.logged_at.split('T')[0])).size;
-        return {
-          trainingDays,
-          streak: 0,
-          steps
-        };
-      };
+      // Filter out step logs for display, keep all for metrics
+      const joseRealWorkouts = joseFitness.logs.filter((l: any) => !(l.notes || '').startsWith('pasos:'));
+      const antoRealWorkouts = antoFitness.logs.filter((l: any) => !(l.notes || '').startsWith('pasos:'));
 
       setJoseData({
         ...users.jose,
-        metrics: { ...users.jose.metrics, ...calculateMetrics(joseFitness.logs, joseFitness.todaySteps) },
-        recentWorkouts: joseFitness.logs.slice(0, 5)
+        metrics: { ...users.jose.metrics, ...calculateFitnessMetrics(joseFitness.logs, joseFitness.todaySteps) },
+        recentWorkouts: joseRealWorkouts.slice(0, 5).map(mapWorkoutLog),
+        rawLogs: joseFitness.logs,
       });
 
       setAntoData({
         ...users.anto,
-        metrics: { ...users.anto.metrics, ...calculateMetrics(antoFitness.logs, antoFitness.todaySteps) },
-        recentWorkouts: antoFitness.logs.slice(0, 5)
+        metrics: { ...users.anto.metrics, ...calculateFitnessMetrics(antoFitness.logs, antoFitness.todaySteps) },
+        recentWorkouts: antoRealWorkouts.slice(0, 5).map(mapWorkoutLog),
+        rawLogs: antoFitness.logs,
       });
-      
+
       setLoading(false);
     } catch (err) {
       console.error('Error fetching fitness logs:', err);
@@ -170,6 +196,11 @@ export const Fitness: React.FC = () => {
     setRefreshKey(k => k + 1);
   };
 
+  const handleDeleteWorkout = async (id: string) => {
+    await deleteFitnessLog(id);
+    setRefreshKey(k => k + 1);
+  };
+
   if (loading || !joseData || !antoData) {
     return <PageWrapper><div style={{ padding: '40px', textAlign: 'center', color: '#b08878' }}>Cargando fitness...</div></PageWrapper>;
   }
@@ -178,11 +209,11 @@ export const Fitness: React.FC = () => {
 
   const getFitnessContext = (userData: any): FitnessContext => ({
     userName: userData.user.name,
-    entrenosSemana: userData.metrics.trainingDays,
+    entrenosSemana: userData.metrics?.trainingDays ?? 0,
     metaEntrenosSemana: 5,
-    ultimoEntreno: userData.recentWorkouts.length > 0 ? `${userData.recentWorkouts[0].workout_type}` : 'Ninguno reciente',
-    rachaActual: userData.metrics.streak,
-    pasosHoy: userData.metrics.steps
+    ultimoEntreno: userData.recentWorkouts?.length > 0 ? userData.recentWorkouts[0].type : 'Ninguno reciente',
+    rachaActual: userData.metrics?.streak ?? 0,
+    pasosHoy: userData.metrics?.steps ?? 0
   });
 
   return (
@@ -205,10 +236,10 @@ export const Fitness: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
-          <AgentMessage 
+          <AgentMessage
             agentType="fitness"
             userName={currentDisplayData.user.name}
-            color={currentDisplayData.user.color} 
+            color={currentDisplayData.user.color}
             contextData={getFitnessContext(currentDisplayData)}
           />
         </motion.section>
@@ -227,10 +258,11 @@ export const Fitness: React.FC = () => {
                 <WeeklyChart logs={currentDisplayData.recentWorkouts} color={currentDisplayData.user.color} userName={currentDisplayData.user.name} />
                 <ActivityGrid user={currentDisplayData} />
                 <StepsCard user={currentDisplayData} onUpdate={fetchLogs} />
-                <WorkoutLogList 
-                  logs={currentDisplayData.recentWorkouts} 
-                  color={currentDisplayData.user.color} 
+                <WorkoutLogList
+                  logs={currentDisplayData.recentWorkouts}
+                  color={currentDisplayData.user.color}
                   onOpenAdd={handleOpenWorkoutModal}
+                  onDelete={handleDeleteWorkout}
                 />
              </motion.div>
           </AnimatePresence>
@@ -241,10 +273,11 @@ export const Fitness: React.FC = () => {
               <WeeklyChart logs={joseData.recentWorkouts} color={joseData.user.color} userName={joseData.user.name} />
               <ActivityGrid user={joseData} />
               <StepsCard user={joseData} onUpdate={fetchLogs} />
-              <WorkoutLogList 
-                logs={joseData.recentWorkouts} 
-                color={joseData.user.color} 
+              <WorkoutLogList
+                logs={joseData.recentWorkouts}
+                color={joseData.user.color}
                 onOpenAdd={handleOpenWorkoutModal}
+                onDelete={handleDeleteWorkout}
               />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -252,20 +285,21 @@ export const Fitness: React.FC = () => {
               <WeeklyChart logs={antoData.recentWorkouts} color={antoData.user.color} userName={antoData.user.name} />
               <ActivityGrid user={antoData} />
               <StepsCard user={antoData} onUpdate={fetchLogs} />
-              <WorkoutLogList 
-                logs={antoData.recentWorkouts} 
-                color={antoData.user.color} 
+              <WorkoutLogList
+                logs={antoData.recentWorkouts}
+                color={antoData.user.color}
                 onOpenAdd={handleOpenWorkoutModal}
+                onDelete={handleDeleteWorkout}
               />
             </div>
           </div>
         )}
       </motion.div>
 
-      <WorkoutModal 
-        isOpen={isWorkoutModalOpen} 
-        onClose={handleCloseWorkoutModal} 
-        color={activeUserData.user.color} 
+      <WorkoutModal
+        isOpen={isWorkoutModalOpen}
+        onClose={handleCloseWorkoutModal}
+        color={activeUserData.user.color}
       />
     </PageWrapper>
   );

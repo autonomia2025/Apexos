@@ -2,23 +2,23 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GlassCard } from '../../ui/GlassCard';
 import { EmptyState } from '../../ui/EmptyState';
-import { MealLog } from '../../../types';
-import { Plus, Coffee } from 'lucide-react';
+import { Plus, Coffee, Trash2 } from 'lucide-react';
 
 interface MealLogListProps {
-  logs: MealLog[];
+  logs: any[];
   color: string;
   onOpenAdd: () => void;
+  onDelete: (id: string) => void;
 }
 
-export const MealLogList: React.FC<MealLogListProps> = ({ logs, color, onOpenAdd }) => {
+export const MealLogList: React.FC<MealLogListProps> = ({ logs, color, onOpenAdd, onDelete }) => {
   return (
     <div style={{ width: '100%' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
         <h3 style={{ fontSize: '28px', lineHeight: 1, color: '#2d1a0e', letterSpacing: '0.01em', fontFamily: '"Outfit", sans-serif' }}>
           Historial de Hoy
         </h3>
-        
+
         <button
           onClick={onOpenAdd}
           className="lux-add-btn"
@@ -40,18 +40,32 @@ export const MealLogList: React.FC<MealLogListProps> = ({ logs, color, onOpenAdd
                 style={{ width: '100%' }}
               >
                 <GlassCard className="lux-item" style={{ padding: '16px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', position: 'relative', overflow: 'hidden', borderColor: 'rgba(255,255,255,0.12)' }}>
-                  <div 
+                  <div
                     style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', opacity: 0.6, backgroundColor: color }}
                   />
-                  
+
                   <div style={{ flex: 1, marginLeft: '8px', width: '100%' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: '4px' }}>
                       <h4 style={{ color: '#2d1a0e', fontWeight: 600, fontSize: '20px', fontFamily: '"Outfit", sans-serif' }}>{log.name}</h4>
-                      <span style={{ color: '#b08878', fontFamily: '"Outfit", sans-serif', fontSize: '12px', background: 'rgba(193,96,58,0.08)', border: '1px solid rgba(193,96,58,0.15)', padding: '2px 8px', borderRadius: '6px' }}>{log.time}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ color: '#b08878', fontFamily: '"Outfit", sans-serif', fontSize: '12px', background: 'rgba(193,96,58,0.08)', border: '1px solid rgba(193,96,58,0.15)', padding: '2px 8px', borderRadius: '6px' }}>{log.time}</span>
+                        <button
+                          onClick={() => onDelete(log.id)}
+                          style={{
+                            background: 'transparent', border: 'none', cursor: 'pointer',
+                            padding: '4px', color: 'rgba(193,96,58,0.4)',
+                            display: 'flex', alignItems: 'center', transition: 'color 0.2s',
+                          }}
+                          onMouseEnter={e => (e.currentTarget.style.color = '#c94040')}
+                          onMouseLeave={e => (e.currentTarget.style.color = 'rgba(193,96,58,0.4)')}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
-                    
+
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', marginTop: '8px' }}>
-                       <span 
+                       <span
                         style={{ padding: '2px 8px', borderRadius: '6px', fontSize: '10px', fontWeight: 700, letterSpacing: '0.04em', backgroundColor: `${color}22`, color: color }}
                        >
                          {log.calories} KCAL
@@ -72,10 +86,10 @@ export const MealLogList: React.FC<MealLogListProps> = ({ logs, color, onOpenAdd
             ))}
           </AnimatePresence>
         ) : (
-          <EmptyState 
-            icon={<Coffee size={32} />} 
-            title="Nada registrado aún" 
-            onAction={onOpenAdd} 
+          <EmptyState
+            icon={<Coffee size={32} />}
+            title="Nada registrado aún"
+            onAction={onOpenAdd}
           />
         )}
       </div>
