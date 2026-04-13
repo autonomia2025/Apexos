@@ -1,6 +1,7 @@
 import React from 'react';
 import { GlassCard } from '../../ui/GlassCard';
 import { Dumbbell, PersonStanding, Flame, Compass, HelpCircle } from 'lucide-react';
+import { getTodayChile, toChileDate } from '../../../lib/utils';
 
 interface ActivityGridProps {
   user: any;
@@ -11,7 +12,8 @@ export const ActivityGrid: React.FC<ActivityGridProps> = ({ user }) => {
   const days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 
   // Build this week's activity from rawLogs
-  const now = new Date();
+  const todayChile = getTodayChile();
+  const now = new Date(todayChile);
   const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon
   const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
   const monday = new Date(now);
@@ -22,13 +24,13 @@ export const ActivityGrid: React.FC<ActivityGridProps> = ({ user }) => {
   for (let i = 0; i < 7; i++) {
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
-    weekDates.push(d.toISOString().split('T')[0]);
+    weekDates.push(d.toLocaleDateString('en-CA')); // en-CA gives YYYY-MM-DD
   }
 
   // Map each day to the workout type (if any)
   const getWorkoutForDay = (dateISO: string): string => {
     const dayLogs = rawLogs.filter((l: any) =>
-      l.logged_at.split('T')[0] === dateISO &&
+      toChileDate(l.logged_at) === dateISO &&
       !(l.notes || '').startsWith('pasos:')
     );
     if (dayLogs.length === 0) return 'Descanso';
@@ -65,7 +67,7 @@ export const ActivityGrid: React.FC<ActivityGridProps> = ({ user }) => {
         {days.map((day, index) => {
           const type = weeklyActivity[index];
           const isRest = type === 'Descanso';
-          const isFuture = weekDates[index] > now.toISOString().split('T')[0];
+          const isFuture = weekDates[index] > todayChile;
 
           return (
             <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>

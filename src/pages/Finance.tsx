@@ -11,7 +11,7 @@ import { useCouple } from '../hooks/useCouple';
 import { useActiveUser } from '../hooks/useActiveUser';
 import { FinanceContext } from '../services/agentService';
 import { getFinanceLogs, deleteFinanceLog } from '../lib/db';
-import { formatCLP } from '../lib/utils';
+import { formatCLP, getTodayChile, toChileDate } from '../lib/utils';
 
 const SavingsCard = ({ metrics }: { metrics: any }) => {
   const income = metrics?.finance?.income || 0;
@@ -103,12 +103,18 @@ export const Finance: React.FC = () => {
       getFinanceLogs(users.anto.user.id)
     ]);
 
-    const calculateMetrics = (logs: any[], profile: any) => {
+    const calculateMetrics = (rawLogs: any[], profile: any) => {
       const budget = profile?.monthlyBudgetCLP || 500000;
-      const gastos = logs
+      
+      const currentMonth = getTodayChile().slice(0, 7); // "YYYY-MM"
+      const monthLogs = rawLogs.filter(l =>
+        toChileDate(l.logged_at).slice(0, 7) === currentMonth
+      );
+
+      const gastos = monthLogs
         .filter(l => l.type === 'gasto')
         .reduce((sum, l) => sum + Number(l.amount), 0);
-      const ingresos = logs
+      const ingresos = monthLogs
         .filter(l => l.type === 'ingreso')
         .reduce((sum, l) => sum + Number(l.amount), 0);
       const ahorro = ingresos - gastos;
@@ -118,7 +124,7 @@ export const Finance: React.FC = () => {
 
       // Top spending category
       const categories: Record<string, number> = {};
-      logs.forEach(l => {
+      monthLogs.forEach(l => {
         if (l.type === 'gasto') categories[l.category] = (categories[l.category] || 0) + Number(l.amount);
       });
       const topCat = Object.entries(categories).sort((a,b) => b[1] - a[1])[0];

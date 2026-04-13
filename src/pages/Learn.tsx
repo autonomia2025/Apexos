@@ -11,6 +11,7 @@ import { useCouple } from '../hooks/useCouple';
 import { useActiveUser } from '../hooks/useActiveUser';
 import { LearningContext } from '../services/agentService';
 import { getLearningLogs } from '../lib/db';
+import { toChileDate } from '../lib/utils';
 
 export const Learn: React.FC = () => {
   const { isMobile, users } = useCouple();
@@ -47,7 +48,7 @@ export const Learn: React.FC = () => {
         topic: l.topic,
         duration: l.duration_min >= 60 ? `${(l.duration_min / 60).toFixed(1)}h` : `${l.duration_min}min`,
         resource: l.resource_type,
-        date: l.logged_at.split('T')[0]
+        date: toChileDate(l.logged_at)
       }))
     });
 
@@ -59,7 +60,7 @@ export const Learn: React.FC = () => {
         topic: l.topic,
         duration: l.duration_min >= 60 ? `${(l.duration_min / 60).toFixed(1)}h` : `${l.duration_min}min`,
         resource: l.resource_type,
-        date: l.logged_at.split('T')[0]
+        date: toChileDate(l.logged_at)
       }))
     });
     

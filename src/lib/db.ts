@@ -2,8 +2,10 @@ import { supabase } from './supabase';
 
 // ── NUTRITION ──────────────────────────────
 export async function getNutritionLogs(userId: string, days = 7) {
+  // Fetch last N+1 days to handle timezone safely
   const since = new Date();
-  since.setDate(since.getDate() - days);
+  since.setDate(since.getDate() - (days + 1));
+  since.setHours(0, 0, 0, 0);
   
   const { data, error } = await supabase
     .from('nutrition_logs')
@@ -65,10 +67,12 @@ export async function analyzeMeal(description: string) {
 
 // ── FITNESS ────────────────────────────────
 export async function getFitnessLogs(userId: string, days = 7) {
+  // Fetch last N+1 days to handle timezone safely
   const since = new Date();
-  since.setDate(since.getDate() - days);
+  since.setDate(since.getDate() - (days + 1));
+  since.setHours(0, 0, 0, 0);
   
-  const today = new Date().toISOString().split('T')[0];
+  const chileToday = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Santiago' });
   
   const [{ data: logs, error: logsError }, { data: checkin }] = await Promise.all([
     supabase
@@ -81,7 +85,7 @@ export async function getFitnessLogs(userId: string, days = 7) {
       .from('daily_checkins')
       .select('steps')
       .eq('user_id', userId)
-      .eq('checkin_date', today)
+      .eq('checkin_date', chileToday)
       .maybeSingle()
   ]);
     
@@ -129,8 +133,10 @@ export async function analyzeWorkout(description: string): Promise<{
 
 // ── FINANCE ────────────────────────────────
 export async function getFinanceLogs(userId: string, days = 30) {
+  // Fetch last N+1 days to handle timezone safely
   const since = new Date();
-  since.setDate(since.getDate() - days);
+  since.setDate(since.getDate() - (days + 1));
+  since.setHours(0, 0, 0, 0);
   
   const { data, error } = await supabase
     .from('finance_logs')
@@ -161,8 +167,10 @@ export async function addFinanceLog(log: {
 
 // ── LEARNING ───────────────────────────────
 export async function getLearningLogs(userId: string, days = 7) {
+  // Fetch last N+1 days to handle timezone safely
   const since = new Date();
-  since.setDate(since.getDate() - days);
+  since.setDate(since.getDate() - (days + 1));
+  since.setHours(0, 0, 0, 0);
   
   const { data, error } = await supabase
     .from('learning_logs')
@@ -198,12 +206,13 @@ export async function upsertCheckin(checkin: {
   water_glasses?: number;
   goal_met?: boolean;
   notes?: string;
+  steps?: number;
 }) {
-  const today = new Date().toISOString().split('T')[0];
+  const chileToday = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Santiago' });
   const { data, error } = await supabase
     .from('daily_checkins')
     .upsert(
-      { ...checkin, checkin_date: today },
+      { ...checkin, checkin_date: chileToday },
       { onConflict: 'user_id,checkin_date' }
     )
     .select()
@@ -214,12 +223,12 @@ export async function upsertCheckin(checkin: {
 }
 
 export async function getTodayCheckin(userId: string) {
-  const today = new Date().toISOString().split('T')[0];
+  const chileToday = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Santiago' });
   const { data, error } = await supabase
     .from('daily_checkins')
     .select('*')
     .eq('user_id', userId)
-    .eq('checkin_date', today)
+    .eq('checkin_date', chileToday)
     .maybeSingle();
     
   if (error) throw error;

@@ -14,31 +14,30 @@ import { useActiveUser } from '../hooks/useActiveUser';
 import { FitnessContext } from '../services/agentService';
 import { getFitnessLogs, deleteFitnessLog } from '../lib/db';
 import { supabase } from '../lib/supabase';
+import { getTodayChile, toChileDate, toChileTime, getDaysAgoChile } from '../lib/utils';
 
 const mapWorkoutLog = (log: any) => ({
   id: log.id,
   type: log.workout_type,
   duration: log.duration_min || 0,
   date: new Date(log.logged_at).toLocaleDateString('es-CL', {
+    timeZone: 'America/Santiago',
     day: 'numeric', month: 'short'
   }),
-  time: new Date(log.logged_at).toLocaleTimeString('es-CL', {
-    hour: '2-digit', minute: '2-digit'
-  }),
+  time: toChileTime(log.logged_at),
   notes: log.notes || '',
   logged_at: log.logged_at,
 });
 
 const calculateFitnessMetrics = (rawLogs: any[], steps: number) => {
-  const weekAgo = new Date();
-  weekAgo.setDate(weekAgo.getDate() - 7);
+  const weekAgo = getDaysAgoChile(7);
   const weekLogs = rawLogs.filter(l =>
     new Date(l.logged_at) >= weekAgo
   );
   // Only count real workouts (not step logs)
   const realWorkouts = weekLogs.filter(l => !(l.notes || '').startsWith('pasos:'));
   const trainingDays = new Set(
-    realWorkouts.map(l => l.logged_at.split('T')[0])
+    realWorkouts.map(l => toChileDate(l.logged_at))
   ).size;
 
   return { trainingDays, streak: 0, steps };
@@ -60,7 +59,7 @@ const StepsCard = ({ user, onUpdate }: {
         .from('daily_checkins')
         .upsert({
           user_id: user.user.id,
-          checkin_date: new Date().toISOString().split('T')[0],
+          checkin_date: getTodayChile(),
           steps: parseInt(steps) || 0
         }, { onConflict: 'user_id,checkin_date' });
 

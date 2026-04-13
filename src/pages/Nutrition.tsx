@@ -11,14 +11,13 @@ import { useCouple } from '../hooks/useCouple';
 import { useActiveUser } from '../hooks/useActiveUser';
 import { NutritionContext } from '../services/agentService';
 import { getNutritionLogs, deleteNutritionLog } from '../lib/db';
+import { getTodayChile, toChileDate, toChileTime, getDaysAgoChile } from '../lib/utils';
 
 const mapMealLog = (log: any) => ({
   id: log.id,
   name: log.meal_name,
   calories: log.calories || 0,
-  time: new Date(log.logged_at).toLocaleTimeString('es-CL', {
-    hour: '2-digit', minute: '2-digit'
-  }),
+  time: toChileTime(log.logged_at),
   meal_type: log.meal_type,
   macros: {
     protein: Math.round(Number(log.protein_g) || 0),
@@ -30,9 +29,9 @@ const mapMealLog = (log: any) => ({
 const calculateMetrics = (rawLogs: any[], userProfile: any) => {
   const calorieTarget = userProfile?.calorieTarget || 2000;
   const proteinTarget = userProfile?.proteinTarget || 150;
-  const today = new Date().toISOString().split('T')[0];
+  const today = getTodayChile();
   const todayRaw = rawLogs.filter(l =>
-    l.logged_at.split('T')[0] === today
+    toChileDate(l.logged_at) === today
   );
   const totalCal = todayRaw.reduce((s, l) => s + (l.calories || 0), 0);
   const totalProtein = todayRaw.reduce((s, l) => s + (Number(l.protein_g) || 0), 0);
@@ -40,13 +39,12 @@ const calculateMetrics = (rawLogs: any[], userProfile: any) => {
   const totalFat = todayRaw.reduce((s, l) => s + (Number(l.fat_g) || 0), 0);
 
   // Weekly compliance: days with at least 1 log in last 7 days
-  const weekAgo = new Date();
-  weekAgo.setDate(weekAgo.getDate() - 7);
+  const weekAgo = getDaysAgoChile(7);
   const weekLogs = rawLogs.filter(l =>
     new Date(l.logged_at) >= weekAgo
   );
   const daysWithLogs = new Set(
-    weekLogs.map(l => l.logged_at.split('T')[0])
+    weekLogs.map(l => toChileDate(l.logged_at))
   ).size;
 
   return {

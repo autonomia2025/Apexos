@@ -12,11 +12,18 @@ interface MealLogListProps {
 }
 
 export const MealLogList: React.FC<MealLogListProps> = ({ logs, color, onOpenAdd, onDelete }) => {
+  const todayStr = new Date().toLocaleDateString('es-CL', {
+    timeZone: 'America/Santiago',
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long'
+  });
+
   return (
     <div style={{ width: '100%' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-        <h3 style={{ fontSize: '28px', lineHeight: 1, color: '#2d1a0e', letterSpacing: '0.01em', fontFamily: '"Outfit", sans-serif' }}>
-          Historial de Hoy
+        <h3 style={{ fontSize: '28px', lineHeight: 1, color: '#2d1a0e', letterSpacing: '0.01em', fontFamily: '"Outfit", sans-serif', textTransform: 'capitalize' }}>
+          Hoy · {todayStr}
         </h3>
 
         <button
