@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useCouple } from '../../../hooks/useCouple';
-import { addFinanceLog, getFinanceLogs, autoUpdateGoals } from '../../../lib/db';
+import { 
+  addFinanceLog, 
+  autoUpdateGoalsForModule,
+  getFreshFinanceMetrics 
+} from '../../../lib/db';
 import { ExpenseCategory } from '../../../types';
 import { formatCLP } from '../../../lib/utils';
 
@@ -55,11 +59,21 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, col
         type: type
       });
       
-      const logs = await getFinanceLogs(activeUserId, 30);
-      const totalSpent = logs.filter((l: any) => l.type === 'gasto').reduce((sum: number, l: any) => sum + l.amount, 0);
-      await autoUpdateGoals(activeUserId, activeRole, 'finance', totalSpent);
+      // Update goals
+      try {
+        const metrics = await getFreshFinanceMetrics(activeUserId);
+        await autoUpdateGoalsForModule(
+          activeUserId,
+          activeRole,
+          'finance',
+          metrics
+        );
+      } catch (e) {
+        console.warn('Goal update failed:', e);
+      }
 
       setAmount('');
+
       setCategory(null);
       setNote('');
       setType('gasto');

@@ -10,11 +10,12 @@ import { useCouple } from '../hooks/useCouple';
 import { getGoals } from '../lib/db';
 
 export const Goals: React.FC = () => {
-  const { activeUserId } = useCouple();
-  const [activeTab, setActiveTab] = useState<'personal' | 'shared'>('personal');
+  const { activeUserId, activeRole } = useCouple();
+  const [activeTab, setActiveTab] = useState<'personal' | 'shared' | 'completed'>('personal');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [goals, setGoals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchGoals = async () => {
     if (!activeUserId) return;
@@ -30,10 +31,13 @@ export const Goals: React.FC = () => {
 
   useEffect(() => {
     fetchGoals();
-  }, [activeUserId]);
+  }, [activeUserId, refreshKey]);
 
-  const personalGoals = goals.filter(g => !g.couple_goal);
-  const sharedGoals = goals.filter(g => g.couple_goal);
+  const personalGoals = goals.filter(g => !g.couple_goal && g.status === 'active');
+  const sharedGoals = goals.filter(g => g.couple_goal && g.status === 'active');
+  const completedGoals = goals.filter(g => g.status === 'completed');
+
+  const onRefresh = () => setRefreshKey(prev => prev + 1);
 
   return (
     <PageWrapper>
@@ -50,32 +54,24 @@ export const Goals: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.08 }}
       >
-         <button
-           onClick={() => setActiveTab('personal')}
-           style={{ flex: 1, padding: '12px 0', fontSize: '14px', fontWeight: 700, borderRadius: '12px', transition: 'color 0.2s', position: 'relative', color: activeTab === 'personal' ? '#c1603a' : '#b08878', background: 'transparent', border: 'none', cursor: 'pointer' }}
-          >
-            {activeTab === 'personal' && (
-              <motion.div
-                layoutId="activeTabIndicator"
-                style={{ position: 'absolute', inset: 0, borderRadius: '12px', border: '1px solid rgba(193,96,58,0.3)', background: 'rgba(193,96,58,0.08)' }}
-                transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-              />
-            )}
-           <span style={{ position: 'relative', zIndex: 10, letterSpacing: '0.08em', textTransform: 'uppercase', fontSize: '12px' }}>Mis Metas</span>
-         </button>
-         <button
-           onClick={() => setActiveTab('shared')}
-           style={{ flex: 1, padding: '12px 0', fontSize: '14px', fontWeight: 700, borderRadius: '12px', transition: 'color 0.2s', position: 'relative', color: activeTab === 'shared' ? '#c1603a' : '#b08878', background: 'transparent', border: 'none', cursor: 'pointer' }}
-          >
-            {activeTab === 'shared' && (
-              <motion.div
-                layoutId="activeTabIndicator"
-                style={{ position: 'absolute', inset: 0, borderRadius: '12px', border: '1px solid rgba(193,96,58,0.3)', background: 'rgba(193,96,58,0.08)' }}
-                transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-              />
-            )}
-           <span style={{ position: 'relative', zIndex: 10, letterSpacing: '0.08em', textTransform: 'uppercase', fontSize: '12px' }}>De Pareja</span>
-         </button>
+         {(['personal', 'shared', 'completed'] as const).map(tab => (
+           <button
+             key={tab}
+             onClick={() => setActiveTab(tab)}
+             style={{ flex: 1, padding: '12px 0', fontSize: '11px', fontWeight: 700, borderRadius: '12px', transition: 'color 0.2s', position: 'relative', color: activeTab === tab ? '#c1603a' : '#b08878', background: 'transparent', border: 'none', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.08em' }}
+            >
+              {activeTab === tab && (
+                <motion.div
+                  layoutId="activeTabIndicator"
+                  style={{ position: 'absolute', inset: 0, borderRadius: '12px', border: '1px solid rgba(193,96,58,0.3)', background: 'rgba(193,96,58,0.08)' }}
+                  transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+             <span style={{ position: 'relative', zIndex: 10 }}>
+               {tab === 'personal' ? 'Mis Metas' : tab === 'shared' ? 'De Pareja' : 'Logradas'}
+             </span>
+           </button>
+         ))}
        </motion.div>
 
       <motion.div
@@ -88,43 +84,28 @@ export const Goals: React.FC = () => {
           <div style={{ textAlign: 'center', padding: '40px', color: '#b08878' }}>Cargando metas...</div>
         ) : (
           <AnimatePresence mode="wait">
-            {activeTab === 'personal' ? (
-               <motion.div
-                 key="personal"
-                 initial={{ opacity: 0, x: -20 }}
-                 animate={{ opacity: 1, x: 0 }}
-                 exit={{ opacity: 0, x: 20 }}
-                 transition={{ duration: 0.3 }}
-                  style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}
-                >
-                 {personalGoals.map((goal) => (
-                   <GoalCard key={goal.id} goal={{ ...goal, type: 'personal', currentPercent: 0 }} activeUserId={activeUserId} />
-                 ))}
-                 {personalGoals.length === 0 && (
-                    <div style={{ padding: '48px 0', textAlign: 'center', color: '#b08878' }}>
-                      Aún no tienes metas personales activas.
-                    </div>
-                  )}
-               </motion.div>
-            ) : (
-               <motion.div
-                 key="shared"
-                 initial={{ opacity: 0, x: 20 }}
-                 animate={{ opacity: 1, x: 0 }}
-                 exit={{ opacity: 0, x: -20 }}
-                 transition={{ duration: 0.3 }}
-                  style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}
-                >
-                 {sharedGoals.map((goal) => (
-                   <GoalCard key={goal.id} goal={{ ...goal, type: 'shared', currentPercent: 0 }} activeUserId={activeUserId} />
-                 ))}
-                 {sharedGoals.length === 0 && (
-                    <div style={{ padding: '48px 0', textAlign: 'center', color: '#b08878' }}>
-                      No hay metas de pareja activas aún.
-                    </div>
-                  )}
-               </motion.div>
-            )}
+             <motion.div
+               key={activeTab}
+               initial={{ opacity: 0, x: 10 }}
+               animate={{ opacity: 1, x: 0 }}
+               exit={{ opacity: 0, x: -10 }}
+               transition={{ duration: 0.2 }}
+               style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}
+             >
+                {activeTab === 'personal' && personalGoals.map(g => (
+                  <GoalCard key={g.id} goal={g} activeRole={activeRole} onRefresh={onRefresh} />
+                ))}
+                {activeTab === 'shared' && sharedGoals.map(g => (
+                  <GoalCard key={g.id} goal={g} activeRole={activeRole} onRefresh={onRefresh} />
+                ))}
+                {activeTab === 'completed' && completedGoals.map(g => (
+                  <GoalCard key={g.id} goal={g} activeRole={activeRole} onRefresh={onRefresh} />
+                ))}
+
+                {activeTab === 'personal' && personalGoals.length === 0 && <div style={{ padding: '48px 0', textAlign: 'center', color: '#b08878' }}>No hay metas personales activas.</div>}
+                {activeTab === 'shared' && sharedGoals.length === 0 && <div style={{ padding: '48px 0', textAlign: 'center', color: '#b08878' }}>No hay metas de pareja activas.</div>}
+                {activeTab === 'completed' && completedGoals.length === 0 && <div style={{ padding: '48px 0', textAlign: 'center', color: '#b08878' }}>No has completado metas aún. ¡Tú puedes!</div>}
+             </motion.div>
           </AnimatePresence>
         )}
       </motion.div>
@@ -133,7 +114,7 @@ export const Goals: React.FC = () => {
 
       <GoalModal 
         isOpen={isModalOpen} 
-        onClose={() => { setIsModalOpen(false); fetchGoals(); }} 
+        onClose={() => { setIsModalOpen(false); setRefreshKey(k => k + 1); }} 
         color="#c1603a" 
       />
     </PageWrapper>

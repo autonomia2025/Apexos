@@ -60,3 +60,13 @@ CREATE POLICY "Users can delete own events"
   ON calendar_events FOR DELETE TO authenticated
   USING (created_by = auth.uid());
 
+-- Goal Progress History
+CREATE POLICY "Read goal history"
+  ON goal_progress_history FOR SELECT TO authenticated
+  USING (true);
+
+CREATE POLICY "Insert goal history"
+  ON goal_progress_history FOR INSERT TO authenticated
+  WITH CHECK (true);
+
+

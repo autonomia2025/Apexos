@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useCouple } from '../../../hooks/useCouple';
-import { addNutritionLog, analyzeMeal, getNutritionLogs, autoUpdateGoals } from '../../../lib/db';
+import { 
+  addNutritionLog, 
+  analyzeMeal, 
+  autoUpdateGoalsForModule,
+  getFreshNutritionMetrics 
+} from '../../../lib/db';
 
 interface MealModalProps {
   isOpen: boolean;
@@ -206,11 +211,20 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
       console.log('Meal saved successfully'); // debug
       
       // Update goals
-      const logs = await getNutritionLogs(activeUserId, 1);
-      const totalCalories = logs.reduce((sum, l) => sum + l.calories, 0);
-      await autoUpdateGoals(activeUserId, activeRole, 'nutrition', totalCalories);
+      try {
+        const metrics = await getFreshNutritionMetrics(activeUserId);
+        await autoUpdateGoalsForModule(
+          activeUserId,
+          activeRole,
+          'nutrition',
+          metrics
+        );
+      } catch (e) {
+        console.warn('Goal update failed:', e);
+      }
 
       resetForm();
+
       onClose();
     } catch (e: any) {
       console.error('Save failed:', e); // debug

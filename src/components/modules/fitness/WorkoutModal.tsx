@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useCouple } from '../../../hooks/useCouple';
-import { addFitnessLog, analyzeWorkout, getFitnessLogs, autoUpdateGoals } from '../../../lib/db';
+import { 
+  addFitnessLog, 
+  analyzeWorkout, 
+  autoUpdateGoalsForModule,
+  getFreshFitnessMetrics 
+} from '../../../lib/db';
 
 interface WorkoutModalProps {
   isOpen: boolean;
@@ -88,12 +93,22 @@ export const WorkoutModal: React.FC<WorkoutModalProps> = ({ isOpen, onClose, col
         duration_min: parseInt(duration) || result?.duration_min || 0,
         notes: note || result?.summary || description
       });
-
-      const dataLogs = await getFitnessLogs(activeUserId, 7);
-      const weeklyCount = new Set(dataLogs.logs.map((l: any) => l.logged_at.split('T')[0])).size;
-      await autoUpdateGoals(activeUserId, activeRole, 'fitness', weeklyCount);
+      
+      // Update goals
+      try {
+        const metrics = await getFreshFitnessMetrics(activeUserId);
+        await autoUpdateGoalsForModule(
+          activeUserId,
+          activeRole,
+          'fitness',
+          metrics
+        );
+      } catch (e) {
+        console.warn('Goal update failed:', e);
+      }
 
       setWorkoutType(null);
+
       setDuration('');
       setNote('');
       setResult(null);

@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { getTodayChile, toChileDate, getDaysAgoChile } from './utils';
 
 // ── NUTRITION ──────────────────────────────
 export async function getNutritionLogs(userId: string, days = 7) {
@@ -256,6 +257,8 @@ export async function addGoal(goal: {
   target_value?: number;
   unit?: string;
   deadline?: string;
+  auto_track?: boolean;
+  track_metric?: string;
 }) {
   const { data, error } = await supabase
     .from('goals')
@@ -266,51 +269,210 @@ export async function addGoal(goal: {
   return data;
 }
 
-export async function updateGoalProgress(
-  goalId: string,
-  _userId: string,
-  newValue: number,
-  role: 'jose' | 'anto'
-) {
-  const column = role === 'jose' 
-    ? 'current_value_jose' 
-    : 'current_value_anto';
-    
-  const { error } = await supabase
-    .from('goals')
-    .update({ [column]: newValue })
-    .eq('id', goalId);
-    
-  if (error) throw error;
-}
-
+// Get active goals for a module
 export async function getActiveGoalsForModule(
   userId: string,
   module: string
-) {
+): Promise<any[]> {
   const { data } = await supabase
     .from('goals')
     .select('*')
     .eq('status', 'active')
     .eq('module', module)
+    .eq('auto_track', true)
     .or(`user_id.eq.${userId},couple_goal.eq.true`);
   return data || [];
 }
 
-export async function autoUpdateGoals(
+// Update goal progress for a specific user role
+export async function updateGoalProgress(
+  goalId: string,
+  role: 'jose' | 'anto',
+  newValue: number
+): Promise<void> {
+  const column = role === 'jose'
+    ? 'current_value_jose'
+    : 'current_value_anto';
+
+  const { error } = await supabase
+    .from('goals')
+    .update({ [column]: Math.round(newValue * 10) / 10 })
+    .eq('id', goalId);
+
+  if (error) throw error;
+
+  // Record in history
+  await supabase.from('goal_progress_history').insert({
+    goal_id: goalId,
+    user_role: role,
+    value: newValue,
+  });
+}
+
+// Main auto-update function called after each log
+export async function autoUpdateGoalsForModule(
   userId: string,
   role: 'jose' | 'anto',
   module: string,
-  value: number
-) {
+  freshMetrics: {
+    calories?: number;
+    protein?: number;
+    workouts?: number;
+    workoutMinutes?: number;
+    spending?: number;
+    savings?: number;
+    studyHours?: number;
+    studySessions?: number;
+  }
+): Promise<void> {
   const goals = await getActiveGoalsForModule(userId, module);
-  
-  await Promise.all(
-    goals
-      .filter(g => g.auto_track)
-      .map(g => updateGoalProgress(g.id, userId, value, role))
-  );
+  if (!goals.length) return;
+
+  await Promise.all(goals.map(async (goal) => {
+    let newValue: number | null = null;
+
+    switch (goal.track_metric) {
+      case 'calories_daily':
+        newValue = freshMetrics.calories ?? null;
+        break;
+      case 'protein_daily':
+        newValue = freshMetrics.protein ?? null;
+        break;
+      case 'workouts_weekly':
+        newValue = freshMetrics.workouts ?? null;
+        break;
+      case 'workout_minutes':
+        newValue = freshMetrics.workoutMinutes ?? null;
+        break;
+      case 'spending_monthly':
+        newValue = freshMetrics.spending ?? null;
+        break;
+      case 'savings_monthly':
+        newValue = freshMetrics.savings ?? null;
+        break;
+      case 'study_hours_weekly':
+        newValue = freshMetrics.studyHours ?? null;
+        break;
+      case 'study_sessions':
+        newValue = freshMetrics.studySessions ?? null;
+        break;
+      default:
+        return; // 'custom' — skip auto update
+    }
+
+    if (newValue !== null) {
+      await updateGoalProgress(goal.id, role, newValue);
+
+      // Fetch the goal again to check if it should be completed
+      const { data: updatedGoal } = await supabase
+        .from('goals')
+        .select('*')
+        .eq('id', goal.id)
+        .single();
+      
+      if (!updatedGoal) return;
+
+      const currentValue = role === 'jose'
+        ? updatedGoal.current_value_jose
+        : updatedGoal.current_value_anto;
+
+      if (
+        currentValue >= updatedGoal.target_value &&
+        updatedGoal.status === 'active' &&
+        !updatedGoal.couple_goal // only auto-complete personal goals
+      ) {
+        await supabase
+          .from('goals')
+          .update({ status: 'completed' })
+          .eq('id', goal.id);
+      }
+    }
+  }));
 }
+
+// Helper to calculate fresh metrics after a log
+export async function getFreshNutritionMetrics(
+  userId: string
+): Promise<{ calories: number; protein: number }> {
+  const today = getTodayChile();
+  const { data } = await supabase
+    .from('nutrition_logs')
+    .select('calories, protein_g')
+    .eq('user_id', userId)
+    .gte('logged_at', today + 'T00:00:00-03:00');
+
+  const calories = (data || []).reduce(
+    (s, l) => s + (l.calories || 0), 0
+  );
+  const protein = (data || []).reduce(
+    (s, l) => s + (Number(l.protein_g) || 0), 0
+  );
+  return { calories, protein };
+}
+
+export async function getFreshFitnessMetrics(
+  userId: string
+): Promise<{ workouts: number; workoutMinutes: number }> {
+  const weekAgo = getDaysAgoChile(7).toISOString();
+  const { data } = await supabase
+    .from('fitness_logs')
+    .select('logged_at, duration_min, notes')
+    .eq('user_id', userId)
+    .gte('logged_at', weekAgo);
+
+  const realLogs = (data || []).filter(
+    l => !l.notes?.startsWith('pasos:')
+  );
+  const workouts = new Set(
+    realLogs.map(l => toChileDate(l.logged_at))
+  ).size;
+  const workoutMinutes = realLogs.reduce(
+    (s, l) => s + (l.duration_min || 0), 0
+  );
+  return { workouts, workoutMinutes };
+}
+
+export async function getFreshFinanceMetrics(
+  userId: string
+): Promise<{ spending: number; savings: number }> {
+  const now = new Date();
+  const monthStart = new Date(
+    now.getFullYear(), now.getMonth(), 1
+  ).toISOString();
+  const { data } = await supabase
+    .from('finance_logs')
+    .select('amount, type')
+    .eq('user_id', userId)
+    .gte('logged_at', monthStart);
+
+  const spending = (data || [])
+    .filter(l => l.type === 'gasto')
+    .reduce((s, l) => s + Number(l.amount), 0);
+  const income = (data || [])
+    .filter(l => l.type === 'ingreso')
+    .reduce((s, l) => s + Number(l.amount), 0);
+  return { spending, savings: income - spending };
+}
+
+export async function getFreshLearningMetrics(
+  userId: string
+): Promise<{ studyHours: number; studySessions: number }> {
+  const weekAgo = getDaysAgoChile(7).toISOString();
+  const { data } = await supabase
+    .from('learning_logs')
+    .select('duration_min, logged_at')
+    .eq('user_id', userId)
+    .gte('logged_at', weekAgo);
+
+  const studyHours = Math.round(
+    (data || []).reduce((s, l) => s + (l.duration_min || 0), 0)
+    / 60 * 10
+  ) / 10;
+  const studySessions = (data || []).length;
+  return { studyHours, studySessions };
+}
+
+
 
 // ── TABLIO ─────────────────────────────────
 export async function getTablioDashboard() {

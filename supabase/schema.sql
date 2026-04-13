@@ -95,8 +95,32 @@ create table goals (
   status text check (status in 
     ('active','completed','paused')) 
     default 'active',
+  auto_track boolean default true,
+  track_metric text check (
+    track_metric in (
+      'calories_daily',    -- total kcal today
+      'protein_daily',     -- total protein today  
+      'workouts_weekly',   -- training sessions this week
+      'workout_minutes',   -- total workout minutes this week
+      'spending_monthly',  -- total spending this month
+      'savings_monthly',   -- total savings this month
+      'study_hours_weekly',-- total study hours this week
+      'study_sessions',    -- number of study sessions
+      'custom'             -- manual update only
+    )
+  ) default 'custom',
   created_at timestamptz default now()
 );
+
+-- Goal Progress History
+create table goal_progress_history (
+  id uuid primary key default gen_random_uuid(),
+  goal_id uuid references goals(id) on delete cascade,
+  user_role text check (user_role in ('jose','anto')),
+  value numeric not null,
+  recorded_at timestamptz default now()
+);
+
 
 -- Tablio OKRs
 create table tablio_okrs (
@@ -158,7 +182,9 @@ alter table finance_logs enable row level security;
 alter table learning_logs enable row level security;
 alter table daily_checkins enable row level security;
 alter table goals enable row level security;
+alter table goal_progress_history enable row level security;
 alter table tablio_okrs enable row level security;
+
 alter table tablio_key_results enable row level security;
 alter table tablio_projects enable row level security;
 alter table tablio_revenue enable row level security;
@@ -220,6 +246,15 @@ create policy "Users can read all goals"
 create policy "Users can manage goals"
   on goals for all to authenticated
   using (true);
+
+create policy "Read goal history"
+  on goal_progress_history for select to authenticated
+  using (true);
+
+create policy "Insert goal history"
+  on goal_progress_history for insert to authenticated
+  with check (true);
+
 
 create policy "All authenticated read tablio"
   on tablio_okrs for select to authenticated

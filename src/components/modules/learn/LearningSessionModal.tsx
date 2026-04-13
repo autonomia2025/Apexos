@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useCouple } from '../../../hooks/useCouple';
-import { addLearningLog, getLearningLogs, autoUpdateGoals } from '../../../lib/db';
+import { 
+  addLearningLog, 
+  autoUpdateGoalsForModule,
+  getFreshLearningMetrics 
+} from '../../../lib/db';
 import { LearningResource } from '../../../types';
 
 interface LearningSessionModalProps {
@@ -63,12 +67,21 @@ export const LearningSessionModal: React.FC<LearningSessionModalProps> = ({ isOp
         resource_type: resource
       });
       
-      const logs = await getLearningLogs(activeUserId, 7);
-      const totalMinutes = logs.reduce((sum: number, l: any) => sum + l.duration_min, 0);
-      const totalHours = Math.round(totalMinutes / 60 * 10) / 10;
-      await autoUpdateGoals(activeUserId, activeRole, 'learning', totalHours);
+      // Update goals
+      try {
+        const metrics = await getFreshLearningMetrics(activeUserId);
+        await autoUpdateGoalsForModule(
+          activeUserId,
+          activeRole,
+          'learning',
+          metrics
+        );
+      } catch (e) {
+        console.warn('Goal update failed:', e);
+      }
 
       setTopic('');
+
       setDuration(null);
       setResource(null);
       onClose();
