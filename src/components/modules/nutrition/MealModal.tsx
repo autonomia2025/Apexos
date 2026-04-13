@@ -20,8 +20,7 @@ interface NutritionResult {
 }
 
 export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _color }) => {
-  const { activeUserId, users } = useCouple();
-  const activeRole = activeUserId === users.jose?.user?.id ? 'jose' : 'anto';
+  const { activeUserId, activeRole } = useCouple();
   const [mode, setMode] = useState<'ai' | 'barcode' | 'manual'>('ai');
   const [description, setDescription] = useState('');
   const [analyzing, setAnalyzing] = useState(false);
@@ -40,7 +39,18 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
+  // Log for debugging
+  useEffect(() => {
+    console.log('MealModal activeUserId:', activeUserId);
+  }, [activeUserId]);
+
   const mealTypes = ['Desayuno', 'Almuerzo', 'Cena', 'Snack'];
+
+  const canSave = mode === 'manual' 
+    ? (mealName.trim() !== '' && calories !== '')
+    : mode === 'barcode'
+      ? result !== null
+      : result !== null; // AI mode requires result
 
   const resetForm = () => {
     setMode('ai');
@@ -146,34 +156,56 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
   };
 
   const handleSave = async () => {
-    if (!activeUserId) return;
-    if (mode === 'manual' && (!mealName || !calories)) return;
-    if (mode === 'ai' && !result && !mealName) return;
+    // Guard: need a valid user
+    if (!activeUserId) {
+      setError('Error: usuario no identificado. Recargá la página.');
+      return;
+    }
+    
+    // Guard: need data to save
+    if (mode === 'ai' && !result) {
+      setError('Primero analizá la comida con IA.');
+      return;
+    }
+    if (mode === 'manual' && (!mealName.trim() || !calories)) {
+      setError('Completá nombre y calorías.');
+      return;
+    }
 
     setSaving(true);
     setError('');
+    
     try {
-      await addNutritionLog({
+      const logData = {
         user_id: activeUserId,
-        meal_name: mealName || result?.meal_name || description,
+        meal_name: mealName || result?.meal_name || description || 'Comida',
         calories: parseInt(calories) || result?.calories || 0,
         protein_g: parseFloat(protein) || result?.protein_g || 0,
         carbs_g: result?.carbs_g || 0,
         fat_g: result?.fat_g || 0,
         meal_type: mealType,
-      });
-
+      };
+      
+      console.log('Saving meal:', logData); // debug
+      
+      await addNutritionLog(logData);
+      
+      console.log('Meal saved successfully'); // debug
+      
+      // Update goals
       const logs = await getNutritionLogs(activeUserId, 1);
       const totalCalories = logs.reduce((sum, l) => sum + l.calories, 0);
       await autoUpdateGoals(activeUserId, activeRole, 'nutrition', totalCalories);
 
       resetForm();
       onClose();
-    } catch (e) {
-      console.error(e);
-      setError('No se pudo guardar la comida.');
+    } catch (e: any) {
+      console.error('Save failed:', e); // debug
+      setError(
+        e?.message || 'No se pudo guardar. Intentá de nuevo.'
+      );
     } finally {
-      setSaving(false);
+      setSaving(false); // ALWAYS reset, even on error
     }
   };
 
@@ -458,17 +490,19 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
 
             <button
               onClick={handleSave}
-              disabled={saving || (mode === 'ai' && !result && !mealName) || (mode === 'manual' && (!mealName || !calories))}
+              disabled={saving || !canSave}
               style={{
                 width: '100%', padding: '14px', borderRadius: '14px',
                 background: '#c1603a', color: '#ffffff', border: 'none',
                 fontFamily: '"Outfit", sans-serif', fontSize: '16px', fontWeight: 700,
                 marginTop: '24px', cursor: 'pointer',
-                opacity: (saving || (mode === 'ai' && !result && !mealName) || (mode === 'manual' && (!mealName || !calories))) ? 0.5 : 1,
+                opacity: (saving || !canSave) ? 0.5 : 1,
                 transition: 'all 0.2s',
               }}
             >
-              {saving ? 'Guardando...' : (mode === 'ai' && !result ? 'Analizá primero' : 'Guardar comida')}
+              {saving ? 'Guardando...' 
+                : !canSave && mode === 'ai' ? 'Analizá primero'
+                : 'Guardar comida'}
             </button>
           </motion.div>
         </motion.div>

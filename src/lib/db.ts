@@ -25,12 +25,20 @@ export async function addNutritionLog(log: {
   fat_g?: number;
   meal_type: string;
 }) {
+  console.log('addNutritionLog called with:', log);
+  
   const { data, error } = await supabase
     .from('nutrition_logs')
     .insert([log])
     .select()
     .single();
-  if (error) throw error;
+    
+  if (error) {
+    console.error('Supabase insert error:', error);
+    throw new Error(error.message);
+  }
+  
+  console.log('Insert successful:', data);
   return data;
 }
 
