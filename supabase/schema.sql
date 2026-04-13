@@ -240,3 +240,50 @@ create policy "All authenticated manage projects"
 create policy "All authenticated read revenue"
   on tablio_revenue for select to authenticated
   using (true);
+
+-- Calendar Events
+create table calendar_events (
+  id uuid primary key default gen_random_uuid(),
+  created_by uuid references profiles(id) on delete cascade,
+  title text not null,
+  description text,
+  event_type text not null check (event_type in (
+    'custom', 'reunion', 'recordatorio', 'meta_deadline',
+    'examen', 'cita', 'viaje', 'otro'
+  )),
+  start_date date not null,
+  end_date date,
+  start_time time,
+  end_time time,
+  all_day boolean default true,
+  visibility text check (visibility in (
+    'personal',   -- only creator sees it
+    'shared'      -- both Jose and Anto see it
+  )) default 'shared',
+  color text,     -- custom color override
+  location text,
+  repeat_type text check (repeat_type in (
+    'none', 'daily', 'weekly', 'monthly'
+  )) default 'none',
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table calendar_events enable row level security;
+
+create policy "Users can read shared and own events"
+  on calendar_events for select to authenticated
+  using (visibility = 'shared' or created_by = auth.uid());
+
+create policy "Users can insert own events"
+  on calendar_events for insert to authenticated
+  with check (created_by = auth.uid());
+
+create policy "Users can update own events"
+  on calendar_events for update to authenticated
+  using (created_by = auth.uid());
+
+create policy "Users can delete own events"
+  on calendar_events for delete to authenticated
+  using (created_by = auth.uid());
+

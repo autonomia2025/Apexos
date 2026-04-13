@@ -42,3 +42,21 @@ CREATE POLICY "Users update own finance logs"
 CREATE POLICY "Users update own learning logs"
   ON learning_logs FOR UPDATE TO authenticated
   USING (user_id = auth.uid());
+
+-- Calendar Events
+CREATE POLICY "Users can read shared and own events"
+  ON calendar_events FOR SELECT TO authenticated
+  USING (visibility = 'shared' OR created_by = auth.uid());
+
+CREATE POLICY "Users can insert own events"
+  ON calendar_events FOR INSERT TO authenticated
+  WITH CHECK (created_by = auth.uid());
+
+CREATE POLICY "Users can update own events"
+  ON calendar_events FOR UPDATE TO authenticated
+  USING (created_by = auth.uid());
+
+CREATE POLICY "Users can delete own events"
+  ON calendar_events FOR DELETE TO authenticated
+  USING (created_by = auth.uid());
+

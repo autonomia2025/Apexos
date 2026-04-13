@@ -484,6 +484,121 @@ function defaultSummary() {
   };
 }
 
+// ── CALENDAR ────────────────────────────────
+export async function getCalendarEvents(startDate: string, endDate: string) {
+  const { data, error } = await supabase
+    .from('calendar_events')
+    .select(`
+      *,
+      profiles:created_by (
+        name,
+        color,
+        initials
+      )
+    `)
+    .gte('start_date', startDate)
+    .lte('start_date', endDate)
+    .order('start_date')
+    .order('start_time');
+    
+  if (error) throw error;
+  return data || [];
+}
+
+export async function getActivityForDateRange(
+  joseId: string,
+  antoId: string,
+  startDate: string,
+  endDate: string
+) {
+  // endDate is YYYY-MM-DD, we need to cover the full day
+  const endDateTime = `${endDate}T23:59:59`;
+  const startDateTime = `${startDate}T00:00:00`;
+
+  const [
+    joseNutrition, antoNutrition,
+    joseFitness, antoFitness,
+    joseLearning, antoLearning,
+    events
+  ] = await Promise.all([
+    supabase.from('nutrition_logs').select('id,meal_name,calories,meal_type,logged_at').eq('user_id', joseId).gte('logged_at', startDateTime).lte('logged_at', endDateTime),
+    supabase.from('nutrition_logs').select('id,meal_name,calories,meal_type,logged_at').eq('user_id', antoId).gte('logged_at', startDateTime).lte('logged_at', endDateTime),
+    supabase.from('fitness_logs').select('id,workout_type,duration_min,logged_at,notes').eq('user_id', joseId).gte('logged_at', startDateTime).lte('logged_at', endDateTime),
+    supabase.from('fitness_logs').select('id,workout_type,duration_min,logged_at,notes').eq('user_id', antoId).gte('logged_at', startDateTime).lte('logged_at', endDateTime),
+    supabase.from('learning_logs').select('id,topic,duration_min,logged_at,resource_type').eq('user_id', joseId).gte('logged_at', startDateTime).lte('logged_at', endDateTime),
+    supabase.from('learning_logs').select('id,topic,duration_min,logged_at,resource_type').eq('user_id', antoId).gte('logged_at', startDateTime).lte('logged_at', endDateTime),
+    getCalendarEvents(startDate, endDate),
+  ]);
+
+  return {
+    jose: {
+      nutrition: joseNutrition.data || [],
+      fitness: joseFitness.data || [],
+      learning: joseLearning.data || [],
+    },
+    anto: {
+      nutrition: antoNutrition.data || [],
+      fitness: antoFitness.data || [],
+      learning: antoLearning.data || [],
+    },
+    events: events,
+  };
+}
+
+export async function createCalendarEvent(event: {
+  created_by: string;
+  title: string;
+  description?: string;
+  event_type: string;
+  start_date: string;
+  end_date?: string;
+  start_time?: string;
+  end_time?: string;
+  all_day: boolean;
+  visibility: 'personal' | 'shared';
+  color?: string;
+  location?: string;
+  repeat_type?: string;
+}) {
+  const { data, error } = await supabase
+    .from('calendar_events')
+    .insert([event])
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateCalendarEvent(
+  id: string,
+  updates: Partial<{
+    title: string;
+    description: string;
+    start_date: string;
+    end_date: string;
+    start_time: string;
+    end_time: string;
+    all_day: boolean;
+    visibility: string;
+    location: string;
+    event_type: string;
+  }>
+) {
+  const { error } = await supabase
+    .from('calendar_events')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) throw error;
+}
+
+export async function deleteCalendarEvent(id: string) {
+  const { error } = await supabase
+    .from('calendar_events')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+}
+
 // ── DELETE FUNCTIONS ───────────────────────────
 export async function deleteNutritionLog(id: string) {
   const { error } = await supabase

@@ -1,5 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, Apple, Dumbbell, Wallet, BookOpen, Briefcase, Target } from 'lucide-react';
+import { Home, Apple, Dumbbell, Wallet, BookOpen, Briefcase, Target, Calendar } from 'lucide-react';
+
 
 /**
  * PURE CSS MOBILE NAVIGATION
@@ -12,6 +13,7 @@ export const MobileNav = () => {
     { path: '/nutrition', icon: Apple, label: 'Comer' },
     { path: '/fitness', icon: Dumbbell, label: 'Entrenar' },
     { path: '/finance', icon: Wallet, label: 'Dinero' },
+    { path: '/calendar', icon: Calendar, label: 'Agenda' },
     { path: '/learn', icon: BookOpen, label: 'Crecer' },
     { path: '/tablio', icon: Briefcase, label: 'Tablio' },
   ];
@@ -47,6 +49,7 @@ export const DesktopSideNav = () => {
     { path: '/nutrition', icon: Apple, label: 'Nutrition' },
     { path: '/fitness', icon: Dumbbell, label: 'Fitness' },
     { path: '/finance', icon: Wallet, label: 'Finance' },
+    { path: '/calendar', icon: Calendar, label: 'Agenda' },
     { path: '/learn', icon: BookOpen, label: 'Learning' },
     { path: '/goals', icon: Target, label: 'Metas' },
     { path: '/tablio', icon: Briefcase, label: 'Tablio Business' },
