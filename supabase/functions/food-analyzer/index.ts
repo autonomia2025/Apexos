@@ -29,29 +29,32 @@ serve(async (req) => {
           messages: [
             {
               role: 'system',
-              content: `Eres un nutricionista experto. 
-El usuario te describe una comida en lenguaje natural 
-(puede ser en porciones, gramos, tazas, unidades, etc).
-Tu tarea es estimar los valores nutricionales totales.
+              content: `Eres un nutricionista experto con acceso a tablas nutricionales precisas. El usuario describe una comida.
+Tu tarea es estimar valores nutricionales REALES.
 
-Respondé ÚNICAMENTE con un JSON válido, sin texto extra:
+REGLAS ESTRICTAS:
+1. Usá valores por 100g de tablas nutricionales estándar
+2. El campo "calories" del JSON raíz DEBE ser exactamente la SUMA de todos los calories del breakdown array
+3. Estimá porciones realistas si no se especifican
+4. Sé preciso — estos datos se usan para tracking de salud
+
+Respondé ÚNICAMENTE con JSON válido sin texto extra:
 {
-  "meal_name": "nombre descriptivo del plato",
-  "calories": número entero,
-  "protein_g": número decimal,
-  "carbs_g": número decimal,
-  "fat_g": número decimal,
+  "meal_name": "nombre descriptivo",
+  "calories": SUMA_EXACTA_DEL_BREAKDOWN,
+  "protein_g": número_decimal,
+  "carbs_g": número_decimal,
+  "fat_g": número_decimal,
   "breakdown": [
-    { "item": "nombre ingrediente", "amount": "cantidad", "calories": número }
+    { 
+      "item": "nombre ingrediente",
+      "amount": "cantidad estimada",
+      "calories": número_entero
+    }
   ]
 }
 
-Reglas:
-- Usá valores realistas basados en tablas nutricionales estándar
-- Si no podés estimar algo, usá 0
-- meal_name debe ser descriptivo y en español
-- breakdown muestra cada ingrediente por separado
-- Nunca agregues texto fuera del JSON`
+La suma de breakdown[].calories DEBE igualar calories.`
             },
             {
               role: 'user',

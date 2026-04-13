@@ -138,11 +138,24 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
     setResult(null);
     try {
       const nutrition = await analyzeMeal(description);
-      setResult(nutrition);
+      
+      // Recalculate calories from breakdown (don't trust AI sum)
+      const recalculatedCalories = nutrition.breakdown
+        ? nutrition.breakdown.reduce((sum: number, item: any) => 
+            sum + (item.calories || 0), 0)
+        : nutrition.calories;
+
+      // Use recalculated value
+      const correctedResult = {
+        ...nutrition,
+        calories: recalculatedCalories,
+      };
+
+      setResult(correctedResult);
       // Pre-fill fields
-      setMealName(nutrition.meal_name);
-      setCalories(String(nutrition.calories));
-      setProtein(String(nutrition.protein_g));
+      setMealName(correctedResult.meal_name);
+      setCalories(String(correctedResult.calories));
+      setProtein(String(correctedResult.protein_g));
     } catch (e) {
       console.error('analyzeMeal failed:', e);
       setError(
@@ -418,20 +431,27 @@ export const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, color: _c
                     </p>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '12px' }}>
-                      {[
-                        { label: 'Calorías', value: result.calories, unit: 'kcal' },
-                        { label: 'Proteína', value: result.protein_g, unit: 'g' },
-                        { label: 'Carbos', value: result.carbs_g, unit: 'g' },
-                      ].map(m => (
-                        <div key={m.label} style={{
-                          background: '#ffffff', border: '1px solid #e8d5c8',
-                          borderRadius: '10px', padding: '8px', textAlign: 'center',
-                        }}>
-                          <p style={{ fontSize: '9px', color: '#b08878', fontWeight: 700, textTransform: 'uppercase', marginBottom: '2px' }}>{m.label}</p>
-                          <p style={{ fontSize: '18px', fontWeight: 800, color: '#c1603a', margin: 0 }}>{Math.round(m.value)}</p>
-                          <p style={{ fontSize: '9px', color: '#b08878', margin: 0 }}>{m.unit}</p>
-                        </div>
-                      ))}
+                      {(() => {
+                        const totalCalories = result.breakdown
+                          ? result.breakdown.reduce((sum, item) => 
+                              sum + (item.calories || 0), 0)
+                          : result.calories;
+                          
+                        return [
+                          { label: 'Calorías', value: totalCalories, unit: 'kcal' },
+                          { label: 'Proteína', value: result.protein_g, unit: 'g' },
+                          { label: 'Carbos', value: result.carbs_g, unit: 'g' },
+                        ].map(m => (
+                          <div key={m.label} style={{
+                            background: '#ffffff', border: '1px solid #e8d5c8',
+                            borderRadius: '10px', padding: '8px', textAlign: 'center',
+                          }}>
+                            <p style={{ fontSize: '9px', color: '#b08878', fontWeight: 700, textTransform: 'uppercase', marginBottom: '2px' }}>{m.label}</p>
+                            <p style={{ fontSize: '18px', fontWeight: 800, color: '#c1603a', margin: 0 }}>{Math.round(m.value)}</p>
+                            <p style={{ fontSize: '9px', color: '#b08878', margin: 0 }}>{m.unit}</p>
+                          </div>
+                        ));
+                      })()}
                     </div>
 
                     {result.breakdown && result.breakdown.length > 0 && (
